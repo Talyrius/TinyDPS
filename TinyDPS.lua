@@ -5,6 +5,11 @@
 	TinyDPS
 	Written by Sideshow (Draenor EU)
 	
+	0.62 BETA
+	*fixed: hitching problem
+	*changed: context menu
+	*added: option to hide when not in a group
+
 	0.61 BETA
 	* fixed: bug causing error on displaying damage
 
@@ -99,7 +104,7 @@
 			border = {0, 0, 0, .8},
 			backdrop = {0, 0, 0, .8},
 			version = GetAddOnMetadata('TinyDPS', 'Version'),
-			hide = {always = false, ooc = false, pvp = false},
+			hide = {always = false, ooc = false, pvp = false, solo = false},
 			fontName = 'Interface\\AddOns\\TinyDPS\\Fonts\\Franklin Gothic.ttf',
 			classColor = {},
 			totals = {['od'] = 0, ['oh'] = 0, ['cd'] = 0, ['ch'] = 0, ['1d'] = 0, ['1h'] = 0, ['2d'] = 0, ['2h'] = 0, ['3d'] = 0, ['3h'] = 0}
@@ -466,8 +471,8 @@
 	local function tdpsMenu()
 		tdpsMenuTable = {}
 		tdpsMenuTable = {
-			{ text = 'TinyDPS        ', isTitle = 1, notCheckable = 1 },
-			{ text = 'Fight', notCheckable = 1, hasArrow = true,
+			{ text = 'TinyDPS           ', isTitle = 1, notCheckable = 1 },
+			{ text = 'File', notCheckable = 1, hasArrow = true,
 				menuList = {
 					{ text = 'Overall Data', checked = function() if tdps.segment == 'o' then return true end end, func = function() changeSegment('o') end },
 					{ text = 'Current Fight', checked = function() if tdps.segment == 'c' then return true end end, func = function() changeSegment('c') end },
@@ -476,6 +481,12 @@
 					{ text = getFightName(3), checked = function() if tdps.segment == '3' then return true end end, func = function() changeSegment('3') end },
 					{ text = '', disabled = true },
 					{ text = 'Reset All Data', func = function() tdpsReset() CloseDropDownMenus() end }
+				}
+			},
+			{ text = 'View', notCheckable = 1, hasArrow = true,
+				menuList = {
+					{ text = 'Damage', checked = function() if tdps.view == 'd' then return true end end, func = function() changeView() end },
+					{ text = 'Healing', checked = function() if tdps.view == 'h' then return true end end, func = function() changeView() end }
 				}
 			},
 			{ text = 'Report', notCheckable = 1, hasArrow = true,
@@ -652,10 +663,10 @@
 					},
 					{ text = 'More ...', notCheckable = 1, hasArrow = true,
 						menuList = {
+							{ text = 'Hide When Solo', func = function() tdps.hide.solo = not tdps.hide.solo onUpdateElapsed = 3 end, checked = function() return tdps.hide.solo end, keepShownOnClick = 1 },
 							{ text = 'Hide In PvP Zone', func = function() tdps.hide.pvp = not tdps.hide.pvp onUpdateElapsed = 3 end, checked = function() return tdps.hide.pvp end, keepShownOnClick = 1 },
 							{ text = 'Hide Out Of Combat', func = function() tdps.hide.ooc = not tdps.hide.ooc onUpdateElapsed = 3 end, checked = function() return tdps.hide.ooc end, keepShownOnClick = 1 },
-							{ text = 'Reset On New Group', func = function() tdps.autoReset = not tdps.autoReset end, checked = function() return tdps.autoReset end, keepShownOnClick = 1 },
-							{ text = 'Show Healing Instead', checked = function() if tdps.view == 'h' then return true end end, func = function() changeView() end, keepShownOnClick = 1 }
+							{ text = 'Reset On New Group', func = function() tdps.autoReset = not tdps.autoReset end, checked = function() return tdps.autoReset end, keepShownOnClick = 1 }
 						}
 					},
 				}
@@ -956,7 +967,7 @@
 		tdpsFrame:SetBackdropBorderColor(tdps.border[1], tdps.border[2], tdps.border[3], tdps.border[4])
 		tdpsFrame:SetBackdropColor(tdps.backdrop[1], tdps.backdrop[2], tdps.backdrop[3], tdps.backdrop[4])
 		-- hide when necessary
-		if (tdps.hide.ooc and not isCombat()) or (tdps.hide.pvp and (select(2,IsInInstance()) == 'pvp' or select(2,IsInInstance()) == 'arena')) or tdps.hide.always then tdpsFrame:Hide() end
+		if (tdps.hide.ooc and not isCombat()) or (tdps.hide.pvp and (select(2,IsInInstance()) == 'pvp' or select(2,IsInInstance()) == 'arena')) or tdps.hide.always or (tdps.hide.solo and GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0) then tdpsFrame:Hide() end
 		-- set anchor
 		tdpsFrame:ClearAllPoints() tdpsFrame:SetPoint(tdps.anchor, tdpsMover, tdps.anchor)
 		-- reset events
@@ -977,13 +988,13 @@
 			if tdps.autoReset and not tdps.inGroup and (GetNumPartyMembers() > 0 or GetNumRaidMembers() > 0) then tdpsReset() tdps.inGroup = true end
 			if GetNumPartyMembers() > 0 or GetNumRaidMembers() > 0 then tdps.inGroup = true else tdps.inGroup = false end
 			-- show or hide the frame
-			if not tdps.hide.always and not (tdps.hide.ooc and not inCombat) and not (tdps.hide.pvp and (select(2,IsInInstance()) == 'pvp' or select(2,IsInInstance()) == 'arena')) then tdpsFrame:Show()
+			if not tdps.hide.always and not (tdps.hide.ooc and not inCombat) and not (tdps.hide.pvp and (select(2,IsInInstance()) == 'pvp' or select(2,IsInInstance()) == 'arena')) and not (tdps.hide.solo and not tdps.inGroup) then
+				if not tdpsFrame:IsVisible() then tdpsFrame:Show() end
 			elseif tdpsFrame:IsVisible() then tdpsFrame:Hide() CloseDropDownMenus() end
 			-- check for new fight
 			if not inCombat then tdps.newFight = true end
 			-- update when needed
 			if tdpsFrame:IsVisible() and not isMovingOrSizing then tdpsUpdate() end
-			collectgarbage()
 		end
 	end
 

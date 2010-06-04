@@ -3,5 +3,5 @@
 ## Notes: Lightweight Damage Meter
 ## Author: Sideshow @ Draenor EU
 ## SavedVariablesPerCharacter: tdps, tdpsPlayer, tdpsPointer, tdpsPet
-## Version: 0.61 BETA
+## Version: 0.62 BETA
 TinyDPS.lua
