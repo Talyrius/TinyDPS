@@ -3,6 +3,6 @@
 ## Notes: Lightweight Damage And Healing Meter
 ## Author: Sideshow @ Draenor EU
 ## SavedVariables: tdps
-## SavedVariablesPerCharacter: tdPlayer, tdPointer, tdPet, tdTotals
-## Version: 0.76
+## SavedVariablesPerCharacter: tdPlayer, tdPointer, tdPet, tdMembers, tdTotals
+## Version: 0.77
 TinyDPS.lua
