@@ -3,12 +3,18 @@
 	TinyDPS - Lightweight Damage Meter
 	* written by Sideshow (Draenor EU)
 	* initial release: May 21th, 2010
-	* last updated: July 15th, 2010
+	* last updated: July 17th, 2010
 	
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 	
+	Version 0.78
+	* fixed: tiny bug with percentages (introduced in previous update)
+	* changed: tiny adjustment in reporting
+	* changed: simplified options menu
+	* changed: updating TinyDPS will not reset your settings anymore
+
 	Version 0.77
 	* fixed: tiny bug with auto reset
 	* fixed: evading mobs are now ignored (this fixes occasional empty fights)
@@ -1100,7 +1106,6 @@
 			anchor = 'TOPLEFT',
 			view = 'd', fight = 'c',
 			autoReset = true,
-			firstStart = true,
 			swapColor = false,
 			bar = {.5, .5, .5, .5},
 			border = {0, 0, 0, .9},
@@ -1385,9 +1390,11 @@
 		tdps.combat = true
 		tdps.newFight = false
 		if tdps.fight ~= 'o' then scrollPosition = 1 end
-		tdTotals.zd, tdTotals.zh = tdTotals.yd, tdTotals.yh
-		tdTotals.yd, tdTotals.yh = tdTotals.xd, tdTotals.xh
-		tdTotals.xd, tdTotals.xh = tdTotals.cd, tdTotals.ch
+		if (tdps.onlyBossSegments and foundBoss) or not tdps.onlyBossSegments then
+			tdTotals.zd, tdTotals.zh = tdTotals.yd, tdTotals.yh
+			tdTotals.yd, tdTotals.yh = tdTotals.xd, tdTotals.xh
+			tdTotals.xd, tdTotals.xh = tdTotals.cd, tdTotals.ch
+		end
 		tdTotals.cd, tdTotals.ch = 0, 0
 		for _,v in pairs(tdPlayer) do
 			if (tdps.onlyBossSegments and foundBoss) or not tdps.onlyBossSegments then
@@ -1538,7 +1545,11 @@
 		if not report[1] or report[1].n == 0 then echo('No data to report') return end
 		-- title
 		local title = {d = 'Damage Done for ', h = 'Healing Done for '}
-		SendChatMessage(title[tdps.view] .. getFightName(tdps.fight), channel, nil, destination)
+		if tdps.fight == 'c' then
+			SendChatMessage(title[tdps.view] .. 'Last Fight', channel, nil, destination)
+		else
+			SendChatMessage(title[tdps.view] .. getFightName(tdps.fight), channel, nil, destination)
+		end
 		-- output
 		for i=1,min(#report, reportlength) do
 			if report[i].n > 0 then
@@ -1750,23 +1761,14 @@
 							{ text = 'Swap Bar/Class Color', notCheckable = 1, func = function() tdps.swapColor = not tdps.swapColor changeBarColors() end, keepShownOnClick = 1 },
 						}
 					},
-					{ text = 'Anchor', notCheckable = 1, hasArrow = true,
+					{ text = 'Switches      ', notCheckable = 1, hasArrow = true,
 						menuList = {
-							{ text = 'Top', func = function() tdps.anchor = 'TOPLEFT' tdpsFrame:ClearAllPoints() tdpsFrame:SetPoint('TOPLEFT', tdpsAnchor, 'TOPLEFT') end, checked = function() if tdps.anchor == 'TOPLEFT' then return true end end },
-							{ text = 'Bottom', func = function() tdps.anchor = 'BOTTOMLEFT' tdpsFrame:ClearAllPoints() tdpsFrame:SetPoint('BOTTOMLEFT', tdpsAnchor, 'BOTTOMLEFT') end,  checked = function() if tdps.anchor == 'BOTTOMLEFT' then return true end end }
-						}
-					},
-					{ text = 'Tooltips', notCheckable = 1, hasArrow = true,
-						menuList = {
-							{ text = 'Show Targets', func = function() tdps.showTargets = not tdps.showTargets end, checked = function() return tdps.showTargets end, keepShownOnClick = 1 },
-							{ text = 'Show Abilities', func = function() tdps.showAbilities = not tdps.showAbilities end, checked = function() return tdps.showAbilities end, keepShownOnClick = 1 }
-						}
-					},
-					{ text = 'More           ', notCheckable = 1, hasArrow = true,
-						menuList = {
+							{ text = 'Anchor At Bottom', func = function() if tdps.anchor == 'TOPLEFT' then tdps.anchor = 'BOTTOMLEFT' else tdps.anchor = 'TOPLEFT' end tdpsFrame:ClearAllPoints() tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor) end,  checked = function() if tdps.anchor == 'BOTTOMLEFT' then return true end end },
 							{ text = 'Show Minimap Button', func = function() toggleMinimapButton() end, checked = function() return tdps.showMinimapButton end, keepShownOnClick = 1 },
-							{ text = 'Auto Reset On New Group', func = function() tdps.autoReset = not tdps.autoReset end, checked = function() return tdps.autoReset end, keepShownOnClick = 1 },
+							{ text = 'Show Targets In Tooltips', func = function() tdps.showTargets = not tdps.showTargets end, checked = function() return tdps.showTargets end, keepShownOnClick = 1 },
+							{ text = 'Show Abilities In Tooltips', func = function() tdps.showAbilities = not tdps.showAbilities end, checked = function() return tdps.showAbilities end, keepShownOnClick = 1 },
 							{ text = 'Keep Only Boss Segments', func = function() tdps.onlyBossSegments = not tdps.onlyBossSegments end, checked = function() return tdps.onlyBossSegments end, keepShownOnClick = 1 },
+							{ text = 'Auto Reset On New Group', func = function() tdps.autoReset = not tdps.autoReset end, checked = function() return tdps.autoReset end, keepShownOnClick = 1 },
 							{ text = 'Auto Toggle On Combat Status', func = function() tdps.autoToggle = not tdps.autoToggle end, checked = function() return tdps.autoToggle end, keepShownOnClick = 1 }
 						}
 					}
@@ -1861,7 +1863,7 @@
 		dummybar:SetScript('OnLeave', function(self) GameTooltip:Hide() end)
 		dummybar:SetScript('OnMouseDown', function(self, button)
 			if button == 'LeftButton' and IsShiftKeyDown() then GameTooltip:Hide() CloseDropDownMenus() isMovingOrSizing = true tdpsAnchor:StartMoving()
-			elseif button == 'RightButton' then tdpsMenu() EasyMenu(tdpsMenuTable, tdpsDropDown, 'cursor', 0, 0, 'MENU')
+			elseif button == 'RightButton' then tdpsMenu() EasyMenu(tdpsMenuTable, tdpsDropDown, 'cursor', 0, 0, 'MENU') PlaySound('gsTitleOptionExit')
 			elseif button == 'MiddleButton' then reset()
 			elseif button == 'Button4' then changeFight('o')
 			elseif button == 'Button5' then changeFight('c') end
@@ -2064,18 +2066,17 @@
 	tdpsFrame:RegisterEvent('ADDON_LOADED')
 
 	tdpsFrame:SetScript('OnEvent', function(self, event)
-		-- reinitialize on version mismatch
-		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdps.version then initialiseSavedVariables() tdpsFrame:SetHeight(tdps.barHeight+4)
-		else -- else just remake the bars
-			for k,_ in pairs(tdPlayer) do newBar(k) end
-			tdpsRefreshBars()
+		-- version mismatch
+		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdps.version then
+			tdps.firstStart = nil -- since 0.78 we don't need this var anymore
+			help(1) help(2) help(3)
+			tdps.version = GetAddOnMetadata('TinyDPS', 'Version')
 		end
-		-- save current version
-		tdps.version = GetAddOnMetadata('TinyDPS', 'Version')
-		-- set font properties
+		-- remake bars if any
+		for k,_ in pairs(tdPlayer) do newBar(k) end
+		-- set font and colors
 		noData:SetFont(tdps.font.name, tdps.font.size, tdps.font.outline)
 		noData:SetShadowOffset(tdps.font.shadowX, tdps.font.shadowY)
-		-- set colors
 		tdpsFrame:SetBackdropBorderColor(tdps.border[1], tdps.border[2], tdps.border[3], tdps.border[4])
 		tdpsFrame:SetBackdropColor(tdps.backdrop[1], tdps.backdrop[2], tdps.backdrop[3], tdps.backdrop[4])
 		-- hide when necessary
@@ -2089,8 +2090,6 @@
 		tdpsFrame:UnregisterEvent('ADDON_LOADED')
 		tdpsFrame:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
 		tdpsFrame:SetScript('OnEvent', tdpsCombatEvent)
-		-- first start?
-		if tdps.firstStart then help(1) help(2) help(3) tdps.firstStart = false end
 	end)
 
 	tdpsAnchor:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -2111,7 +2110,7 @@
 		end
 	end)
 
-	local delay = 4
+	local delay = -1
 	tdpsAnchor:SetScript('OnUpdate', function(self, elapsed)
 		delay = delay - elapsed
 		if delay < 0 then
@@ -2119,6 +2118,8 @@
 			checkCombat()
 			-- if there is no combat, the next attack will start a new fight
 			if not tdps.combat then tdps.newFight = true end
+			-- initial update after the add-on is loaded
+			if delay < -1 then tdpsRefreshBars() end
 			-- check if we need to update: we don't refresh the bars if the last combat event was more than 2 seconds ago
 			if (time() - lastStamp) < 2 and tdpsFrame:IsVisible() and not isMovingOrSizing then tdpsRefreshBars() end
 			-- reset the delay
@@ -2128,7 +2129,7 @@
 
 	tdpsFrame:SetScript('OnMouseDown', function(self, button)
 		if button == 'LeftButton' and IsShiftKeyDown() then CloseDropDownMenus() GameTooltip:Hide() isMovingOrSizing = true tdpsAnchor:StartMoving()
-		elseif button == 'RightButton' then tdpsMenu() EasyMenu(tdpsMenuTable, tdpsDropDown, 'cursor', 0, 0, 'MENU')
+		elseif button == 'RightButton' then tdpsMenu() EasyMenu(tdpsMenuTable, tdpsDropDown, 'cursor', 0, 0, 'MENU') PlaySound('gsTitleOptionExit')
 		elseif button == 'MiddleButton' then reset()
 		elseif button == 'Button4' then changeFight('o')
 		elseif button == 'Button5' then changeFight('c') end
