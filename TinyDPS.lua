@@ -8,7 +8,13 @@
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
-	
+
+	Version 0.79
+	* (re-)added: option to autohide in pvp
+	* (re-)added: option to autohide when solo
+	* your dps is shown in the button tooltip (minimap)
+	* some tiny adjustments not really worth mentioning
+
 	Version 0.78
 	* fixed: tiny bug with percentages (introduced in previous update)
 	* changed: tiny adjustment in reporting
@@ -1112,7 +1118,6 @@
 			backdrop = {0, 0, 0, .9},
 			showMinimapButton = true,
 			onlyBossSegments = false,
-			hidden = false, hideOOC = false,
 			showTargets = true, showAbilities = false,
 			maxBars = 10, spacing = 2, barHeight = 15,
 			version = -1,
@@ -1145,7 +1150,7 @@
 
 	-- main window
 	CreateFrame('Frame', 'tdpsFrame', UIParent)
-	tdpsFrame:SetWidth(tdps.width)
+	tdpsFrame:SetWidth(tdps.width or 200)
 	tdpsFrame:SetHeight(tdps.barHeight+4)
 	tdpsFrame:EnableMouse(1)
 	tdpsFrame:EnableMouseWheel(1)
@@ -1220,7 +1225,7 @@
 	local bitband, select = bit.band, select
 	local floor, ceil, min, max, abs, rand = math.floor, math.ceil, math.min, math.max, abs, random
 	local tablesort, tableremove, tableinsert = table.sort, table.remove, table.insert
-	local pairs, ipairs, PlaySoundFile, CreateFrame = pairs, ipairs, PlaySoundFile, CreateFrame
+	local pairs, ipairs, CreateFrame = pairs, ipairs, CreateFrame
 	local GetNumRaidMembers, GetNumPartyMembers = GetNumRaidMembers, GetNumPartyMembers
 	local find, sub, split, lower = strfind, strsub, strsplit, strlower
 	local UnitName, UnitGUID, UnitClass = UnitName, UnitGUID, UnitClass
@@ -1250,6 +1255,25 @@
 	end
 
 	local function getClass(name) return select(2,UnitClass(name)) or 'UNKNOWN' end
+	
+	local function isPvpZone()
+		if select(2,IsInInstance()) == 'pvp' or select(2,IsInInstance()) == 'arena' then
+			return true
+		end
+	end
+
+	local function visibilityEvent()
+		if tdpsFrame:IsVisible() then
+			if (tdps.hidePvP and isPvpZone()) or (tdps.hideSolo and tdMembers == 0) or (tdps.hideOOC and not UnitAffectingCombat('player')) then
+				tdpsFrame:Hide()
+			end
+		else
+			if not (tdps.hidePvP and isPvpZone()) and not (tdps.hideSolo and tdMembers == 0) then
+				if tdps.hideOOC and not UnitAffectingCombat('player') then return end
+				tdpsFrame:Show()
+			end
+		end		
+	end
 
 	local function round(num, idp) return floor(num * (10^(idp or 0)) + .5) / (10^(idp or 0)) end
 
@@ -1566,8 +1590,8 @@
 		elseif lower(msg) == 'damage' then changeView('d')
 		elseif lower(msg) == 'healing' then changeView('h')
 		elseif msg == '' then
-			if tdpsFrame:IsVisible() then tdpsFrame:Hide() tdps.hidden = true
-			else tdpsRefreshBars() tdpsFrame:Show() tdps.hidden = false end
+			if tdpsFrame:IsVisible() then tdpsFrame:Hide()
+			else tdpsRefreshBars() tdpsFrame:Show() end
 		else
 			help(3)
 		end
@@ -1763,13 +1787,17 @@
 					},
 					{ text = 'Switches      ', notCheckable = 1, hasArrow = true,
 						menuList = {
+							{ text = 'Minimap Button', func = function() toggleMinimapButton() end, checked = function() return tdps.showMinimapButton end, keepShownOnClick = 1 },
 							{ text = 'Anchor At Bottom', func = function() if tdps.anchor == 'TOPLEFT' then tdps.anchor = 'BOTTOMLEFT' else tdps.anchor = 'TOPLEFT' end tdpsFrame:ClearAllPoints() tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor) end,  checked = function() if tdps.anchor == 'BOTTOMLEFT' then return true end end },
-							{ text = 'Show Minimap Button', func = function() toggleMinimapButton() end, checked = function() return tdps.showMinimapButton end, keepShownOnClick = 1 },
-							{ text = 'Show Targets In Tooltips', func = function() tdps.showTargets = not tdps.showTargets end, checked = function() return tdps.showTargets end, keepShownOnClick = 1 },
-							{ text = 'Show Abilities In Tooltips', func = function() tdps.showAbilities = not tdps.showAbilities end, checked = function() return tdps.showAbilities end, keepShownOnClick = 1 },
-							{ text = 'Keep Only Boss Segments', func = function() tdps.onlyBossSegments = not tdps.onlyBossSegments end, checked = function() return tdps.onlyBossSegments end, keepShownOnClick = 1 },
-							{ text = 'Auto Reset On New Group', func = function() tdps.autoReset = not tdps.autoReset end, checked = function() return tdps.autoReset end, keepShownOnClick = 1 },
-							{ text = 'Auto Toggle On Combat Status', func = function() tdps.autoToggle = not tdps.autoToggle end, checked = function() return tdps.autoToggle end, keepShownOnClick = 1 }
+							{ text = 'Only Boss Segments', func = function() tdps.onlyBossSegments = not tdps.onlyBossSegments end, checked = function() return tdps.onlyBossSegments end, keepShownOnClick = 1 },
+							{ text = 'Reset On New Group', func = function() tdps.autoReset = not tdps.autoReset end, checked = function() return tdps.autoReset end, keepShownOnClick = 1 },
+							{ text = '', disabled = true },
+							{ text = 'Hide In PvP', func = function() tdps.hidePvP = not tdps.hidePvP visibilityEvent() end, checked = function() return tdps.hidePvP end, keepShownOnClick = 1 },
+							{ text = 'Hide When Solo', func = function() tdps.hideSolo = not tdps.hideSolo visibilityEvent() end, checked = function() return tdps.hideSolo end, keepShownOnClick = 1 },
+							{ text = 'Hide Out Of Combat', func = function() tdps.hideOOC = not tdps.hideOOC visibilityEvent() end, checked = function() return tdps.hideOOC end, keepShownOnClick = 1 },
+							{ text = '', disabled = true },
+							{ text = 'Tooltips Show Targets', func = function() tdps.showTargets = not tdps.showTargets end, checked = function() return tdps.showTargets end, keepShownOnClick = 1 },
+							{ text = 'Tooltips Show Abilities', func = function() tdps.showAbilities = not tdps.showAbilities end, checked = function() return tdps.showAbilities end, keepShownOnClick = 1 }
 						}
 					}
 				}
@@ -1804,7 +1832,7 @@
 		dummybar:SetOrientation('HORIZONTAL')
 		dummybar:EnableMouse(1)
 		dummybar:EnableMouseWheel(1)
-		dummybar:SetWidth(tdps.width - 4)
+		dummybar:SetWidth((tdps.width or 200) - 4)
 		dummybar:SetHeight(tdps.barHeight)
 		dummybar:Hide()
 		dummybar:SetPoint('RIGHT', tdpsFrame, 'RIGHT', -2, 0)
@@ -2068,8 +2096,8 @@
 	tdpsFrame:SetScript('OnEvent', function(self, event)
 		-- version mismatch
 		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdps.version then
-			tdps.firstStart = nil -- since 0.78 we don't need this var anymore
 			help(1) help(2) help(3)
+			-- save new version
 			tdps.version = GetAddOnMetadata('TinyDPS', 'Version')
 		end
 		-- remake bars if any
@@ -2080,7 +2108,7 @@
 		tdpsFrame:SetBackdropBorderColor(tdps.border[1], tdps.border[2], tdps.border[3], tdps.border[4])
 		tdpsFrame:SetBackdropColor(tdps.backdrop[1], tdps.backdrop[2], tdps.backdrop[3], tdps.backdrop[4])
 		-- hide when necessary
-		if tdps.hidden or (tdps.autoToggle and not tdps.combat) then tdpsFrame:Hide() end
+		visibilityEvent()
 		-- set anchor
 		tdpsFrame:ClearAllPoints() tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor)
 		-- minimap button
@@ -2095,18 +2123,21 @@
 	tdpsAnchor:RegisterEvent('PLAYER_REGEN_ENABLED')
 	tdpsAnchor:RegisterEvent('PLAYER_REGEN_DISABLED')
 	tdpsAnchor:RegisterEvent('PARTY_MEMBERS_CHANGED')
+	tdpsAnchor:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 	tdpsAnchor:SetScript('OnEvent', function(self, event)
-		if event == 'PLAYER_REGEN_ENABLED' then
-			-- check if we need to hide
-			if tdpsFrame:IsVisible() and tdps.autoToggle then tdpsFrame:Hide() end
-		elseif event == 'PLAYER_REGEN_DISABLED' then
-			-- check if we need to show
-			if not tdpsFrame:IsVisible() and tdps.autoToggle then tdpsFrame:Show() end
+		if event == 'PLAYER_REGEN_ENABLED' or event == 'PLAYER_REGEN_DISABLED' then
+			-- check if we need to hide or show
+			visibilityEvent()
 		elseif event == 'PARTY_MEMBERS_CHANGED' then
 			-- check if we need to reset
 			if tdps.autoReset and tdMembers == 0 and GetNumPartyMembers() + GetNumRaidMembers() > 0 then reset() end
 			tdMembers = GetNumPartyMembers() + GetNumRaidMembers()
+			-- check if we need to hide or show
+			visibilityEvent()
+		elseif event == 'PLAYER_ENTERING_WORLD' then
+			-- check if we need to hide or show
+			visibilityEvent()
 		end
 	end)
 
@@ -2150,13 +2181,13 @@
 ---------------------------------------------------------------------------------------------------------------------------------
 
 	tdpsButtonFrame:SetScript('OnMouseDown', function(self, button)
-		if button == 'RightButton' then tdpsMenu() EasyMenu(tdpsMenuTable, tdpsDropDown, 'cursor', 0, 0, 'MENU') end
+		if button == 'RightButton' then tdpsMenu() EasyMenu(tdpsMenuTable, tdpsDropDown, 'cursor', 0, 0, 'MENU') PlaySound('gsTitleOptionExit') end
 	end)
 
 	tdpsButtonFrame:SetScript('OnMouseUp', function(self, button)
 		if button == 'LeftButton' then
-			if tdpsFrame:IsVisible() then tdpsFrame:Hide() tdps.hidden = true
-			else tdpsRefreshBars() tdpsFrame:Show() tdps.hidden = false end
+			if tdpsFrame:IsVisible() then tdpsFrame:Hide()
+			else tdpsRefreshBars() tdpsFrame:Show() end
 			PlaySound('gsTitleOptionExit')
 		end
 	end)
@@ -2182,7 +2213,10 @@
 	tdpsButtonFrame:SetScript('OnEnter', function(self)
 		GameTooltip:SetOwner(tdpsButtonFrame)
 		GameTooltip:SetText('TinyDPS')
-		GameTooltip:AddLine('Click to toggle', 1, 1, 1, 1)
+		if tdPlayer[UnitGUID('player')] then
+			GameTooltip:AddDoubleLine('Current:', tdPlayer[UnitGUID('player')]['cd'] .. ' ' .. fmtDPS(tdPlayer[UnitGUID('player')]['cd'] / tdPlayer[UnitGUID('player')]['c']), 1, 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddDoubleLine('Overall:', tdPlayer[UnitGUID('player')]['od'] .. ' ' .. fmtDPS(tdPlayer[UnitGUID('player')]['od'] / tdPlayer[UnitGUID('player')]['o']), 1, 1, 1, 1, 1, 1, 1)
+		end
 		GameTooltip:Show()
 	end)
 
