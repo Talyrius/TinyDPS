@@ -3,11 +3,19 @@
 	TinyDPS - Lightweight Damage Meter
 	* written by Sideshow (Draenor EU)
 	* initial release: May 21th, 2010
-	* last updated: July 17th, 2010
+	* last updated: July 29th, 2010
 	
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
+
+	Version 0.80
+	* fixed: tiny bug with outline monochrome
+	* changed: the default style is now more sexy ;)
+	* changed: tracking of spells has been rewritten
+	* changed: class colors will now use RAID_CLASS_COLORS (this changes nothing for most of us)
+	* added: option to disable spell tracking completely (saves cpu and ram for the sake of tinyness)
+	* the usual tiny adjustments and polish
 
 	Version 0.79
 	* (re-)added: option to autohide in pvp
@@ -108,21 +116,18 @@
 -------------------------------------------------------------------------------------------------------------------------------]]
 
 	local bar = {}
-	local px, tmp, key
 	local lastStamp = 0
-	local maxValue, barsWithValue
-	local scrollPosition = 1
-	local isMovingOrSizing = false
+	local px, tmp, key, arg
 	local foundBoss = false
-
-	local classColorDefault = {UNKNOWN = {.63, .58, .24, 1}, WARRIOR = {.78, .61, .43, 1}, MAGE = {.41, .80, .94, 1}, ROGUE = {1, .96, .41, 1}, DRUID = {1, .49, .04, 1}, HUNTER = {.67, .83, .45, 1}, SHAMAN = {.14, .35, 1, 1}, PRIEST = {1, 1, 1, 1}, WARLOCK = {.58, .51, .79, 1}, PALADIN = {.96, .55, .73, 1}, DEATHKNIGHT = { .77, .12, .23, 1}}
+	local scrollPosition = 1
+	local maxValue, barsWithValue
+	local isMovingOrSizing = false
 	local isValidEvent = {SPELL_SUMMON = true, SPELL_HEAL = true, SPELL_PERIODIC_HEAL = true, SWING_DAMAGE = true, RANGE_DAMAGE = true, SPELL_DAMAGE = true, SPELL_PERIODIC_DAMAGE = true, DAMAGE_SHIELD = true, DAMAGE_SPLIT = true, SPELL_EXTRA_ATTACKS = true, SWING_MISSED = true, RANGE_MISSED = true, SPELL_MISSED = true, SPELL_PERIODIC_MISSED = true}
 	local isMissed = {SWING_MISSED = true, RANGE_MISSED = true, SPELL_MISSED = true, SPELL_PERIODIC_MISSED = true}
 	local isSpellDamage = {RANGE_DAMAGE = true, SPELL_DAMAGE = true, SPELL_PERIODIC_DAMAGE = true, DAMAGE_SHIELD = true, DAMAGE_SPLIT = true}
 		
-	-- Table from LibBossIDs-1.0
-	-- Author: Elsia
-	-- Website: http://www.wowace.com/addons/libbossids-1-0/
+	-- Table from LibBossIDs-1.0 (Author: Elsia)
+	-- http://www.wowace.com/addons/libbossids-1-0/
 
 	local BossIDs = {
 		-- Ragefire Chasm
@@ -1103,28 +1108,29 @@
 		tdPet = {}
 		tdPlayer = {}
 		tdPointer = {}
-		tdTotals = {od = 0, oh = 0, cd = 0, ch = 0, xd = 0, xh = 0, yd = 0, yh = 0, zd = 0, zh = 0}
-		tdMembers = 0
+		tdFightName = {}
+		tdFightTotal = {od = 0, oh = 0, cd = 0, ch = 0, xd = 0, xh = 0, yd = 0, yh = 0, zd = 0, zh = 0}
+		tdGroupMembers = 0
 		tdps = {
-			classColor = {},
+			width = 180,
+			version = -1,
 			combat = false,
-			width = 150,
-			anchor = 'TOPLEFT',
-			view = 'd', fight = 'c',
 			autoReset = true,
-			swapColor = false,
-			bar = {.5, .5, .5, .5},
-			border = {0, 0, 0, .9},
-			backdrop = {0, 0, 0, .9},
+			swapColor = true,
+			anchor = 'TOPLEFT',
+			bar = {.9, .9, .9, 1},
+			border = {0, 0, 0, .8},
+			backdrop = {0, 0, 0, .8},
 			showMinimapButton = true,
 			onlyBossSegments = false,
-			showTargets = true, showAbilities = false,
+			view = 'd', fight = 'c',
 			maxBars = 10, spacing = 2, barHeight = 15,
-			version = -1,
 			shortDPS = false, shortDamage = false, showDPS = true, showRank = true, showDamage = true, showPercent = false,
-			font = {name = 'Interface\\AddOns\\TinyDPS\\Fonts\\Berlin Sans.ttf', size = 13, outline = '', shadowX = 1, shadowY = -1}
+			font = {name = 'Interface\\AddOns\\TinyDPS\\Fonts\\Berlin Sans.ttf', size = 13, outline = 'Outline', shadowX = 0, shadowY = 0},
+			classColor = RAID_CLASS_COLORS
 		}
-		for k,v in pairs(classColorDefault) do tdps.classColor[k] = {unpack(classColorDefault[k])} end
+		for k,v in pairs(tdps.classColor) do v.a = .8 end
+		tdps.classColor['UNKNOWN'] = {r = .63, g = .58, b = .24, a = 1}
 	end
 
 	initialiseSavedVariables()
@@ -1233,27 +1239,6 @@
 
 	local function echo(str) print('|cfffee00fTinyDPS |cff82e2eb' .. (str or '')) end
 
-	local function getFightName(f)
-		-- method: the name of a fight is the mob who received the most damage during that fight
-		if f == 'o' then return 'Overall Data' end
-		local merge = {}
-		for _,p in pairs(tdPlayer) do
-			for k,v in pairs(p[f..'dt']) do
-				if merge[k] then merge[k] = merge[k] + v
-				else merge[k] = v end
-			end
-		end
-		for _,p in pairs(tdPet) do
-			for k,v in pairs(p[f..'dt']) do
-				if merge[k] then merge[k] = merge[k] + v
-				else merge[k] = v end
-			end
-		end
-		local top = {} for k,v in pairs(merge) do top[#(top)+1] = {k,v} end
-		tablesort(top,function(x,y) return x[2] > y[2] end)
-		if top[1] and top[1][1] then return top[1][1] else return '<Empty>' end
-	end
-
 	local function getClass(name) return select(2,UnitClass(name)) or 'UNKNOWN' end
 	
 	local function isPvpZone()
@@ -1264,11 +1249,11 @@
 
 	local function visibilityEvent()
 		if tdpsFrame:IsVisible() then
-			if (tdps.hidePvP and isPvpZone()) or (tdps.hideSolo and tdMembers == 0) or (tdps.hideOOC and not UnitAffectingCombat('player')) then
+			if (tdps.hidePvP and isPvpZone()) or (tdps.hideSolo and tdGroupMembers == 0) or (tdps.hideOOC and not UnitAffectingCombat('player')) then
 				tdpsFrame:Hide()
 			end
 		else
-			if not (tdps.hidePvP and isPvpZone()) and not (tdps.hideSolo and tdMembers == 0) then
+			if not (tdps.hidePvP and isPvpZone()) and not (tdps.hideSolo and tdGroupMembers == 0) then
 				if tdps.hideOOC and not UnitAffectingCombat('player') then return end
 				tdpsFrame:Show()
 			end
@@ -1317,8 +1302,9 @@
 			if n > 0 then
 				barsWithValue = barsWithValue + 1
 				if n > maxValue then maxValue = n end
+				-- update strings
 				if tdps.showDamage then txt = fmtDamage(n) end
-				if tdps.showPercent then txt = txt .. ' ' .. fmtPercent(n/tdTotals[key]*100) end
+				if tdps.showPercent then txt = txt .. ' ' .. fmtPercent(n/tdFightTotal[key]*100) end
 				if tdps.showDPS then txt = txt .. ' ' .. fmtDPS(n/s) end
 				bar[i].fontStringRight:SetText(txt)
 			end
@@ -1410,31 +1396,36 @@
 		end
 	end
 
-	local function newFight(t)
+	local function newFight(target)
 		tdps.combat = true
 		tdps.newFight = false
+		
 		if tdps.fight ~= 'o' then scrollPosition = 1 end
 		if (tdps.onlyBossSegments and foundBoss) or not tdps.onlyBossSegments then
-			tdTotals.zd, tdTotals.zh = tdTotals.yd, tdTotals.yh
-			tdTotals.yd, tdTotals.yh = tdTotals.xd, tdTotals.xh
-			tdTotals.xd, tdTotals.xh = tdTotals.cd, tdTotals.ch
+			tdFightTotal.zd, tdFightTotal.zh = tdFightTotal.yd, tdFightTotal.yh
+			tdFightTotal.yd, tdFightTotal.yh = tdFightTotal.xd, tdFightTotal.xh
+			tdFightTotal.xd, tdFightTotal.xh = tdFightTotal.cd, tdFightTotal.ch
+			tdFightName['z'] = tdFightName['y']
+			tdFightName['y'] = tdFightName['x']
+			tdFightName['x'] = tdFightName['c']
+			tdFightName['c'] = target
 		end
-		tdTotals.cd, tdTotals.ch = 0, 0
+		tdFightTotal.cd, tdFightTotal.ch = 0, 0
 		for _,v in pairs(tdPlayer) do
 			if (tdps.onlyBossSegments and foundBoss) or not tdps.onlyBossSegments then
-				v.zd, v.zdt, v.zds, v.zh, v.zht, v.zhs, v.z = v.yd, v.ydt, v.yds, v.yh, v.yht, v.yhs, v.y
-				v.yd, v.ydt, v.yds, v.yh, v.yht, v.yhs, v.y = v.xd, v.xdt, v.xds, v.xh, v.xht, v.xhs, v.x
-				v.xd, v.xdt, v.xds, v.xh, v.xht, v.xhs, v.x = v.cd, v.cdt, v.cds, v.ch, v.cht, v.chs, v.c
+				v.zd, v.zds, v.zh, v.zhs, v.z = v.yd, v.yds, v.yh, v.yhs, v.y
+				v.yd, v.yds, v.yh, v.yhs, v.y = v.xd, v.xds, v.xh, v.xhs, v.x
+				v.xd, v.xds, v.xh, v.xhs, v.x = v.cd, v.cds, v.ch, v.chs, v.c
 			end
-			v.cd, v.cdt, v.cds, v.ch, v.cht, v.chs, v.c = 0, {}, {}, 0, {}, {}, 0
+			v.cd, v.cds, v.ch, v.chs, v.c = 0, {}, 0, {}, 0
 		end
 		for _,v in pairs(tdPet) do
 			if (tdps.onlyBossSegments and foundBoss) or not tdps.onlyBossSegments then
-				v.zd, v.zdt, v.zds, v.zh, v.zht, v.zhs, v.z = v.yd, v.ydt, v.yds, v.yh, v.yht, v.yhs, v.y
-				v.yd, v.ydt, v.yds, v.yh, v.yht, v.yhs, v.y = v.xd, v.xdt, v.xds, v.xh, v.xht, v.xhs, v.x
-				v.xd, v.xdt, v.xds, v.xh, v.xht, v.xhs, v.x = v.cd, v.cdt, v.cds, v.ch, v.cht, v.chs, v.c
+				v.zd, v.zds, v.zh, v.zhs, v.z = v.yd, v.yds, v.yh, v.yhs, v.y
+				v.yd, v.yds, v.yh, v.yhs, v.y = v.xd, v.xds, v.xh, v.xhs, v.x
+				v.xd, v.xds, v.xh, v.xhs, v.x = v.cd, v.cds, v.ch, v.chs, v.c
 			end
-			v.cd, v.cdt, v.cds, v.ch, v.cht, v.chs, v.c = 0, {}, {}, 0, {}, {}, 0
+			v.cd, v.cds, v.ch, v.chs, v.c = 0, {}, 0, {}, 0
 		end
 		foundBoss = false
 	end
@@ -1504,15 +1495,15 @@
 	local function changeBarColors()
 		if tdps.swapColor then
 			for i=1,#bar do
-				bar[i]:SetStatusBarColor(tdps.classColor[tdPlayer[bar[i].guid]['class']][1], tdps.classColor[tdPlayer[bar[i].guid]['class']][2], tdps.classColor[tdPlayer[bar[i].guid]['class']][3], tdps.classColor[tdPlayer[bar[i].guid]['class']][4])
+				bar[i]:SetStatusBarColor(tdps.classColor[tdPlayer[bar[i].guid]['class']].r, tdps.classColor[tdPlayer[bar[i].guid]['class']].g, tdps.classColor[tdPlayer[bar[i].guid]['class']].b, tdps.classColor[tdPlayer[bar[i].guid]['class']].a)
 				bar[i].fontStringLeft:SetTextColor(tdps.bar[1], tdps.bar[2], tdps.bar[3], tdps.bar[4])
 				bar[i].fontStringRight:SetTextColor(tdps.bar[1], tdps.bar[2], tdps.bar[3], tdps.bar[4])
 			end
 		else
 			for i=1,#bar do
 				bar[i]:SetStatusBarColor(tdps.bar[1], tdps.bar[2], tdps.bar[3], tdps.bar[4])
-				bar[i].fontStringLeft:SetTextColor(tdps.classColor[tdPlayer[bar[i].guid]['class']][1], tdps.classColor[tdPlayer[bar[i].guid]['class']][2], tdps.classColor[tdPlayer[bar[i].guid]['class']][3], tdps.classColor[tdPlayer[bar[i].guid]['class']][4])
-				bar[i].fontStringRight:SetTextColor(tdps.classColor[tdPlayer[bar[i].guid]['class']][1], tdps.classColor[tdPlayer[bar[i].guid]['class']][2], tdps.classColor[tdPlayer[bar[i].guid]['class']][3], tdps.classColor[tdPlayer[bar[i].guid]['class']][4])
+				bar[i].fontStringLeft:SetTextColor(tdps.classColor[tdPlayer[bar[i].guid]['class']].r, tdps.classColor[tdPlayer[bar[i].guid]['class']].g, tdps.classColor[tdPlayer[bar[i].guid]['class']].b, tdps.classColor[tdPlayer[bar[i].guid]['class']].a)
+				bar[i].fontStringRight:SetTextColor(tdps.classColor[tdPlayer[bar[i].guid]['class']].r, tdps.classColor[tdPlayer[bar[i].guid]['class']].g, tdps.classColor[tdPlayer[bar[i].guid]['class']].b, tdps.classColor[tdPlayer[bar[i].guid]['class']].a)
 			end
 		end
 	end
@@ -1539,8 +1530,8 @@
 		tdps.fight = 'c'
 		foundBoss = false
 		for i=1,#bar do bar[i]:ClearAllPoints() bar[i]:Hide() end
-		tdPlayer, tdPet, tdPointer, bar = {}, {}, {}, {}
-		for k,v in pairs(tdTotals) do tdTotals[k] = 0 end
+		tdPlayer, tdPet, tdPointer, tdFightName, bar = {}, {}, {}, {}, {}
+		for k,v in pairs(tdFightTotal) do tdFightTotal[k] = 0 end
 		scrollPosition = 1
 		tdpsFrame:SetHeight(tdps.barHeight+4)
 		noData:Show()
@@ -1571,13 +1562,24 @@
 		local title = {d = 'Damage Done for ', h = 'Healing Done for '}
 		if tdps.fight == 'c' then
 			SendChatMessage(title[tdps.view] .. 'Last Fight', channel, nil, destination)
+		elseif tdps.fight == 'x' or tdps.fight == 'y' or tdps.fight == 'z' then
+			SendChatMessage(title[tdps.view] .. tdFightName[tdps.fight], channel, nil, destination)
 		else
-			SendChatMessage(title[tdps.view] .. getFightName(tdps.fight), channel, nil, destination)
+			SendChatMessage(title[tdps.view] .. 'Overall Data', channel, nil, destination)
+		end
+		-- try too line up a bit
+		local longest = 0
+		for i=1,min(#report, reportlength) do
+			if strlen(split('-', report[i].name)) > longest then longest = strlen(split('-', report[i].name)) end
+		end
+		local spaces = {}
+		for i=1,min(#report, reportlength) do
+			spaces[i] = longest - strlen(split('-', report[i].name))
 		end
 		-- output
 		for i=1,min(#report, reportlength) do
 			if report[i].n > 0 then
-				SendChatMessage(i .. '. ' .. split('-', report[i].name) .. ':   ' .. report[i].n .. '   ' .. fmtPercent(report[i].n/tdTotals[key]*100) .. '   (' .. round(report[i].n/report[i].t,0) .. ')', channel, nil, destination)
+				SendChatMessage(i .. '. ' .. split('-', report[i].name) .. ':   ' .. string.rep(' ', spaces[i]) .. report[i].n .. '   ' .. fmtPercent(report[i].n/tdFightTotal[key]*100) .. '   (' .. round(report[i].n/report[i].t,0) .. ')', channel, nil, destination)
 			end
 		end
 	end
@@ -1604,11 +1606,11 @@
 			{ text = 'TinyDPS         ', isTitle = 1, notCheckable = 1 },
 			{ text = 'File', notCheckable = 1, hasArrow = true,
 				menuList = {
-					{ text = 'Overall - All Fights', checked = function() if tdps.fight == 'o' then return true end end, func = function() changeFight('o') end },
-					{ text = 'Current - ' .. getFightName('c'), checked = function() if tdps.fight == 'c' then return true end end, func = function() changeFight('c') end },
-					{ text = 'Fight 1 - ' .. getFightName('x'), checked = function() if tdps.fight == 'x' then return true end end, func = function() changeFight('x') end },
-					{ text = 'Fight 2 - ' .. getFightName('y'), checked = function() if tdps.fight == 'y' then return true end end, func = function() changeFight('y') end },
-					{ text = 'Fight 3 - ' .. getFightName('z'), checked = function() if tdps.fight == 'z' then return true end end, func = function() changeFight('z') end },
+					{ text = 'Overall     All Fights', checked = function() if tdps.fight == 'o' then return true end end, func = function() changeFight('o') end },
+					{ text = 'Current    ' .. (tdFightName['c'] or '<Empty>'), checked = function() if tdps.fight == 'c' then return true end end, func = function() changeFight('c') end },
+					{ text = 'Fight 1     ' .. (tdFightName['x'] or '<Empty>'), checked = function() if tdps.fight == 'x' then return true end end, func = function() changeFight('x') end },
+					{ text = 'Fight 2     ' .. (tdFightName['y'] or '<Empty>'), checked = function() if tdps.fight == 'y' then return true end end, func = function() changeFight('y') end },
+					{ text = 'Fight 3     ' .. (tdFightName['z'] or '<Empty>'), checked = function() if tdps.fight == 'z' then return true end end, func = function() changeFight('z') end },
 					{ text = '', disabled = true },
 					{ text = 'Reset All Data', func = function() reset() CloseDropDownMenus() end }
 				}
@@ -1687,7 +1689,7 @@
 									{ text = 'Thin', func = function() changeFontOutline('Outline') changeFontShadow(0) end, checked = function() if tdps.font.outline == 'Outline' and tdps.font.shadowX == 0 then return true end end },
 									{ text = 'Thick', func = function() changeFontOutline('Thickoutline') changeFontShadow(0) end, checked = function() if tdps.font.outline == 'Thickoutline' and tdps.font.shadowX == 0 then return true end end },
 									{ text = 'Shadow', func = function() changeFontOutline('') changeFontShadow(1) end, checked = function() if tdps.font.outline == '' and tdps.font.shadowX == 1 then return true end end },
-									{ text = 'Monochrome', func = function() changeFontOutline('Monochrome') changeFontShadow(0) end, checked = function() if tdps.font.outline == 'Monochrome' and tdps.font.shadowX == 0 then return true end end }
+									{ text = 'Monochrome', func = function() changeFontOutline('Outlinemonochrome') changeFontShadow(0) end, checked = function() if tdps.font.outline == 'Outlinemonochrome' and tdps.font.shadowX == 0 then return true end end }
 								}
 							}
 						}
@@ -1780,24 +1782,22 @@
 								r = tdps.backdrop[1], g = tdps.backdrop[2], b = tdps.backdrop[3], opacity = 1 - tdps.backdrop[4],
 								notCheckable = 1
 							},
-							{ text = 'Dim Class Colors', notCheckable = 1, func = function() for c,v in pairs(tdps.classColor) do if v[4]-.1 < 0 then v[4] = 0 else v[4] = v[4]-.1 end end changeBarColors() end, keepShownOnClick = 1 },
-							{ text = 'Reset Class Colors', notCheckable = 1, func = function() tdps.classColor = {} for c,_ in pairs(classColorDefault) do tdps.classColor[c] = {unpack(classColorDefault[c])} end changeBarColors() end, keepShownOnClick = 1 },
-							{ text = 'Swap Bar/Class Color', notCheckable = 1, func = function() tdps.swapColor = not tdps.swapColor changeBarColors() end, keepShownOnClick = 1 },
+							{ text = 'Dim Class Colors', notCheckable = 1, func = function() for _,v in pairs(tdps.classColor) do if v.a-.1 < 0 then v.a = 0 else v.a = v.a-.1 end end changeBarColors() end, keepShownOnClick = 1 },
+							{ text = 'Reset Class Colors', notCheckable = 1, func = function() tdps.classColor = RAID_CLASS_COLORS for k,v in pairs(tdps.classColor) do v.a = 1 end tdps.classColor['UNKNOWN'] = {r = .63, g = .58, b = .24, a = 1} changeBarColors() end, keepShownOnClick = 1 },
+							{ text = 'Swap Bar/Class Color', notCheckable = 1, func = function() tdps.swapColor = not tdps.swapColor if tdps.swapColor then tdpsMenuTable[5]['menuList'][3]['menuList'][1].text = 'Text Color' else tdpsMenuTable[5]['menuList'][3]['menuList'][1].text = 'Bar Color' end changeBarColors() end },
 						}
 					},
 					{ text = 'Switches      ', notCheckable = 1, hasArrow = true,
 						menuList = {
-							{ text = 'Minimap Button', func = function() toggleMinimapButton() end, checked = function() return tdps.showMinimapButton end, keepShownOnClick = 1 },
-							{ text = 'Anchor At Bottom', func = function() if tdps.anchor == 'TOPLEFT' then tdps.anchor = 'BOTTOMLEFT' else tdps.anchor = 'TOPLEFT' end tdpsFrame:ClearAllPoints() tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor) end,  checked = function() if tdps.anchor == 'BOTTOMLEFT' then return true end end },
-							{ text = 'Only Boss Segments', func = function() tdps.onlyBossSegments = not tdps.onlyBossSegments end, checked = function() return tdps.onlyBossSegments end, keepShownOnClick = 1 },
-							{ text = 'Reset On New Group', func = function() tdps.autoReset = not tdps.autoReset end, checked = function() return tdps.autoReset end, keepShownOnClick = 1 },
-							{ text = '', disabled = true },
 							{ text = 'Hide In PvP', func = function() tdps.hidePvP = not tdps.hidePvP visibilityEvent() end, checked = function() return tdps.hidePvP end, keepShownOnClick = 1 },
 							{ text = 'Hide When Solo', func = function() tdps.hideSolo = not tdps.hideSolo visibilityEvent() end, checked = function() return tdps.hideSolo end, keepShownOnClick = 1 },
 							{ text = 'Hide Out Of Combat', func = function() tdps.hideOOC = not tdps.hideOOC visibilityEvent() end, checked = function() return tdps.hideOOC end, keepShownOnClick = 1 },
 							{ text = '', disabled = true },
-							{ text = 'Tooltips Show Targets', func = function() tdps.showTargets = not tdps.showTargets end, checked = function() return tdps.showTargets end, keepShownOnClick = 1 },
-							{ text = 'Tooltips Show Abilities', func = function() tdps.showAbilities = not tdps.showAbilities end, checked = function() return tdps.showAbilities end, keepShownOnClick = 1 }
+							{ text = 'Track Spells', func = function() tdps.trackSpells = not tdps.trackSpells end, checked = function() return tdps.trackSpells end, keepShownOnClick = 1 },
+							{ text = 'Minimap Button', func = function() toggleMinimapButton() end, checked = function() return tdps.showMinimapButton end, keepShownOnClick = 1 },
+							{ text = 'Anchor At Bottom', func = function() if tdps.anchor == 'TOPLEFT' then tdps.anchor = 'BOTTOMLEFT' else tdps.anchor = 'TOPLEFT' end tdpsFrame:ClearAllPoints() tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor) end,  checked = function() if tdps.anchor == 'BOTTOMLEFT' then return true end end },
+							{ text = 'Reset On New Group', func = function() tdps.autoReset = not tdps.autoReset end, checked = function() return tdps.autoReset end, keepShownOnClick = 1 },
+							{ text = 'Keep Only Boss Segments', func = function() tdps.onlyBossSegments = not tdps.onlyBossSegments end, checked = function() return tdps.onlyBossSegments end, keepShownOnClick = 1 },
 						}
 					}
 				}
@@ -1815,6 +1815,12 @@
 				insert = { text = split(' ',select(2,GetChannelName(i))), func = function() report('CHANNEL', 10, i) CloseDropDownMenus() end, notCheckable = 1 }
 				tableinsert(tdpsMenuTable[4]['menuList'][3]['menuList'][6]['menuList'], insert)
 			end
+		end
+		-- adjust bar color text string
+		if tdps.swapColor then
+			tdpsMenuTable[5]['menuList'][3]['menuList'][1].text = 'Text Color'
+		else
+			tdpsMenuTable[5]['menuList'][3]['menuList'][1].text = 'Bar Color'
 		end
 	end
 
@@ -1856,33 +1862,19 @@
 			local pets, petAmount = tdPlayer[g]['pets'], 0
 			for i=1,#pets do petAmount = petAmount + tdPet[pets[i]][key] end
 			if petAmount > 0 then GameTooltip:AddDoubleLine('By Pet(s)', petAmount .. ' (' .. fmtPercent(petAmount/(self.n)*100) .. ')' , 1, 1, 1, 1, 1, 1) end
-			-- top abilities
-			if tdps.showAbilities then
+			if tdps.trackSpells then
+				-- merge the data of this player
+				local mergedSpells, mergedMobs = {}, {}
+				for k,v in pairs(tdPlayer[g][key..'s']) do for kk,vv in pairs(v) do mergedSpells[k] = (mergedSpells[k] or 0) + vv mergedMobs[kk] = (mergedMobs[kk] or 0) + vv end end
+				for i=1,#pets do for k,v in pairs(tdPet[pets[i]][key..'s']) do for kk,vv in pairs(v) do mergedSpells[k] = (mergedSpells[k] or 0) + vv mergedMobs[kk] = (mergedMobs[kk] or 0) + vv end end end
+				-- display spells
 				GameTooltip:AddLine('Top Abilities', 1, .85, 0)
-				local mergedTop = {} for k,v in pairs(tdPlayer[g][key..'s']) do mergedTop[k] = v end
-				for i=1,#pets do
-					for k,v in pairs(tdPet[pets[i]][key..'s']) do
-						if mergedTop[k] then mergedTop[k] = mergedTop[k] + v
-						else mergedTop[k] = v end
-					end
-				end
-				-- make indexed top so we can sort
-				local top = {} for k,v in pairs(mergedTop) do top[#(top)+1] = {k,v} end
+				local top = {} for k,v in pairs(mergedSpells) do top[#(top)+1] = {k,v} end
 				tablesort(top,function(x,y) return x[2] > y[2] end)
 				for i=1,3 do if top[i] then GameTooltip:AddDoubleLine(i .. '. ' .. top[i][1], top[i][2].. ' (' .. fmtPercent(top[i][2]/(self.n)*100) .. ')', 1, 1, 1, 1, 1, 1) end end
-			end
-			-- top targets
-			if tdps.showTargets then
+				-- display targets
 				GameTooltip:AddLine('Top Targets', 1, .85, 0)
-				local mergedTop = {} for k,v in pairs(tdPlayer[g][key..'t']) do mergedTop[k] = v end
-				for i=1,#pets do
-					for k,v in pairs(tdPet[pets[i]][key..'t']) do
-						if mergedTop[k] then mergedTop[k] = mergedTop[k] + v
-						else mergedTop[k] = v end
-					end
-				end
-				-- make indexed top so we can sort
-				local top = {} for k,v in pairs(mergedTop) do top[#(top)+1] = {k,v} end
+				local top = {} for k,v in pairs(mergedMobs) do top[#(top)+1] = {k,v} end
 				tablesort(top,function(x,y) return x[2] > y[2] end)
 				for i=1,3 do if top[i] then GameTooltip:AddDoubleLine(i .. '. ' .. top[i][1], top[i][2].. ' (' .. fmtPercent(top[i][2]/(self.n)*100) .. ')', 1, 1, 1, 1, 1, 1) end end
 			end
@@ -1916,7 +1908,7 @@
 		dummybar.fontStringLeft:SetShadowColor(.05, .05, .05, 1)
 		dummybar.fontStringLeft:SetShadowOffset(tdps.font.shadowX, tdps.font.shadowY)
 		-- colors
-		local classR, classG, classB, classA = unpack(tdps.classColor[tdPlayer[g]['class']])
+		local classR, classG, classB, classA = tdps.classColor[tdPlayer[g]['class']].r, tdps.classColor[tdPlayer[g]['class']].g, tdps.classColor[tdPlayer[g]['class']].b, tdps.classColor[tdPlayer[g]['class']].a
 		if tdps.swapColor then
 			dummybar:SetStatusBarColor(classR, classG, classB, classA)
 			dummybar.fontStringRight:SetTextColor(tdps.bar[1], tdps.bar[2], tdps.bar[3], tdps.bar[4])
@@ -1934,21 +1926,45 @@
 		if c == 'PET' then
 			tdPet[k] = {
 				name = n, guid = pgl, class = c, stamp = 0
-				,od = 0, odt = {}, ods = {}, oh = 0, oht = {}, ohs = {}, o = 0
-				,cd = 0, cdt = {}, cds = {}, ch = 0, cht = {}, chs = {}, c = 0
-				,xd = 0, xdt = {}, xds = {}, xh = 0, xht = {}, xhs = {}, x = 0
-				,yd = 0, ydt = {}, yds = {}, yh = 0, yht = {}, yhs = {}, y = 0
-				,zd = 0, zdt = {}, zds = {}, zh = 0, zht = {}, zhs = {}, z = 0
+				,od = 0, ods = {}, oh = 0, ohs = {}, o = 0
+				,cd = 0, cds = {}, ch = 0, chs = {}, c = 0
+				,xd = 0, xds = {}, xh = 0, xhs = {}, x = 0
+				,yd = 0, yds = {}, yh = 0, yhs = {}, y = 0
+				,zd = 0, zds = {}, zh = 0, zhs = {}, z = 0
 			}
 		else
 			tdPlayer[k] = {
 				name = n, pets = pgl, class = c, stamp = 0
-				,od = 0, odt = {}, ods = {}, oh = 0, oht = {}, ohs = {}, o = 0
-				,cd = 0, cdt = {}, cds = {}, ch = 0, cht = {}, chs = {}, c = 0
-				,xd = 0, xdt = {}, xds = {}, xh = 0, xht = {}, xhs = {}, x = 0
-				,yd = 0, ydt = {}, yds = {}, yh = 0, yht = {}, yhs = {}, y = 0
-				,zd = 0, zdt = {}, zds = {}, zh = 0, zht = {}, zhs = {}, z = 0
+				,od = 0, ods = {}, oh = 0, ohs = {}, o = 0
+				,cd = 0, cds = {}, ch = 0, chs = {}, c = 0
+				,xd = 0, xds = {}, xh = 0, xhs = {}, x = 0
+				,yd = 0, yds = {}, yh = 0, yhs = {}, y = 0
+				,zd = 0, zds = {}, zh = 0, zhs = {}, z = 0
 			}
+		end
+	end
+
+	local function checkMelee(n)
+		-- actually this is an isNumber function
+		if string.find(n, "^(%d+%.?%d*)$") then return 'Melee' else return n end
+	end
+
+	local function trackSpell(amount, arg7, arg10)
+		if tdps.trackSpells then
+			arg10 = checkMelee(arg10) -- check for melee
+			if not tmp.cds[arg10] then tmp.cds[arg10] = {} end -- make the spell
+			if not tmp.ods[arg10] then tmp.ods[arg10] = {} end
+			tmp.cds[arg10][arg7] = (tmp.cds[arg10][arg7] or 0) + amount -- record the amount
+			tmp.ods[arg10][arg7] = (tmp.ods[arg10][arg7] or 0) + amount
+		end
+	end
+	
+	local function trackHeal(amount, arg7, arg10)
+		if tdps.trackSpells then
+			if not tmp.chs[arg10] then tmp.chs[arg10] = {} end -- make the spell
+			if not tmp.ohs[arg10] then tmp.ohs[arg10] = {} end
+			tmp.chs[arg10][arg7] = (tmp.chs[arg10][arg7] or 0) + amount -- record the amount
+			tmp.ohs[arg10][arg7] = (tmp.ohs[arg10][arg7] or 0) + amount
 		end
 	end
 
@@ -2035,41 +2051,27 @@
 		elseif tdPet[tdPointer[arg3]] then tmp = tdPet[tdPointer[arg3]] end
 		if tmp == nil then return end
 
-		-- add numbers
-		if tdps.newFight and isMissed[arg2] then newFight(arg7) -- check if we need to start a new fight, even if first hit is a miss
-		elseif isSpellDamage[arg2] then
-			if tdps.newFight then newFight(arg7) end
-			if not foundBoss then foundBoss = BossIDs[tonumber(arg6:sub(9, 12), 16)] end -- check if we are fighting a boss
-			tdTotals.od = tdTotals.od + arg12
-			tdTotals.cd = tdTotals.cd + arg12
-			tmp.od = tmp.od + arg12
-			tmp.cd = tmp.cd + arg12
-			if tmp.odt[arg7] then tmp.odt[arg7] = tmp.odt[arg7] + arg12 else tmp.odt[arg7] = arg12 end
-			if tmp.cdt[arg7] then tmp.cdt[arg7] = tmp.cdt[arg7] + arg12 else tmp.cdt[arg7] = arg12 end
-			if tmp.ods[arg10] then tmp.ods[arg10] = tmp.ods[arg10] + arg12 else tmp.ods[arg10] = arg12 end
-			if tmp.cds[arg10] then tmp.cds[arg10] = tmp.cds[arg10] + arg12 else tmp.cds[arg10] = arg12 end
-		elseif arg2 == 'SWING_DAMAGE' then
-			if tdps.newFight then newFight(arg7) end
-			if not foundBoss then foundBoss = BossIDs[tonumber(arg6:sub(9, 12), 16)] end -- check if we are fighting a boss
-			tdTotals.od = tdTotals.od + arg9
-			tdTotals.cd = tdTotals.cd + arg9
-			tmp.od = tmp.od + arg9
-			tmp.cd = tmp.cd + arg9
-			if tmp.odt[arg7] then tmp.odt[arg7] = tmp.odt[arg7] + arg9 else tmp.odt[arg7] = arg9 end
-			if tmp.cdt[arg7] then tmp.cdt[arg7] = tmp.cdt[arg7] + arg9 else tmp.cdt[arg7] = arg9 end
-			if tmp.ods.Melee then tmp.ods.Melee = tmp.ods.Melee + arg9 else tmp.ods.Melee = arg9 end
-			if tmp.cds.Melee then tmp.cds.Melee = tmp.cds.Melee + arg9 else tmp.cds.Melee = arg9 end
+		-- track numbers
+		if isMissed[arg2] then
+			if tdps.newFight then newFight(arg7) end -- also a miss should start a new fight
+			--trackSpell
+		elseif isSpellDamage[arg2] or arg2 == 'SWING_DAMAGE' then
+			if tdps.newFight then newFight(arg7) end -- check for new fight
+			if not foundBoss then foundBoss = BossIDs[tonumber(arg6:sub(9, 12), 16)] tdFightName['c'] = arg7 end -- check if we are fighting a boss
+			if arg2 == 'SWING_DAMAGE' then arg = arg9 else arg = arg12 end
+			tdFightTotal.cd = tdFightTotal.cd + arg
+			tdFightTotal.od = tdFightTotal.od + arg
+			tmp.cd = tmp.cd + arg
+			tmp.od = tmp.od + arg
+			trackSpell(arg, arg7, arg10)
 		elseif arg2 == 'SPELL_PERIODIC_HEAL' or arg2 == 'SPELL_HEAL' then
-			arg12 = arg12 - arg13 -- effective healing
-			if arg12 == 0 or not tdps.combat then return end -- stop on complete overheal or out of combat
-			tdTotals.oh = tdTotals.oh + arg12
-			tdTotals.ch = tdTotals.ch + arg12
-			tmp.oh = tmp.oh + arg12
-			tmp.ch = tmp.ch + arg12
-			if tmp.oht[arg7] then tmp.oht[arg7] = tmp.oht[arg7] + arg12 else tmp.oht[arg7] = arg12 end
-			if tmp.cht[arg7] then tmp.cht[arg7] = tmp.cht[arg7] + arg12 else tmp.cht[arg7] = arg12 end
-			if tmp.ohs[arg10] then tmp.ohs[arg10] = tmp.ohs[arg10] + arg12 else tmp.ohs[arg10] = arg12 end
-			if tmp.chs[arg10] then tmp.chs[arg10] = tmp.chs[arg10] + arg12 else tmp.chs[arg10] = arg12 end
+			arg = arg12 - arg13 -- effective healing
+			if arg == 0 or not tdps.combat then return end -- stop on complete overheal or out of combat
+			tdFightTotal.ch = tdFightTotal.ch + arg
+			tdFightTotal.oh = tdFightTotal.oh + arg
+			tmp.ch = tmp.ch + arg
+			tmp.oh = tmp.oh + arg
+			trackHeal(arg, arg7, arg10)
 		end
 
 		-- add combat time
@@ -2096,6 +2098,7 @@
 	tdpsFrame:SetScript('OnEvent', function(self, event)
 		-- version mismatch
 		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdps.version then
+			initialiseSavedVariables() tdpsFrame:SetHeight(tdps.barHeight + 4)
 			help(1) help(2) help(3)
 			-- save new version
 			tdps.version = GetAddOnMetadata('TinyDPS', 'Version')
@@ -2131,8 +2134,8 @@
 			visibilityEvent()
 		elseif event == 'PARTY_MEMBERS_CHANGED' then
 			-- check if we need to reset
-			if tdps.autoReset and tdMembers == 0 and GetNumPartyMembers() + GetNumRaidMembers() > 0 then reset() end
-			tdMembers = GetNumPartyMembers() + GetNumRaidMembers()
+			if tdps.autoReset and tdGroupMembers == 0 and GetNumPartyMembers() + GetNumRaidMembers() > 0 then reset() end
+			tdGroupMembers = GetNumPartyMembers() + GetNumRaidMembers()
 			-- check if we need to hide or show
 			visibilityEvent()
 		elseif event == 'PLAYER_ENTERING_WORLD' then
