@@ -9,6 +9,9 @@
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 
+	Version 0.81
+	* fixed: tiny bug with raid colors from previous version. This changes nothing to the add-on actually, but it's just better
+
 	Version 0.80
 	* fixed: tiny bug with outline monochrome
 	* changed: the default style is now more sexy ;)
@@ -1127,8 +1130,14 @@
 			maxBars = 10, spacing = 2, barHeight = 15,
 			shortDPS = false, shortDamage = false, showDPS = true, showRank = true, showDamage = true, showPercent = false,
 			font = {name = 'Interface\\AddOns\\TinyDPS\\Fonts\\Berlin Sans.ttf', size = 13, outline = 'Outline', shadowX = 0, shadowY = 0},
-			classColor = RAID_CLASS_COLORS
+			classColor = {}
 		}
+		for k,v in pairs(RAID_CLASS_COLORS) do
+			tdps.classColor[k] = {}
+			tdps.classColor[k].r = RAID_CLASS_COLORS[k].r
+			tdps.classColor[k].g = RAID_CLASS_COLORS[k].g
+			tdps.classColor[k].b = RAID_CLASS_COLORS[k].b
+		end
 		for k,v in pairs(tdps.classColor) do v.a = .8 end
 		tdps.classColor['UNKNOWN'] = {r = .63, g = .58, b = .24, a = 1}
 	end
@@ -2098,7 +2107,7 @@
 	tdpsFrame:SetScript('OnEvent', function(self, event)
 		-- version mismatch
 		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdps.version then
-			initialiseSavedVariables() tdpsFrame:SetHeight(tdps.barHeight + 4)
+			if tdps.version ~= '0.80' then initialiseSavedVariables() tdpsFrame:SetHeight(tdps.barHeight + 4) end
 			help(1) help(2) help(3)
 			-- save new version
 			tdps.version = GetAddOnMetadata('TinyDPS', 'Version')
