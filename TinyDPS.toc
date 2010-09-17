@@ -4,5 +4,5 @@
 ## Author: Sideshow @ Draenor EU
 ## SavedVariables: tdps
 ## SavedVariablesPerCharacter: tdPlayer, tdPointer, tdPet, tdGroupMembers, tdFightTotal, tdFightName
-## Version: 0.81
+## Version: 0.82
 TinyDPS.lua

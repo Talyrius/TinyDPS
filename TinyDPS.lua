@@ -3,11 +3,15 @@
 	TinyDPS - Lightweight Damage Meter
 	* written by Sideshow (Draenor EU)
 	* initial release: May 21th, 2010
-	* last updated: July 29th, 2010
+	* last updated: September 11th, 2010
 	
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
+
+	Version 0.82
+	* added: officer channel
+	* fixed: cataclysm compatibility
 
 	Version 0.81
 	* fixed: tiny bug with raid colors from previous version. This changes nothing to the add-on actually, but it's just better
@@ -1638,6 +1642,7 @@
 							{ text = 'Raid', func = function() report('RAID', 3) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Party', func = function() report('PARTY', 3) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Guild', func = function() report('GUILD', 3) CloseDropDownMenus() end, notCheckable = 1 },
+							{ text = 'Officer', func = function() report('OFFICER', 3) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Whisper', func = function() report('WHISPER', 3, UnitName('target')) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Channel  ', notCheckable = 1, hasArrow = true, menuList = {} }
 						}
@@ -1648,6 +1653,7 @@
 							{ text = 'Raid', func = function() report('RAID', 5) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Party', func = function() report('PARTY', 5) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Guild', func = function() report('GUILD', 5) CloseDropDownMenus() end, notCheckable = 1 },
+							{ text = 'Officer', func = function() report('OFFICER', 5) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Whisper', func = function() report('WHISPER', 5, UnitName('target')) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Channel  ', notCheckable = 1, hasArrow = true, menuList = {} }
 						}
@@ -1658,6 +1664,7 @@
 							{ text = 'Raid', func = function() report('RAID', 10) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Party', func = function() report('PARTY', 10) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Guild', func = function() report('GUILD', 10) CloseDropDownMenus() end, notCheckable = 1 },
+							{ text = 'Officer', func = function() report('OFFICER', 10) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Whisper', func = function() report('WHISPER', 10, UnitName('target')) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Channel  ', notCheckable = 1, hasArrow = true, menuList = {} }
 						}
@@ -1818,11 +1825,11 @@
 		for i=1,20 do
 			if select(2,GetChannelName(i)) then
 				insert = { text = split(' ',select(2,GetChannelName(i))), func = function() report('CHANNEL', 3, i) CloseDropDownMenus() end, notCheckable = 1 }
-				tableinsert(tdpsMenuTable[4]['menuList'][1]['menuList'][6]['menuList'], insert)
+				tableinsert(tdpsMenuTable[4]['menuList'][1]['menuList'][7]['menuList'], insert)
 				insert = { text = split(' ',select(2,GetChannelName(i))), func = function() report('CHANNEL', 5, i) CloseDropDownMenus() end, notCheckable = 1 }
-				tableinsert(tdpsMenuTable[4]['menuList'][2]['menuList'][6]['menuList'], insert)
+				tableinsert(tdpsMenuTable[4]['menuList'][2]['menuList'][7]['menuList'], insert)
 				insert = { text = split(' ',select(2,GetChannelName(i))), func = function() report('CHANNEL', 10, i) CloseDropDownMenus() end, notCheckable = 1 }
-				tableinsert(tdpsMenuTable[4]['menuList'][3]['menuList'][6]['menuList'], insert)
+				tableinsert(tdpsMenuTable[4]['menuList'][3]['menuList'][7]['menuList'], insert)
 			end
 		end
 		-- adjust bar color text string
@@ -1986,6 +1993,8 @@
 ---------------------------------------------------------------------------------------------------------------------------------
 
 	local function tdpsCombatEvent(self, event, ...)
+	
+		local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 = ...
 
 		-- filter
 		if arg5 % 8 == 0 -- source is outsider
@@ -2107,7 +2116,7 @@
 	tdpsFrame:SetScript('OnEvent', function(self, event)
 		-- version mismatch
 		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdps.version then
-			if tdps.version ~= '0.80' then initialiseSavedVariables() tdpsFrame:SetHeight(tdps.barHeight + 4) end
+			if tdps.version ~= '0.80' and tdps.version ~= '0.81' then initialiseSavedVariables() tdpsFrame:SetHeight(tdps.barHeight + 4) end
 			help(1) help(2) help(3)
 			-- save new version
 			tdps.version = GetAddOnMetadata('TinyDPS', 'Version')
