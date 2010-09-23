@@ -1,13 +1,20 @@
---[[-----------------------------------------------------------------------------------------------------------------------------
+﻿--[[-----------------------------------------------------------------------------------------------------------------------------
 
 	TinyDPS - Lightweight Damage Meter
 	* written by Sideshow (Draenor EU)
 	* initial release: May 21th, 2010
-	* last updated: September 11th, 2010
+	* last updated: September 23th, 2010
 	
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
+	
+	Version 0.84
+	* added: the position of the frame is now saved for all characters
+	* added: a explicit reset of all saved variables and settings to prevent a bug with the spelltracker
+
+	Version 0.83
+	* fixed: bug with spell tracking
 
 	Version 0.82
 	* added: officer channel
@@ -1905,7 +1912,16 @@
 			elseif button == 'Button5' then changeFight('c') end
 		end)
 		dummybar:SetScript('OnMouseUp', function(self, button)
-			if button == 'LeftButton' then tdpsAnchor:StopMovingOrSizing() isMovingOrSizing = nil tdpsFrame:ClearAllPoints() tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor) end
+			if button == 'LeftButton' then
+				tdpsAnchor:StopMovingOrSizing()
+				isMovingOrSizing = nil
+				tdpsFrame:ClearAllPoints()
+				-- set position of frame
+				tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor)
+				-- save position of anchor
+				local point, relativeTo, relativePoint,  xOffset, yOffset = tdpsAnchor:GetPoint(1)
+				tdps.anchorPosition = {point, relativeTo, relativePoint,  xOffset, yOffset}
+			end
 		end)
 		dummybar:SetScript('OnMouseWheel', function(self, direction) scroll(direction) end)
 		-- numbers fontstring
@@ -1960,14 +1976,17 @@
 		end
 	end
 
-	local function checkMelee(n)
-		-- actually this is an isNumber function
-		if string.find(n, "^(%d+%.?%d*)$") then return 'Melee' else return n end
+	local function trackMelee(amount, arg7)
+		if tdps.trackSpells then
+			if not tmp.Melee then tmp.cds.Melee = {} end -- make the spell
+			if not tmp.Melee then tmp.ods.Melee = {} end
+			tmp.cds.Melee[arg7] = (tmp.cds.Melee[arg7] or 0) + amount -- record the amount
+			tmp.ods.Melee[arg7] = (tmp.ods.Melee[arg7] or 0) + amount
+		end
 	end
 
 	local function trackSpell(amount, arg7, arg10)
 		if tdps.trackSpells then
-			arg10 = checkMelee(arg10) -- check for melee
 			if not tmp.cds[arg10] then tmp.cds[arg10] = {} end -- make the spell
 			if not tmp.ods[arg10] then tmp.ods[arg10] = {} end
 			tmp.cds[arg10][arg7] = (tmp.cds[arg10][arg7] or 0) + amount -- record the amount
@@ -2072,16 +2091,14 @@
 		-- track numbers
 		if isMissed[arg2] then
 			if tdps.newFight then newFight(arg7) end -- also a miss should start a new fight
-			--trackSpell
 		elseif isSpellDamage[arg2] or arg2 == 'SWING_DAMAGE' then
 			if tdps.newFight then newFight(arg7) end -- check for new fight
 			if not foundBoss then foundBoss = BossIDs[tonumber(arg6:sub(9, 12), 16)] tdFightName['c'] = arg7 end -- check if we are fighting a boss
-			if arg2 == 'SWING_DAMAGE' then arg = arg9 else arg = arg12 end
+			if arg2 == 'SWING_DAMAGE' then arg = arg9 trackMelee(arg, arg7) else arg = arg12 trackSpell(arg, arg7, arg10) end
 			tdFightTotal.cd = tdFightTotal.cd + arg
 			tdFightTotal.od = tdFightTotal.od + arg
 			tmp.cd = tmp.cd + arg
 			tmp.od = tmp.od + arg
-			trackSpell(arg, arg7, arg10)
 		elseif arg2 == 'SPELL_PERIODIC_HEAL' or arg2 == 'SPELL_HEAL' then
 			arg = arg12 - arg13 -- effective healing
 			if arg == 0 or not tdps.combat then return end -- stop on complete overheal or out of combat
@@ -2116,10 +2133,18 @@
 	tdpsFrame:SetScript('OnEvent', function(self, event)
 		-- version mismatch
 		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdps.version then
-			if tdps.version ~= '0.80' and tdps.version ~= '0.81' then initialiseSavedVariables() tdpsFrame:SetHeight(tdps.barHeight + 4) end
+			--if tdps.version ~= '0.80' and tdps.version ~= '0.81' and tdps.version ~= '0.82' then 
+				initialiseSavedVariables()
+				tdpsFrame:SetHeight(tdps.barHeight + 4)
+			--end
 			help(1) help(2) help(3)
 			-- save new version
 			tdps.version = GetAddOnMetadata('TinyDPS', 'Version')
+		end
+		-- position
+		if tdps.anchorPosition then
+			tdpsAnchor:ClearAllPoints()
+			tdpsAnchor:SetPoint(tdps.anchorPosition[1], tdps.anchorPosition[2], tdps.anchorPosition[3], tdps.anchorPosition[4], tdps.anchorPosition[5])
 		end
 		-- remake bars if any
 		for k,_ in pairs(tdPlayer) do newBar(k) end
@@ -2188,7 +2213,16 @@
 	end)
 
 	tdpsFrame:SetScript('OnMouseUp', function(self, button)
-		if button == 'LeftButton' then tdpsAnchor:StopMovingOrSizing() isMovingOrSizing = nil tdpsFrame:ClearAllPoints() tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor) end
+		if button == 'LeftButton' then 
+			tdpsAnchor:StopMovingOrSizing()
+			isMovingOrSizing = nil
+			tdpsFrame:ClearAllPoints()
+			-- set position of frame
+			tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor)
+			-- save position of anchor
+			local point, relativeTo, relativePoint,  xOffset, yOffset = tdpsAnchor:GetPoint(1)
+			tdps.anchorPosition = {point, relativeTo, relativePoint,  xOffset, yOffset}
+		end
 	end)
 	
 	tdpsFrame:SetScript('OnMouseWheel', function(self, direction) scroll(direction) end)

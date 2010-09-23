@@ -1,8 +1,8 @@
-## Interface: 30300
+﻿## Interface: 30300
 ## Title: TinyDPS
 ## Notes: Lightweight Damage Meter
 ## Author: Sideshow @ Draenor EU
 ## SavedVariables: tdps
 ## SavedVariablesPerCharacter: tdPlayer, tdPointer, tdPet, tdGroupMembers, tdFightTotal, tdFightName
-## Version: 0.82
+## Version: 0.84
 TinyDPS.lua
