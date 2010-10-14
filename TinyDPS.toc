@@ -1,8 +1,8 @@
-﻿## Interface: 30300
+﻿## Interface: 40000
 ## Title: TinyDPS
 ## Notes: Lightweight Damage Meter
 ## Author: Sideshow @ Draenor EU
-## SavedVariables: tdps
-## SavedVariablesPerCharacter: tdPlayer, tdPointer, tdPet, tdGroupMembers, tdFightTotal, tdFightName
-## Version: 0.84
+## SavedVariables: tdps, tdpsAnchorPosition
+## SavedVariablesPerCharacter: tdpsVersion, tdpsPlayer, tdpsLink, tdpsPet, tdpsFight, tdpsPartySize, tdpsCombat, tdpsNewFight, tdpsNumberOfFights, tdpsSelectedFight
+## Version: 0.85
 TinyDPS.lua
