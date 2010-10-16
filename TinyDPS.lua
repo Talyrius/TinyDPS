@@ -5,10 +5,14 @@
 	* written by Sideshow (Draenor EU)
 	* initial release: May 21th, 2010
 	* last update: October 14th, 2010
-	
+
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
+
+	Version 0.86
+	* fixed tiny bug when swapping bar/text color
+	* fixed boss tracking due to changes in patch 4.0.1
 
 	Version 0.85
 	* complete rewrite of data handling (collection and storage)
@@ -238,7 +242,7 @@
 
 
 
-	local isBoss = { -- LibBossIDs-1.0 (Author: Elsia) http://www.wowace.com/addons/libbossids-1-0
+	local bosses = { -- LibBossIDs-1.0 (Author: Elsia) http://www.wowace.com/addons/libbossids-1-0
 
 		-- Ragefire Chasm
 		[11517] = true, -- Oggleflint
@@ -1951,7 +1955,7 @@
 							},
 							{ text = 'Dim Class Colors', notCheckable = 1, func = function() for _,v in pairs(tdps.classColor) do if v.a-.1 < 0 then v.a = 0 else v.a = v.a-.1 end end changeBarColors() end, keepShownOnClick = 1 },
 							{ text = 'Reset Class Colors', notCheckable = 1, func = function() tdps.classColor = RAID_CLASS_COLORS for k,v in pairs(tdps.classColor) do v.a = 1 end tdps.classColor['UNKNOWN'] = {r = .63, g = .58, b = .24, a = 1} changeBarColors() end, keepShownOnClick = 1 },
-							{ text = 'Swap Bar/Class Color', notCheckable = 1, func = function() tdps.swapColor = not tdps.swapColor if tdps.swapColor then tdpsMenuTable[5]['menuList'][3]['menuList'][1].text = 'Text Color' else tdpsMenuTable[5]['menuList'][3]['menuList'][1].text = 'Bar Color' end changeBarColors() end },
+							{ text = 'Swap Bar/Class Color', notCheckable = 1, func = function() tdps.swapColor = not tdps.swapColor if tdps.swapColor then tdpsMenuTable[4]['menuList'][3]['menuList'][1].text = 'Text Color' else tdpsMenuTable[4]['menuList'][3]['menuList'][1].text = 'Bar Color' end changeBarColors() end },
 						}
 					},
 					{ text = 'History', notCheckable = 1, hasArrow = true,
@@ -2173,7 +2177,7 @@
 
 		-- summon event
 		if arg2 == 'SPELL_SUMMON' then
-			if UnitIsPlayer(arg4) and not isExcludedPet[tonumber(arg6:sub(9, 12), 16)] then -- add pet when player summons
+			if UnitIsPlayer(arg4) and not isExcludedPet[tonumber(arg6:sub(7, 10), 16)] then -- add pet when player summons
 				-- make owner if necessary
 				if not tdpsPlayer[arg3] then
 					makeCombatant(arg3, arg4, {arg4..': '..arg7}, getClass(arg4))
@@ -2239,7 +2243,7 @@
 			if tdpsNewFight then newFight(arg7) end -- also a miss should start a new fight
 		elseif isSpellDamage[arg2] or arg2 == 'SWING_DAMAGE' then
 			if tdpsNewFight then newFight(arg7) end -- check for new fight
-			if not foundBoss then foundBoss = isBoss[tonumber(arg6:sub(9, 12), 16)] tdpsFight[2].name = arg7 end -- check if we are fighting a boss
+			if not foundBoss then foundBoss = bosses[tonumber(arg6:sub(7, 10), 16)] tdpsFight[2].name = arg7 end -- check if we are fighting a boss
 			if arg2 == 'SWING_DAMAGE' then arg = arg9 trackSpell(arg, arg7, 'Melee', 'd') else arg = arg12 trackSpell(arg, arg7, arg10, 'd') end
 			tdpsFight[1].d = tdpsFight[1].d + arg
 			tdpsFight[2].d = tdpsFight[2].d + arg
@@ -2282,14 +2286,14 @@
 	tdpsFrame:SetScript('OnEvent', function(self, event)
 
 		-- global version mismatch
-		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdps.version then --if tdps.version ~= '0.85' then
+		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdps.version and '0.85' ~= tdps.version then
 			initialiseSavedVariables()
 			echo('Global variables have been reset to version ' .. GetAddOnMetadata('TinyDPS', 'Version'))
 			tdps.version = GetAddOnMetadata('TinyDPS', 'Version') -- save new version
 		end
 
 		-- character version mismatch
-		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdpsVersion then --if tdpsVersion ~= '0.85' then
+		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdpsVersion and '0.85' ~= tdpsVersion then
 			initialiseSavedVariablesPerCharacter()
 			echo('Character variables have been reset to version ' .. GetAddOnMetadata('TinyDPS', 'Version'))
 			tdpsFrame:SetHeight(tdps.barHeight + 4)
