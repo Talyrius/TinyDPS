@@ -4,11 +4,17 @@
 
 	* written by Sideshow (Draenor EU)
 	* initial release: May 21th, 2010
-	* last update: October 14th, 2010
+	* last update: October 22th, 2010
 
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
+
+	Version 0.88
+	* healing now includes (trackable) absorbs ('Power Word: Barrier' is not trackable)
+	* optimized cpu usage: 'OnUpdate' halted when out of combat
+	* optimized cpu usage: refreshing bar text is now much faster
+	* various other optimizations, changes and tweaks
 
 	Version 0.86
 	* fixed tiny bug when swapping bar/text color
@@ -150,19 +156,42 @@
 
 	local bar = {}
 	local lastStamp = 0
-	local px, tmp, key, arg
-	local foundBoss = false
+	local tdpsShield = {}
+	local px, com, key, arg
 	local scrollPosition = 1
 	local maxValue, barsWithValue
 	local isMovingOrSizing = false
+
+
+
 	local isValidEvent = {SPELL_SUMMON = true, SPELL_HEAL = true, SPELL_PERIODIC_HEAL = true, SWING_DAMAGE = true, RANGE_DAMAGE = true, SPELL_DAMAGE = true, SPELL_PERIODIC_DAMAGE = true, DAMAGE_SHIELD = true, DAMAGE_SPLIT = true, SPELL_EXTRA_ATTACKS = true, SWING_MISSED = true, RANGE_MISSED = true, SPELL_MISSED = true, SPELL_PERIODIC_MISSED = true}
+	local isNewFightEvent = {SWING_DAMAGE = true, RANGE_DAMAGE = true, SPELL_DAMAGE = true, DAMAGE_SHIELD = true, DAMAGE_SPLIT = true, SWING_MISSED = true, RANGE_MISSED = true, SPELL_MISSED = true}
 	local isMissed = {SWING_MISSED = true, RANGE_MISSED = true, SPELL_MISSED = true, SPELL_PERIODIC_MISSED = true}
-	local isSpellDamage = {RANGE_DAMAGE = true, SPELL_DAMAGE = true, SPELL_PERIODIC_DAMAGE = true, DAMAGE_SHIELD = true, DAMAGE_SPLIT = true}
+	local isHeal = {SPELL_PERIODIC_HEAL = true, SPELL_HEAL = true}
+	local isDamage = {SWING_DAMAGE = true, RANGE_DAMAGE = true, SPELL_DAMAGE = true, SPELL_PERIODIC_DAMAGE = true, DAMAGE_SHIELD = true, DAMAGE_SPLIT = true}
+
+
+
+	local isAbsorb = {
+
+		-- Priest
+		[17]    = true, -- Power Word: Shield
+		--[62618] = true, -- Power Word: Barrier NOT TRACKABLE
+		[47753] = true, -- Divine Aegis
+
+		-- Paladin
+		[86273] = true, -- Illuminated Healing TRACKABLE ?
+
+		-- Death Knight
+		[77535] = true, -- Blood Shield  TRACKABLE ?
+
+	}
 
 
 
 	local isExcludedPet = { -- database by myself (Sideshow)
 
+		-- Various
 		[15447] = true, -- Wrath of Air Totem
 		[6112]  = true, -- Windfury Totem
 		[5924]  = true, -- Cleansing Totem
@@ -171,60 +200,67 @@
 		[5925]  = true, -- Grounding Totem
 		[10467] = true, -- Mana Tide Totem
 
-		[3573]  = true, -- Mana Spring Totem Rank 1
-		[7414]  = true, -- Mana Spring Totem Rank 2
-		[7415]  = true, -- Mana Spring Totem Rank 3
-		[7416]  = true, -- Mana Spring Totem Rank 4
-		[15489] = true, -- Mana Spring Totem Rank 5
-		[31186] = true, -- Mana Spring Totem Rank 6
-		[31189] = true, -- Mana Spring Totem Rank 7
-		[31190] = true, -- Mana Spring Totem Rank 8
+		-- Mana Spring Totem
+		[3573]  = true, -- Rank 1
+		[7414]  = true, -- Rank 2
+		[7415]  = true, -- Rank 3
+		[7416]  = true, -- Rank 4
+		[15489] = true, -- Rank 5
+		[31186] = true, -- Rank 6
+		[31189] = true, -- Rank 7
+		[31190] = true, -- Rank 8
 
-		[5874]  = true, -- Strength of Earth Totem Rank 1
-		[5921]  = true, -- Strength of Earth Totem Rank 2
-		[5922]  = true, -- Strength of Earth Totem Rank 3
-		[7403]  = true, -- Strength of Earth Totem Rank 4
-		[15464] = true, -- Strength of Earth Totem Rank 5
-		[15479] = true, -- Strength of Earth Totem Rank 6
-		[30647] = true, -- Strength of Earth Totem Rank 7
-		[31129] = true, -- Strength of Earth Totem Rank 8
+		-- Strength of Earth Totem
+		[5874]  = true, -- Rank 1
+		[5921]  = true, -- Rank 2
+		[5922]  = true, -- Rank 3
+		[7403]  = true, -- Rank 4
+		[15464] = true, -- Rank 5
+		[15479] = true, -- Rank 6
+		[30647] = true, -- Rank 7
+		[31129] = true, -- Rank 8
 
-		[5873]  = true, -- Stoneskin Totem Rank 1
-		[5919]  = true, -- Stoneskin Totem Rank 2
-		[5920]  = true, -- Stoneskin Totem Rank 3
-		[7366]  = true, -- Stoneskin Totem Rank 4
-		[7367]  = true, -- Stoneskin Totem Rank 5
-		[7368]  = true, -- Stoneskin Totem Rank 6
-		[15470] = true, -- Stoneskin Totem Rank 7
-		[15474] = true, -- Stoneskin Totem Rank 8
-		[31175] = true, -- Stoneskin Totem Rank 9
-		[31176] = true, -- Stoneskin Totem Rank 10
+		-- Stoneskin Totem
+		[5873]  = true, -- Rank 1
+		[5919]  = true, -- Rank 2
+		[5920]  = true, -- Rank 3
+		[7366]  = true, -- Rank 4
+		[7367]  = true, -- Rank 5
+		[7368]  = true, -- Rank 6
+		[15470] = true, -- Rank 7
+		[15474] = true, -- Rank 8
+		[31175] = true, -- Rank 9
+		[31176] = true, -- Rank 10
 
-		[17539] = true, -- Totem of Wrath Rank 1
-		[30652] = true, -- Totem of Wrath Rank 2
-		[30653] = true, -- Totem of Wrath Rank 3
-		[30654] = true, -- Totem of Wrath Rank 4
+		-- Totem of Wrath
+		[17539] = true, -- Rank 1
+		[30652] = true, -- Rank 2
+		[30653] = true, -- Rank 3
+		[30654] = true, -- Rank 4
 
-		[3579]  = true, -- Stoneclaw Totem Rank 1
-		[3911]  = true, -- Stoneclaw Totem Rank 2
-		[3912]  = true, -- Stoneclaw Totem Rank 3
-		[3913]  = true, -- Stoneclaw Totem Rank 4
-		[7398]  = true, -- Stoneclaw Totem Rank 5
-		[7399]  = true, -- Stoneclaw Totem Rank 6
-		[15478] = true, -- Stoneclaw Totem Rank 7
-		[31120] = true, -- Stoneclaw Totem Rank 8
-		[31121] = true, -- Stoneclaw Totem Rank 9
-		[31122] = true, -- Stoneclaw Totem Rank 10
+		-- Stoneclaw Totem
+		[3579]  = true, -- Rank 1
+		[3911]  = true, -- Rank 2
+		[3912]  = true, -- Rank 3
+		[3913]  = true, -- Rank 4
+		[7398]  = true, -- Rank 5
+		[7399]  = true, -- Rank 6
+		[15478] = true, -- Rank 7
+		[31120] = true, -- Rank 8
+		[31121] = true, -- Rank 9
+		[31122] = true, -- Rank 10
 
-		[5950]  = true, -- Flametongue Totem Rank 1
-		[6012]  = true, -- Flametongue Totem Rank 2
-		[7423]  = true, -- Flametongue Totem Rank 3
-		[10557] = true, -- Flametongue Totem Rank 4
-		[15485] = true, -- Flametongue Totem Rank 5
-		[31132] = true, -- Flametongue Totem Rank 6
-		[31158] = true, -- Flametongue Totem Rank 7
-		[31133] = true, -- Flametongue Totem Rank 8
-	
+		-- Flametongue Totem
+		[5950]  = true, -- Rank 1
+		[6012]  = true, -- Rank 2
+		[7423]  = true, -- Rank 3
+		[10557] = true, -- Rank 4
+		[15485] = true, -- Rank 5
+		[31132] = true, -- Rank 6
+		[31158] = true, -- Rank 7
+		[31133] = true, -- Rank 8
+
+		-- Special
 		[16486] = true, -- Web Wrap
 		[28619] = true, -- Web Wrap
 		[38028] = true, -- Web Wrap
@@ -242,7 +278,7 @@
 
 
 
-	local bosses = { -- LibBossIDs-1.0 (Author: Elsia) http://www.wowace.com/addons/libbossids-1-0
+	local isBoss = { -- LibBossIDs-1.0 (Author: Elsia) http://www.wowace.com/addons/libbossids-1-0
 
 		-- Ragefire Chasm
 		[11517] = true, -- Oggleflint
@@ -1232,14 +1268,12 @@
 			tooltipSpells = 3,
 			tooltipTargets = 3,
 			anchor = 'TOPLEFT',
-			view = 'd', fight = 1,
-			bar = {.9, .9, .9, 1},
-			border = {0, 0, 0, .8},
-			backdrop = {0, 0, 0, .8},
+			layout = 10,
+			showRank = true,
 			onlyBossSegments = false,
 			showMinimapButton = false,
 			maxBars = 10, spacing = 2, barHeight = 15,
-			shortDPS = false, shortDamage = false, showDPS = true, showRank = true, showDamage = true, showPercent = false,
+			bar = {.9, .9, .9, 1}, barbackdrop = {1, 1, 1, .05}, border = {0, 0, 0, .8}, backdrop = {0, 0, 0, .8},
 			font = {name = 'Interface\\AddOns\\TinyDPS\\Fonts\\Berlin Sans.ttf', size = 13, outline = 'Outline', shadow = 0},
 			classColor = {}
 		}
@@ -1262,10 +1296,11 @@
 
 		tdpsVersion = -1
 		tdpsPet, tdpsPlayer, tdpsLink = {}, {}, {}
-		tdpsFight = {{name = 'Overall Data', d = 0, h = 0}, {name = nil, d = 0, h = 0}}
+		tdpsFight = {{name = 'Overall Data', d = 0, h = 0}, {name = nil, boss = nil, d = 0, h = 0}}
 
 		tdpsPartySize = 0
 		tdpsSelectedFight = 1
+		tdpsSelectedView = 'd'
 		tdpsNumberOfFights = 2
 
 	end
@@ -1293,7 +1328,7 @@
 	tdpsAnchor:SetMovable(1)
 	tdpsAnchor:SetPoint('CENTER')
 	tdpsAnchor:SetFrameStrata('BACKGROUND')
-	tdpsAnchor:SetBackdrop({bgFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', edgeFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', tile = false, tileSize = 1, edgeSize = 1, insets = { left = 1, right = 1, top = 1, bottom = 1 } })
+	tdpsAnchor:SetBackdrop({bgFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', edgeFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', tile = false, tileSize = 1, edgeSize = 1, insets = {left = 1, right = 1, top = 1, bottom = 1}})
 	tdpsAnchor:SetBackdropColor(0,0,0,0)
 	tdpsAnchor:SetBackdropBorderColor(0,0,0,0)
 
@@ -1301,7 +1336,7 @@
 
 	-- main window
 	CreateFrame('Frame', 'tdpsFrame', UIParent)
-	tdpsFrame:SetWidth(tdps.width or 200)
+	tdpsFrame:SetWidth(tdps.width)
 	tdpsFrame:SetHeight(tdps.barHeight+4)
 	tdpsFrame:EnableMouse(1)
 	tdpsFrame:EnableMouseWheel(1)
@@ -1309,9 +1344,21 @@
 	tdpsFrame:SetPoint('TOPLEFT', tdpsAnchor, 'TOPLEFT')
 	tdpsFrame:SetFrameStrata('MEDIUM')
 	tdpsFrame:SetFrameLevel(1)
-	tdpsFrame:SetBackdrop({bgFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', edgeFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', tile = false, tileSize = 1, edgeSize = 1, insets = { left = 1, right = 1, top = 1, bottom = 1 } })
+	tdpsFrame:SetBackdrop({bgFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', edgeFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', tile = false, tileSize = 1, edgeSize = 1, insets = {left = 1, right = 1, top = 1, bottom = 1}})
+
+
+
+	-- main window animation
+	local tdpsAnimationGroup = tdpsFrame:CreateAnimationGroup()   
+	local tdpsAnimation = tdpsAnimationGroup:CreateAnimation('Alpha')
+	tdpsAnimation:SetChange(-1)
+	tdpsAnimation:SetDuration(.2)
+	tdpsAnimation:SetScript('OnFinished', function(self, requested) tdpsRefresh() end)
+
+
+
+	-- title font string
 	tdpsFrame:CreateFontString('noData', 'OVERLAY')
-	tdpsFrame:SetClampedToScreen(1)
 	noData:SetPoint('CENTER', tdpsFrame, 'CENTER', 0, 1)
 	noData:SetJustifyH('CENTER')
 	noData:SetFont(tdps.font.name, tdps.font.size)
@@ -1332,7 +1379,7 @@
 	tdpsResizeFrame:EnableMouse(1)
 	tdpsResizeFrame:CreateTexture('tdpsResizeTexture')
 	tdpsResizeTexture:SetTexture([[Interface\BUTTONS\UI-AutoCastableOverlay]])
-	tdpsResizeTexture:SetTexCoord(0.619, 0.760, 0.612, 0.762)
+	tdpsResizeTexture:SetTexCoord(.619, .760, .612, .762)
 	tdpsResizeTexture:SetDesaturated(1)
 	tdpsResizeTexture:SetAlpha(.2)
 	tdpsResizeTexture:ClearAllPoints()
@@ -1341,7 +1388,7 @@
 	
 
 
-	-- button frame (minimap)
+	-- minimap button frame
 	CreateFrame('Button', 'tdpsButtonFrame', Minimap)
 	tdpsButtonFrame:SetHeight(30)
 	tdpsButtonFrame:SetWidth(30)
@@ -1381,31 +1428,23 @@
 
 
 
-	-- making a local copy of global functions (faster)
-	local bitband, select = bit.band, select
+	-- local copy of global functions (faster)
+	local toNum, GetTime, select, band = tonumber, GetTime, select, bit.band
 	local floor, ceil, min, max, abs, random = math.floor, math.ceil, math.min, math.max, abs, random
-	local tsort, tremove, tinsert = table.sort, table.remove, table.insert
+	local t_sort, t_remove, t_insert = table.sort, table.remove, table.insert
 	local pairs, ipairs, CreateFrame = pairs, ipairs, CreateFrame
 	local GetNumRaidMembers, GetNumPartyMembers = GetNumRaidMembers, GetNumPartyMembers
-	local find, sub, split, lower, strrep, strlen = strfind, strsub, strsplit, strlower, strrep, strlen
+	local find, sub, split, lower, len, fmt = strfind, strsub, strsplit, strlower, strlen, string.format
 	local UnitName, UnitGUID, UnitClass = UnitName, UnitGUID, UnitClass
 	local UnitIsPlayer, UnitCanCooperate, UnitAffectingCombat = UnitIsPlayer, UnitCanCooperate, UnitAffectingCombat
 
 
 
 	-- random crap
-	local function round(num, idp) return floor(num * (10^(idp or 0)) + .5) / (10^(idp or 0)) end
-	local function echo(str) print('|cfffee00fTinyDPS |cff82e2eb' .. (str or '')) end
+	--local function round(num, idp) return floor(num * (10^(idp or 0)) + .5) / (10^(idp or 0)) end
+	local function echo(str) print('|cfffef00fTinyDPS |cff82e2eb' .. (str or '')) end
 	local function getClass(name) return select(2,UnitClass(name)) or 'UNKNOWN' end
 	local function isPvpZone() if select(2,IsInInstance()) == 'pvp' or select(2,IsInInstance()) == 'arena' then return true end end
-
-
-
-	-- text formatting functions
-	local function fmtDamage(n) if tdps.shortDamage then if n > 999999 then return round(n/1e6,1) .. 'M' elseif n > 99999 then return round(n/1e3,0) .. 'K' elseif n > 9999 then return round(n/1e3,1) .. 'K' end end return n end
-	local function fmtDps(d) if d < 100 then return round(d,1) elseif tdps.shortDPS and d > 9999 then return round(d/1000,0)..'K' elseif tdps.shortDPS and d > 999 then return round(d/1000,1)..'K' else return floor(d) end end
-	local function fmtTime(s) if s < 100 then return round(s,1) .. 's' else return floor(s) .. 's' end end
-	local function fmtPercent(p) if p < 10 then return round(p,1)..'%' else return round(p,0)..'%' end end
 
 
 
@@ -1417,17 +1456,17 @@
 		-- make table for sorting
 		local report = {}
 		for k,v in pairs(tdpsPlayer) do
-			local reportPlayer = {name = tdpsPlayer[k].name, n = tdpsPlayer[k].fight[tdpsSelectedFight][tdps.view], t = tdpsPlayer[k].fight[tdpsSelectedFight].t}
+			local reportPlayer = {name = split('-', tdpsPlayer[k].name), n = tdpsPlayer[k].fight[tdpsSelectedFight][tdpsSelectedView], t = tdpsPlayer[k].fight[tdpsSelectedFight].t}
 			local pet = tdpsPlayer[k]['pet']
 			for i=1,#pet do
 				-- add pet number
-				reportPlayer.n = reportPlayer.n + tdpsPet[pet[i]].fight[tdpsSelectedFight][tdps.view]
+				reportPlayer.n = reportPlayer.n + tdpsPet[pet[i]].fight[tdpsSelectedFight][tdpsSelectedView]
 				-- check time
 				if tdpsPet[pet[i]].fight[tdpsSelectedFight].t > reportPlayer.t then reportPlayer.t = tdpsPet[pet[i]].fight[tdpsSelectedFight].t end
 			end
-			tinsert(report, reportPlayer)
+			t_insert(report, reportPlayer)
 		end
-		tsort(report, function(x,y) return x.n > y.n end)
+		t_sort(report, function(x,y) return x.n > y.n end)
 
 		-- check if there is any data
 		if not report[1] or report[1].n == 0 then echo('No data to report') return end
@@ -1435,25 +1474,15 @@
 		-- output report title
 		local title = {d = 'Damage Done for ', h = 'Healing Done for '}
 		if tdpsSelectedFight == '2' then
-			SendChatMessage(title[tdps.view] .. 'Last Fight', channel, nil, destination)
+			SendChatMessage(title[tdpsSelectedView] .. 'Last Fight', channel, nil, destination)
 		else
-			SendChatMessage(title[tdps.view] .. tdpsFight[tdpsSelectedFight].name, channel, nil, destination)
-		end
-
-		-- try too line up text
-		local longest = 0
-		for i=1,min(#report, reportlength) do
-			if strlen(split('-', report[i].name)) > longest then longest = strlen(split('-', report[i].name)) end
-		end
-		local spaces = {}
-		for i=1,min(#report, reportlength) do
-			spaces[i] = longest - strlen(split('-', report[i].name))
+			SendChatMessage(title[tdpsSelectedView] .. tdpsFight[tdpsSelectedFight].name, channel, nil, destination)
 		end
 
 		-- output the text lines
 		for i=1,min(#report, reportlength) do
 			if report[i].n > 0 then
-				SendChatMessage(i .. '. ' .. split('-', report[i].name) .. ':   ' .. string.rep(' ', spaces[i]) .. report[i].n .. '   ' .. fmtPercent(report[i].n/tdpsFight[tdpsSelectedFight][tdps.view]*100) .. '   (' .. round(report[i].n/report[i].t,0) .. ')', channel, nil, destination)
+				SendChatMessage(fmt('%i. %s    %i    %i%%    (%i)', i, report[i].name, report[i].n, report[i].n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100, report[i].n/report[i].t), channel, nil, destination)
 			end
 		end
 
@@ -1492,36 +1521,52 @@
 
 
 
-	local function tdpsRefreshBars()
+	local fmtBar = { -- bits:   8 = dps    4 = percentage    2 = dmg    1 = short format    This means that 13 = 1101 = dps (short) and percentage
+		[0]  = function(n, t) return '' end,
+		[1]  = function(n, t) return '' end,
+		[2]  = function(n, t) return fmt('%i', n) end,
+		[3]  = function(n, t) return fmt('%.0fK', n/1000) end,
+		[4]  = function(n, t) return fmt('%i%%', n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100) end,
+		[5]  = function(n, t) return fmt('%i%%', n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100) end,
+		[6]  = function(n, t) return fmt('%i%% %i', n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100, n/t) end,
+		[7]  = function(n, t) return fmt('%i%% %.0fK', n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100, n/t/1000) end,
+		[8]  = function(n, t) return fmt('%i', n/t) end,
+		[9]  = function(n, t) return fmt('%.1fK', n/t/1000) end,
+		[10] = function(n, t) return fmt('%i %i', n, n/t) end,
+		[11] = function(n, t) return fmt('%.0fK %.1fK', n/1000, n/t/1000) end,
+		[12] = function(n, t) return fmt('%i%% %i', n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100, n/t) end,
+		[13] = function(n, t) return fmt('%i%% %.1fK', n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100, n/t/1000) end,
+		[14] = function(n, t) return fmt('%i %i%% %i', n, n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100, n/t) end,
+		[15] = function(n, t) return fmt('%.0fK %i%% %.1fK', n/1000, n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100, n/t/1000) end
+	}
+
+
+
+	function tdpsRefresh()
 
 		maxValue, barsWithValue = 0, 0
+		local n, t, h, p, g -- amount, time, height, pet, text, guid
 
-		-- fight, view, guid, number (= damage or healing), time, height, pet, text
-		local f, v, n, t, h, p, str = tdpsSelectedFight, tdps.view
-
-		-- loop all bars
+		-- update all bar values
 		for i=1,#bar do
 			bar[i]:Hide()
 			-- get numbers
-			n, t, str, p = tdpsPlayer[bar[i].guid].fight[f][v], tdpsPlayer[bar[i].guid].fight[f].t, '', tdpsPlayer[bar[i].guid].pet
-			for i=1,#p do n = n + tdpsPet[p[i]].fight[f][v] if tdpsPet[p[i]].fight[f].t > t then t = tdpsPet[p[i]].fight[f].t end end
+			g = bar[i].guid    n, t, p = tdpsPlayer[g].fight[tdpsSelectedFight][tdpsSelectedView], tdpsPlayer[g].fight[tdpsSelectedFight].t, tdpsPlayer[g].pet
+			for i=1,#p do n = n + tdpsPet[p[i]].fight[tdpsSelectedFight][tdpsSelectedView] if tdpsPet[p[i]].fight[tdpsSelectedFight].t > t then t = tdpsPet[p[i]].fight[tdpsSelectedFight].t end end
 			-- update bar values
 			if n > 0 then
 				barsWithValue = barsWithValue + 1
 				if n > maxValue then maxValue = n end
-				-- update text
-				if tdps.showDamage then str = fmtDamage(n) end
-				if tdps.showPercent then str = str .. ' ' .. fmtPercent(n/tdpsFight[f][v]*100) end
-				if tdps.showDPS then str = str .. ' ' .. fmtDps(n/t) end
-				bar[i].fontStringRight:SetText(str)
+				bar[i].fontStringRight:SetText(fmtBar[tdps.layout](n, t))
+				--setBarText[tdps.layout](i, n, t)
 			end
 			bar[i].n = n
 		end
 
-		-- sort the bars
-		tsort(bar, function(x,y) return x.n > y.n end)
+		-- sort all bars
+		t_sort(bar, function(x,y) return x.n > y.n end)
 
-		-- position the bars
+		-- layout the bars
 		px = -2
 		if tdps.maxBars == 1 then
 			for i=1,#bar do
@@ -1529,7 +1574,7 @@
 					bar[i]:SetMinMaxValues(0, maxValue)
 					bar[i]:SetValue(bar[i].n)
 					bar[i]:SetPoint('TOPLEFT', tdpsFrame, 'TOPLEFT', 2, px)
-					if tdps.showRank then bar[i].fontStringLeft:SetText(i..'. '..bar[i].name) else bar[i].fontStringLeft:SetText(bar[i].name) end
+					if tdps.showRank then bar[i].fontStringLeft:SetText(fmt('%i%s%s', i, '. ', bar[i].name)) else bar[i].fontStringLeft:SetText(bar[i].name) end
 					px = px - tdps.barHeight - tdps.spacing
 					bar[i]:Show()
 				end
@@ -1539,7 +1584,7 @@
 				bar[i]:SetMinMaxValues(0, maxValue)
 				bar[i]:SetValue(bar[i].n)
 				bar[i]:SetPoint('TOPLEFT', tdpsFrame, 'TOPLEFT', 2, px)
-				if tdps.showRank then bar[i].fontStringLeft:SetText(i..'. '..bar[i].name) else bar[i].fontStringLeft:SetText(bar[i].name) end
+				if tdps.showRank then bar[i].fontStringLeft:SetText(fmt('%i%s%s', i, '. ', bar[i].name)) else bar[i].fontStringLeft:SetText(bar[i].name) end
 				px = px - tdps.barHeight - tdps.spacing
 				bar[i]:Show()
 			end
@@ -1553,25 +1598,25 @@
 
 
 
-	local function changeView(v) tdps.view = v scrollPosition = 1 tdpsRefreshBars() end
-	local function changeFight(f) CloseDropDownMenus() tdpsSelectedFight = f scrollPosition = 1	tdpsRefreshBars() end
+	local function changeView(v) if tdpsSelectedView == v then return end tdpsSelectedView = v scrollPosition = 1 tdpsAnimationGroup:Play() end
+	local function changeFight(f) if tdpsSelectedFight == f then return end CloseDropDownMenus() tdpsSelectedFight = f scrollPosition = 1 tdpsAnimationGroup:Play() end
 
 
 
 	local function changeNumberOfFights()
 
 		-- make or delete entries for global fight data
-		while #tdpsFight > tdpsNumberOfFights do tremove(tdpsFight) end
-		while #tdpsFight < tdpsNumberOfFights do tinsert(tdpsFight, {name = nil, d = 0, h = 0}) end
+		while #tdpsFight > tdpsNumberOfFights do t_remove(tdpsFight) end
+		while #tdpsFight < tdpsNumberOfFights do t_insert(tdpsFight, {name = nil, boss = nil, d = 0, h = 0}) end
 
 		-- make or delete entries for combatants data
 		for _,v in pairs(tdpsPlayer) do
-			while #v.fight > tdpsNumberOfFights do tremove(v.fight) end
-			while #v.fight < tdpsNumberOfFights do tinsert(v.fight, {d = 0, ds = {}, h = 0, hs = {}, t = 0}) end
+			while #v.fight > tdpsNumberOfFights do t_remove(v.fight) end
+			while #v.fight < tdpsNumberOfFights do t_insert(v.fight, {d = 0, ds = {}, h = 0, hs = {}, t = 0}) end
 		end
 		for _,v in pairs(tdpsPet) do
-			while #v.fight > tdpsNumberOfFights do tremove(v.fight) end
-			while #v.fight < tdpsNumberOfFights do tinsert(v.fight, {d = 0, ds = {}, h = 0, hs = {}, t = 0}) end
+			while #v.fight > tdpsNumberOfFights do t_remove(v.fight) end
+			while #v.fight < tdpsNumberOfFights do t_insert(v.fight, {d = 0, ds = {}, h = 0, hs = {}, t = 0}) end
 		end
 
 		-- adjust the current selected fight
@@ -1585,9 +1630,9 @@
 
 
 
-	local function changeSpacing(s) if s < 0 then tdps.spacing = 0 elseif s > 10 then tdps.spacing = 10 else tdps.spacing = s end tdpsRefreshBars() end
-	local function changeMaxBars(v) tdps.maxBars = v scrollPosition = 1 tdpsRefreshBars() end
-	local function changeBarHeight(h) if h < 2 then h = 2 elseif h > 40 then h = 40 end for i=1,#bar do bar[i]:SetHeight(h) end tdps.barHeight = h tdpsRefreshBars() end
+	local function changeSpacing(s) if s < 0 then tdps.spacing = 0 elseif s > 10 then tdps.spacing = 10 else tdps.spacing = s end tdpsRefresh() end
+	local function changeMaxBars(v) tdps.maxBars = v scrollPosition = 1 tdpsRefresh() end
+	local function changeBarHeight(h) if h < 2 then h = 2 elseif h > 40 then h = 40 end for i=1,#bar do bar[i]:SetHeight(h) end tdps.barHeight = h tdpsRefresh() end
 
 
 
@@ -1609,7 +1654,7 @@
 
 
 
-	local function changeBarColors()
+	local function changeBarColor()
 		if tdps.swapColor then
 			for i=1,#bar do
 				bar[i]:SetStatusBarColor(tdps.classColor[tdpsPlayer[bar[i].guid]['class']].r, tdps.classColor[tdpsPlayer[bar[i].guid]['class']].g, tdps.classColor[tdpsPlayer[bar[i].guid]['class']].b, tdps.classColor[tdpsPlayer[bar[i].guid]['class']].a)
@@ -1627,25 +1672,35 @@
 
 
 
+	local function changeBarBackdropColor()
+		for i=1,#bar do
+			bar[i]:SetBackdropColor(tdps.barbackdrop[1], tdps.barbackdrop[2], tdps.barbackdrop[3], tdps.barbackdrop[4])
+		end
+	end
+
+
+
 	local function newFight(target)
-		tdpsInCombat = true
+
 		tdpsNewFight = false
 		if tdpsSelectedFight ~= 1 then scrollPosition = 1 end
+
 		-- inserting a new table
-		if (tdps.onlyBossSegments and foundBoss) or not tdps.onlyBossSegments then
-			tinsert(tdpsFight, 2, {name = target, d = 0, h = 0})
-			tremove(tdpsFight)
+		if tdpsFight[2].d + tdpsFight[2].h > 0 and ((tdps.onlyBossSegments and tdpsFight[2].boss) or not tdps.onlyBossSegments) then
+			t_insert(tdpsFight, 2, {name = target, boss = false, d = 0, h = 0})
+			t_remove(tdpsFight)
 			for _,v in pairs(tdpsPlayer) do
-				tinsert(v.fight, 2, {d = 0, ds = {}, h = 0, hs = {}, t = 0})
-				tremove(v.fight)
+				t_insert(v.fight, 2, {d = 0, ds = {}, h = 0, hs = {}, t = 0})
+				t_remove(v.fight)
 			end
 			for _,v in pairs(tdpsPet) do
-				tinsert(v.fight, 2, {d = 0, ds = {}, h = 0, hs = {}, t = 0})
-				tremove(v.fight)
+				t_insert(v.fight, 2, {d = 0, ds = {}, h = 0, hs = {}, t = 0})
+				t_remove(v.fight)
 			end
+
 		-- resetting current fight
 		else
-			tdpsFight[2] = {name = target, d = 0, h = 0}
+			tdpsFight[2] = {name = target, boss = false, d = 0, h = 0}
 			for _,v in pairs(tdpsPlayer) do
 				v.fight[2] = {d = 0, ds = {}, h = 0, hs = {}, t = 0}
 			end
@@ -1653,7 +1708,7 @@
 				v.fight[2] = {d = 0, ds = {}, h = 0, hs = {}, t = 0}
 			end
 		end
-		foundBoss = false
+
 	end
 
 
@@ -1695,6 +1750,9 @@
 			end
 		end
 	end
+
+
+
 	local function isPartyPet(petguid)
 		if petguid == UnitGUID('pet') then return true
 		else
@@ -1711,7 +1769,7 @@
 
 	local function toggleMinimapButton()
 		tdps.showMinimapButton = not tdps.showMinimapButton
-		if tdps.showMinimapButton then tdpsRefreshBars() tdpsButtonFrame:Show() else tdpsButtonFrame:Hide() end
+		if tdps.showMinimapButton then tdpsRefresh() tdpsButtonFrame:Show() else tdpsButtonFrame:Hide() end
 	end
 
 
@@ -1733,11 +1791,10 @@
 		-- delete data
 		tdpsPlayer, tdpsPet, tdpsLink, tdpsFight, bar = {}, {}, {}, {}, {}
 		-- make new fight data
-		tinsert(tdpsFight, {name = 'Overall Data', d = 0, h = 0})
-		while #tdpsFight < tdpsNumberOfFights do tinsert(tdpsFight, 2, {name = nil, d = 0, h = 0}) end
-		-- reset some variables
+		t_insert(tdpsFight, {name = 'Overall Data', d = 0, h = 0})
+		while #tdpsFight < tdpsNumberOfFights do t_insert(tdpsFight, 2, {name = nil, boss = false, d = 0, h = 0}) end
+		-- reset scroll position
 		scrollPosition = 1
-		foundBoss = false
 		-- return to current fight if needed
 		if tdpsSelectedFight > 2 then tdpsSelectedFight = 2 end
 		-- reset the window
@@ -1758,7 +1815,7 @@
 		elseif lower(msg) == 'healing' then changeView('h')
 		elseif msg == '' then
 			if tdpsFrame:IsVisible() then tdpsFrame:Hide()
-			else tdpsRefreshBars() tdpsFrame:Show() end
+			else tdpsRefresh() tdpsFrame:Show() end
 		end
 	end
 
@@ -1767,7 +1824,7 @@
 	local function scroll(d)
 		if bar[1] and bar[1].n > 0 and scrollPosition - d > 0 and scrollPosition - d + tdps.maxBars <= barsWithValue + 1 and tdps.maxBars > 1 then
 			scrollPosition = scrollPosition - d
-			tdpsRefreshBars()
+			tdpsRefresh()
 		end
 	end
 
@@ -1783,8 +1840,8 @@
 					{ text = 'Overall      All Fights', checked = function() if tdpsSelectedFight == 1 then return true end end, func = function() changeFight(1) end },
 					{ text = 'Current     ' .. (tdpsFight[2].name or '<Empty>'), checked = function() if tdpsSelectedFight == 2 then return true end end, func = function() changeFight(2) end },
 					{ text = '', disabled = true, notCheckable = true },
-					{ text = 'Show Damage', checked = function() if tdps.view == 'd' then return true end end, func = function() changeView('d') end },
-					{ text = 'Show Healing', checked = function() if tdps.view == 'h' then return true end end, func = function() changeView('h') end },
+					{ text = 'Show Damage', checked = function() if tdpsSelectedView == 'd' then return true end end, func = function() changeView('d') end },
+					{ text = 'Show Healing', checked = function() if tdpsSelectedView == 'h' then return true end end, func = function() changeView('h') end },
 					{ text = '', disabled = true, notCheckable = true },
 					{ text = '     Reset All Data', notCheckable = true, func = function() reset() CloseDropDownMenus() end }
 				}
@@ -1799,7 +1856,7 @@
 							{ text = 'Guild', func = function() report('GUILD', 3) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Officer', func = function() report('OFFICER', 3) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Whisper', func = function() report('WHISPER', 3, UnitName('target')) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Channel  ', notCheckable = 1, hasArrow = true, menuList = {} }
+							{ text = 'Channel    ', notCheckable = 1, hasArrow = true, menuList = {} }
 						}
 					},
 					{ text = 'Top 5', notCheckable = 1, hasArrow = true,
@@ -1810,7 +1867,7 @@
 							{ text = 'Guild', func = function() report('GUILD', 5) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Officer', func = function() report('OFFICER', 5) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Whisper', func = function() report('WHISPER', 5, UnitName('target')) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Channel  ', notCheckable = 1, hasArrow = true, menuList = {} }
+							{ text = 'Channel    ', notCheckable = 1, hasArrow = true, menuList = {} }
 						}
 					},
 					{ text = 'Top 10    ', notCheckable = 1, hasArrow = true,
@@ -1821,7 +1878,7 @@
 							{ text = 'Guild', func = function() report('GUILD', 10) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Officer', func = function() report('OFFICER', 10) CloseDropDownMenus() end, notCheckable = 1 },
 							{ text = 'Whisper', func = function() report('WHISPER', 10, UnitName('target')) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Channel  ', notCheckable = 1, hasArrow = true, menuList = {} }
+							{ text = 'Channel    ', notCheckable = 1, hasArrow = true, menuList = {} }
 						}
 					}
 				}
@@ -1846,15 +1903,14 @@
 							},
 							{ text = 'Layout', notCheckable = 1, hasArrow = true,
 								menuList = {
-									{ text = 'DPS', isNotRadio = true, func = function() tdps.showDPS = not tdps.showDPS tdpsRefreshBars() end, checked = function() return tdps.showDPS end, keepShownOnClick = 1 },
-									{ text = 'Rank', isNotRadio = true, func = function() tdps.showRank = not tdps.showRank tdpsRefreshBars() end, checked = function() return tdps.showRank end, keepShownOnClick = 1 },
-									{ text = 'Percent', isNotRadio = true, func = function() tdps.showPercent = not tdps.showPercent tdpsRefreshBars() end, checked = function() return tdps.showPercent end, keepShownOnClick = 1 },
-									{ text = 'Damage', isNotRadio = true, func = function() tdps.showDamage = not tdps.showDamage tdpsRefreshBars() end, checked = function() return tdps.showDamage end, keepShownOnClick = 1 },
-									{ text = 'Short DPS', isNotRadio = true, func = function() tdps.shortDPS = not tdps.shortDPS tdpsRefreshBars() end, checked = function() return tdps.shortDPS end, keepShownOnClick = 1 },
-									{ text = 'Short Damage', isNotRadio = true, func = function() tdps.shortDamage = not tdps.shortDamage tdpsRefreshBars() end, checked = function() return tdps.shortDamage end, keepShownOnClick = 1 }
+									{ text = 'DPS', isNotRadio = true, func = function() if band(tdps.layout,8) > 0 then tdps.layout = tdps.layout - 8 else tdps.layout = tdps.layout + 8 end tdpsRefresh() end, checked = function() if band(tdps.layout,8) > 0 then return true end end, keepShownOnClick = 1 },
+									{ text = 'Rank', isNotRadio = true, func = function() tdps.showRank = not tdps.showRank tdpsRefresh() end, checked = function() return tdps.showRank end, keepShownOnClick = 1 },
+									{ text = 'Percent', isNotRadio = true, func = function() if band(tdps.layout,4) > 0 then tdps.layout = tdps.layout - 4 else tdps.layout = tdps.layout + 4 end tdpsRefresh() end, checked = function() if band(tdps.layout,4) > 0 then return true end end, keepShownOnClick = 1 },
+									{ text = 'Amount', isNotRadio = true, func = function() if band(tdps.layout,2) > 0 then tdps.layout = tdps.layout - 2 else tdps.layout = tdps.layout + 2 end tdpsRefresh() end, checked = function() if band(tdps.layout,2) > 0 then return true end end, keepShownOnClick = 1 },
+									{ text = 'Short Format', isNotRadio = true, func = function() if band(tdps.layout,1) > 0 then tdps.layout = tdps.layout - 1 else tdps.layout = tdps.layout + 1 end tdpsRefresh() end, checked = function() if band(tdps.layout,1) > 0 then return true end end, keepShownOnClick = 1 }
 								}
 							},
-							{ text = 'Outline     ', notCheckable = 1, hasArrow = true,
+							{ text = 'Outline    ', notCheckable = 1, hasArrow = true,
 								menuList = {
 									{ text = 'None', isNotRadio = true, func = function() changeFont(tdps.font.name, tdps.font.size, '', 0) end, checked = function() if tdps.font.outline == '' and tdps.font.shadow == 0 then return true end end },
 									{ text = 'Thin', isNotRadio = true, func = function() changeFont(tdps.font.name, tdps.font.size, 'Outline', 0) end, checked = function() if tdps.font.outline == 'Outline' and tdps.font.shadow == 0 then return true end end },
@@ -1879,7 +1935,7 @@
 									{ text = 'Decrease', func = function() changeSpacing(tdps.spacing-1) end, notCheckable = 1, keepShownOnClick = 1 }
 								}
 							},
-							{ text = 'Maximum     ', notCheckable = 1, hasArrow = true,
+							{ text = 'Maximum    ', notCheckable = 1, hasArrow = true,
 								menuList = {
 									{ text = '1 (Yourself)', isNotRadio = true, func = function() changeMaxBars(1) end, checked = function() if tdps.maxBars == 1 then return true end end },
 									{ text = '5', isNotRadio = true, func = function() changeMaxBars(5) end, checked = function() if tdps.maxBars == 5 then return true end end },
@@ -1893,7 +1949,7 @@
 					},
 					{ text = 'Colors', notCheckable = 1, hasArrow = true,
 						menuList = {
-							{ text = 'Bar Color', notClickable = 1,
+							{ text = 'Bars', notClickable = 1,
 								hasColorSwatch = true,
 								swatchFunc = function()
 									ColorPickerOkayButton:Hide()
@@ -1901,19 +1957,39 @@
 									local red, green, blue = ColorPickerFrame:GetColorRGB()
 									local alpha = 1 - OpacitySliderFrame:GetValue()
 									tdps.bar[1], tdps.bar[2], tdps.bar[3], tdps.bar[4] = red, green, blue, alpha
-									changeBarColors()
+									changeBarColor()
 								end,
 								hasOpacity = true,
 								opacityFunc = function()
 									local red, green, blue = ColorPickerFrame:GetColorRGB()
 									local alpha = 1 - OpacitySliderFrame:GetValue()
 									tdps.bar[1], tdps.bar[2], tdps.bar[3], tdps.bar[4] = red, green, blue, alpha
-									changeBarColors()
+									changeBarColor()
 								end,
 								r = tdps.bar[1], g = tdps.bar[2], b = tdps.bar[3], opacity = 1 - tdps.bar[4],
 								notCheckable = 1
 							},
-							{ text = 'Border Color', notClickable = 1,
+							{ text = 'Bar Backdrop', notClickable = 1,
+								hasColorSwatch = true,
+								swatchFunc = function()
+									ColorPickerOkayButton:Hide()
+									ColorPickerCancelButton:SetText('Close')
+									local red, green, blue = ColorPickerFrame:GetColorRGB()
+									local alpha = 1 - OpacitySliderFrame:GetValue()
+									tdps.barbackdrop[1], tdps.barbackdrop[2], tdps.barbackdrop[3], tdps.barbackdrop[4] = red, green, blue, alpha
+									changeBarBackdropColor()
+								end,
+								hasOpacity = true,
+								opacityFunc = function()
+									local red, green, blue = ColorPickerFrame:GetColorRGB()
+									local alpha = 1 - OpacitySliderFrame:GetValue()
+									tdps.barbackdrop[1], tdps.barbackdrop[2], tdps.barbackdrop[3], tdps.barbackdrop[4] = red, green, blue, alpha
+									changeBarBackdropColor()
+								end,
+								r = tdps.barbackdrop[1], g = tdps.barbackdrop[2], b = tdps.barbackdrop[3], opacity = 1 - tdps.barbackdrop[4],
+								notCheckable = 1
+							},
+							{ text = 'Frame Border', notClickable = 1,
 								hasColorSwatch = true,
 								swatchFunc = function()
 									ColorPickerOkayButton:Hide()
@@ -1933,7 +2009,7 @@
 								r = tdps.border[1], g = tdps.border[2], b = tdps.border[3], opacity = 1 - tdps.border[4],
 								notCheckable = 1
 							},
-							{ text = 'Backdrop Color              ', notClickable = 1,
+							{ text = 'Frame Backdrop        ', notClickable = 1,
 								hasColorSwatch = true,
 								swatchFunc = function()
 									ColorPickerOkayButton:Hide()
@@ -1953,9 +2029,22 @@
 								r = tdps.backdrop[1], g = tdps.backdrop[2], b = tdps.backdrop[3], opacity = 1 - tdps.backdrop[4],
 								notCheckable = 1
 							},
-							{ text = 'Dim Class Colors', notCheckable = 1, func = function() for _,v in pairs(tdps.classColor) do if v.a-.1 < 0 then v.a = 0 else v.a = v.a-.1 end end changeBarColors() end, keepShownOnClick = 1 },
-							{ text = 'Reset Class Colors', notCheckable = 1, func = function() tdps.classColor = RAID_CLASS_COLORS for k,v in pairs(tdps.classColor) do v.a = 1 end tdps.classColor['UNKNOWN'] = {r = .63, g = .58, b = .24, a = 1} changeBarColors() end, keepShownOnClick = 1 },
-							{ text = 'Swap Bar/Class Color', notCheckable = 1, func = function() tdps.swapColor = not tdps.swapColor if tdps.swapColor then tdpsMenuTable[4]['menuList'][3]['menuList'][1].text = 'Text Color' else tdpsMenuTable[4]['menuList'][3]['menuList'][1].text = 'Bar Color' end changeBarColors() end },
+							{ text = 'Dim Class Colors', notCheckable = 1, func = function() for _,v in pairs(tdps.classColor) do if v.a-.1 < 0 then v.a = 0 else v.a = v.a-.1 end end changeBarColor() end, keepShownOnClick = 1 },
+							{ text = 'Reset Class Colors', notCheckable = 1, func = function() tdps.classColor = RAID_CLASS_COLORS for k,v in pairs(tdps.classColor) do v.a = 1 end tdps.classColor['UNKNOWN'] = {r = .63, g = .58, b = .24, a = 1} changeBarColor() end, keepShownOnClick = 1 },
+							{ text = 'Swap Bar/Text Color', notCheckable = 1,
+								func = function()
+									tdps.swapColor = not tdps.swapColor
+									if tdps.swapColor then
+										tdpsMenuTable[4]['menuList'][3]['menuList'][1].text = 'Text'
+										DropDownList3Button1:SetText('Text')
+									else
+										tdpsMenuTable[4]['menuList'][3]['menuList'][1].text = 'Bars'
+										DropDownList3Button1:SetText('Bars')
+									end
+									changeBarColor()
+								end,
+								keepShownOnClick = 1
+							}
 						}
 					},
 					{ text = 'History', notCheckable = 1, hasArrow = true,
@@ -1972,54 +2061,86 @@
 							{ text = 'Hide When Solo', isNotRadio = true, func = function() tdps.hideSolo = not tdps.hideSolo visibilityEvent() end, checked = function() return tdps.hideSolo end, keepShownOnClick = 1 },
 							{ text = 'Hide Out Of Combat', isNotRadio = true, func = function() tdps.hideOOC = not tdps.hideOOC visibilityEvent() end, checked = function() return tdps.hideOOC end, keepShownOnClick = 1 },
 							{ text = '', disabled = true, notCheckable = true },
-							{ text = 'Track Spells', isNotRadio = true, func = function() tdps.trackSpells = not tdps.trackSpells if not tdps.trackSpells then deleteSpellData() end end, checked = function() return tdps.trackSpells end, keepShownOnClick = 1 },
+							{ text = 'Grow Upwards', isNotRadio = true, func = function() if tdps.anchor == 'TOPLEFT' then tdps.anchor = 'BOTTOMLEFT' else tdps.anchor = 'TOPLEFT' end tdpsFrame:ClearAllPoints() tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor) end,  checked = function() if tdps.anchor == 'BOTTOMLEFT' then return true end end, keepShownOnClick = 1 },
 							{ text = 'Minimap Button', isNotRadio = true, func = function() toggleMinimapButton() end, checked = function() return tdps.showMinimapButton end, keepShownOnClick = 1 },
-							{ text = 'Anchor At Bottom', isNotRadio = true, func = function() if tdps.anchor == 'TOPLEFT' then tdps.anchor = 'BOTTOMLEFT' else tdps.anchor = 'TOPLEFT' end tdpsFrame:ClearAllPoints() tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor) end,  checked = function() if tdps.anchor == 'BOTTOMLEFT' then return true end end, keepShownOnClick = 1 },
+							{ text = 'Track Spell Details', isNotRadio = true, func = function() tdps.trackSpells = not tdps.trackSpells if not tdps.trackSpells then deleteSpellData() end end, checked = function() return tdps.trackSpells end, keepShownOnClick = 1 },
 							{ text = 'Reset On New Group', isNotRadio = true, func = function() tdps.autoReset = not tdps.autoReset end, checked = function() return tdps.autoReset end, keepShownOnClick = 1 },
 							{ text = 'Refresh Every Second', isNotRadio = true, func = function() if tdps.speed == 2 then tdps.speed = 1 else tdps.speed = 2 end end, checked = function() if tdps.speed == 1 then return true end end, keepShownOnClick = 1 },
-							{ text = 'Keep Only Boss Segments', isNotRadio = true, func = function() tdps.onlyBossSegments = not tdps.onlyBossSegments end, checked = function() return tdps.onlyBossSegments end, keepShownOnClick = 1 }
+							{ text = 'Keep Only Boss Fights', isNotRadio = true, func = function() tdps.onlyBossSegments = not tdps.onlyBossSegments end, checked = function() return tdps.onlyBossSegments end, keepShownOnClick = 1 }
 						}
 					},
-					--{ text = 'Tooltips     ', notCheckable = 1, hasArrow = true,
-					--	menuList = {
-					--		{ text = 'Visible Spells', notCheckable = 1, hasArrow = true,
-					--			menuList = {
-					--				{ text = 'More', func = function() tdps.tooltipSpells = min(10, tdps.tooltipSpells + 1) end, notCheckable = 1, keepShownOnClick = 1 },
-					--				{ text = 'Less', func = function() tdps.tooltipSpells = max(1, tdps.tooltipSpells - 1) end, notCheckable = 1, keepShownOnClick = 1 }
-					--			}
-					--		},
-					--		{ text = 'Visible Targets     ', notCheckable = 1, hasArrow = true,
-					--			menuList = {
-					--				{ text = 'More', func = function() tdps.tooltipTargets = min(10, tdps.tooltipTargets + 1) end, notCheckable = 1, keepShownOnClick = 1 },
-					--				{ text = 'Less', func = function() tdps.tooltipTargets = max(1, tdps.tooltipTargets - 1) end, notCheckable = 1, keepShownOnClick = 1 }
-					--			}
-					--		}
-					--	}
-					--}
+					{ text = 'Tooltips    ', notCheckable = 1, hasArrow = true,
+						menuList = {
+							{ text = tdps.tooltipSpells .. ' Spells', notCheckable = 1, hasArrow = true,
+								menuList = {
+									{ text = 'More',
+										func = function()
+											tdps.tooltipSpells = min(10, tdps.tooltipSpells + 1)
+											DropDownList3Button1:SetText(tdps.tooltipSpells .. ' Spells')
+											tdpsMenuTable[4]['menuList'][6]['menuList'][1].text = tdps.tooltipSpells .. ' Spells'
+										end,
+										notCheckable = 1,
+										keepShownOnClick = 1
+									},
+									{ text = 'Less',
+										func = function()
+											tdps.tooltipSpells = max(0, tdps.tooltipSpells - 1)
+											DropDownList3Button1:SetText(tdps.tooltipSpells .. ' Spells')
+											tdpsMenuTable[4]['menuList'][6]['menuList'][1].text = tdps.tooltipSpells .. ' Spells'
+										end,
+										notCheckable = 1,
+										keepShownOnClick = 1
+									}
+								}
+							},
+							{ text = tdps.tooltipTargets .. ' Targets    ', notCheckable = 1, hasArrow = true,
+								menuList = {
+									{ text = 'More',
+										func = function()
+											tdps.tooltipTargets = min(10, tdps.tooltipTargets + 1)
+											DropDownList3Button2:SetText(tdps.tooltipTargets .. ' Targets    ')
+											tdpsMenuTable[4]['menuList'][6]['menuList'][2].text = tdps.tooltipTargets .. ' Targets    '
+										end,
+										notCheckable = 1,
+										keepShownOnClick = 1
+									},
+									{ text = 'Less',
+										func = function()
+											tdps.tooltipTargets = max(0, tdps.tooltipTargets - 1)
+											DropDownList3Button2:SetText(tdps.tooltipTargets .. ' Targets    ')
+											tdpsMenuTable[4]['menuList'][6]['menuList'][2].text = tdps.tooltipTargets .. ' Targets    '
+										end,
+										notCheckable = 1,
+										keepShownOnClick = 1
+									}
+								}
+							}
+						}
+					}
 				}
 			},
 			{ text = 'Cancel', func = function() CloseDropDownMenus() end, notCheckable = 1 }
 		}
 		-- add fights to menu
 		if tdpsNumberOfFights > 2 then
-			tinsert(tdpsMenuTable[2]['menuList'], 3, { text = '', disabled = true, notCheckable = true })
+			t_insert(tdpsMenuTable[2]['menuList'], 3, { text = '', disabled = true, notCheckable = true })
 		end
 		for i=3,tdpsNumberOfFights do
-			tinsert(tdpsMenuTable[2]['menuList'], i+1, { text = 'Fight ' .. (i-2) .. '      ' .. (tdpsFight[i].name or '<Empty>'), checked = function() if tdpsSelectedFight == (i) then return true end end, func = function() changeFight(i) end })
+			t_insert(tdpsMenuTable[2]['menuList'], i+1, { text = fmt('%s %i      %s', 'Fight', i-2, (tdpsFight[i].name or '<Empty>')), checked = function() if tdpsSelectedFight == (i) then return true end end, func = function() changeFight(i) end })
 		end
 		-- add channels to menu
 		for i=1,20 do
 			if select(2,GetChannelName(i)) then
-				tinsert(tdpsMenuTable[3]['menuList'][1]['menuList'][7]['menuList'], {text = split(' ',select(2,GetChannelName(i))), func = function() report('CHANNEL', 3, i) CloseDropDownMenus() end, notCheckable = 1})
-				tinsert(tdpsMenuTable[3]['menuList'][2]['menuList'][7]['menuList'], {text = split(' ',select(2,GetChannelName(i))), func = function() report('CHANNEL', 5, i) CloseDropDownMenus() end, notCheckable = 1})
-				tinsert(tdpsMenuTable[3]['menuList'][3]['menuList'][7]['menuList'], {text = split(' ',select(2,GetChannelName(i))), func = function() report('CHANNEL', 10, i) CloseDropDownMenus() end, notCheckable = 1})
+				t_insert(tdpsMenuTable[3]['menuList'][1]['menuList'][7]['menuList'], {text = split(' ',select(2,GetChannelName(i))), func = function() report('CHANNEL', 3, i) CloseDropDownMenus() end, notCheckable = 1})
+				t_insert(tdpsMenuTable[3]['menuList'][2]['menuList'][7]['menuList'], {text = split(' ',select(2,GetChannelName(i))), func = function() report('CHANNEL', 5, i) CloseDropDownMenus() end, notCheckable = 1})
+				t_insert(tdpsMenuTable[3]['menuList'][3]['menuList'][7]['menuList'], {text = split(' ',select(2,GetChannelName(i))), func = function() report('CHANNEL', 10, i) CloseDropDownMenus() end, notCheckable = 1})
 			end
 		end
 		-- adjust text string
 		if tdps.swapColor then
-			tdpsMenuTable[4]['menuList'][3]['menuList'][1].text = 'Text Color'
+			tdpsMenuTable[4]['menuList'][3]['menuList'][1].text = 'Text'
 		else
-			tdpsMenuTable[4]['menuList'][3]['menuList'][1].text = 'Bar Color'
+			tdpsMenuTable[4]['menuList'][3]['menuList'][1].text = 'Bars'
 		end
 	end
 
@@ -2036,42 +2157,41 @@
 		dummybar:SetHeight(tdps.barHeight)
 		dummybar:Hide()
 		dummybar:SetPoint('RIGHT', tdpsFrame, 'RIGHT', -2, 0)
-		dummybar:SetBackdrop({bgFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', edgeFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', tile = false, tileSize = 1, edgeSize = 1, insets = { left = 0, right = 0, top = 0, bottom = 0}})
+		dummybar:SetBackdrop({bgFile = 'Interface\\AddOns\\TinyDPS\\Textures\\wglass.tga', edgeFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', tile = false, tileSize = 1, edgeSize = 1, insets = { left = 0, right = 0, top = 0, bottom = 0}})
 		dummybar:SetStatusBarTexture('Interface\\AddOns\\TinyDPS\\Textures\\wglass.tga')
-		dummybar:SetBackdropColor(0, 0, 0, 0)
-		dummybar:SetBackdropBorderColor(0, 0, 0, 0)
 		-- hidden info
 		dummybar.name, dummybar.guid, dummybar.n = split('-', tdpsPlayer[g]['name']), g, 0
 		-- scripts
 		dummybar:SetScript('OnEnter', function(self)
 			GameTooltip:SetOwner(dummybar)
 			GameTooltip:SetText(tdpsPlayer[g]['name'])
-			local f, v = tdpsSelectedFight, tdps.view
+			local f, v = tdpsSelectedFight, tdpsSelectedView
 			-- tooltip title
-			local title = {d = 'Damage for ', h = 'Healing for '}
-			if f == 2 then GameTooltip:AddLine(title[v] .. 'Current Fight', 1, .85, 0)
-			else GameTooltip:AddLine(title[v] .. tdpsFight[f].name, 1, .85, 0) end
+			local title = {d = 'Damage', h = 'Healing'}
+			if f == 2 then GameTooltip:AddLine(fmt('%s for %s', title[v], 'Current Fight'), 1, .85, 0)
+			else GameTooltip:AddLine(fmt('%s for %s', title[v], tdpsFight[f].name), 1, .85, 0) end
 			-- personal number
-			GameTooltip:AddDoubleLine('Personal', tdpsPlayer[self.guid].fight[f][v] .. ' (' .. fmtPercent(tdpsPlayer[self.guid].fight[f][v]/(self.n)*100) .. ')' , 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddDoubleLine('Personal', fmt('%i (%i%%)', tdpsPlayer[self.guid].fight[f][v], tdpsPlayer[self.guid].fight[f][v]/(self.n)*100), 1, 1, 1, 1, 1, 1)
 			-- pet number
 			local pet, petAmount = tdpsPlayer[g]['pet'], 0
 			for i=1,#pet do petAmount = petAmount + tdpsPet[pet[i]].fight[f][v] end
-			if petAmount > 0 then GameTooltip:AddDoubleLine('By Pet(s)', petAmount .. ' (' .. fmtPercent(petAmount/(self.n)*100) .. ')' , 1, 1, 1, 1, 1, 1) end
+			if petAmount > 0 then GameTooltip:AddDoubleLine('By Pet(s)', fmt('%i (%i%%)', petAmount, petAmount/(self.n)*100), 1, 1, 1, 1, 1, 1) end
+			-- spell details
 			if tdps.trackSpells then
 				-- merge the data of this player
 				local mergedSpells, mergedMobs = {}, {}
 				for k,v in pairs(tdpsPlayer[g].fight[f][v..'s']) do for kk,vv in pairs(v) do mergedSpells[k] = (mergedSpells[k] or 0) + vv mergedMobs[kk] = (mergedMobs[kk] or 0) + vv end end
 				for i=1,#pet do for k,v in pairs(tdpsPet[pet[i]].fight[f][v..'s']) do for kk,vv in pairs(v) do mergedSpells[k] = (mergedSpells[k] or 0) + vv mergedMobs[kk] = (mergedMobs[kk] or 0) + vv end end end
 				-- display spells
-				GameTooltip:AddLine('Top Abilities', 1, .85, 0)
+				if tdps.tooltipSpells > 0 then GameTooltip:AddLine('Top Abilities', 1, .85, 0) end
 				local top = {} for k,v in pairs(mergedSpells) do top[#(top)+1] = {k,v} end
-				tsort(top,function(x,y) return x[2] > y[2] end)
-				for i=1,tdps.tooltipSpells do if top[i] then GameTooltip:AddDoubleLine(i .. '. ' .. top[i][1], top[i][2].. ' (' .. fmtPercent(top[i][2]/(self.n)*100) .. ')', 1, 1, 1, 1, 1, 1) end end
+				t_sort(top,function(x,y) return x[2] > y[2] end)
+				for i=1,tdps.tooltipSpells do if top[i] then GameTooltip:AddDoubleLine(fmt('%i. %s', i, top[i][1]), fmt('%i (%i%%)', top[i][2], top[i][2]/(self.n)*100), 1, 1, 1, 1, 1, 1) end end
 				-- display targets
-				GameTooltip:AddLine('Top Targets', 1, .85, 0)
+				if tdps.tooltipTargets > 0 then GameTooltip:AddLine('Top Targets', 1, .85, 0) end
 				local top = {} for k,v in pairs(mergedMobs) do top[#(top)+1] = {k,v} end
-				tsort(top,function(x,y) return x[2] > y[2] end)
-				for i=1,tdps.tooltipTargets do if top[i] then GameTooltip:AddDoubleLine(i .. '. ' .. top[i][1], top[i][2].. ' (' .. fmtPercent(top[i][2]/(self.n)*100) .. ')', 1, 1, 1, 1, 1, 1) end end
+				t_sort(top,function(x,y) return x[2] > y[2] end)
+				for i=1,tdps.tooltipTargets do if top[i] then GameTooltip:AddDoubleLine(fmt('%i. %s', i, top[i][1]), fmt('%i (%i%%)', top[i][2], top[i][2]/(self.n)*100), 1, 1, 1, 1, 1, 1) end end
 			end
 			GameTooltip:Show()
 		end)
@@ -2122,8 +2242,10 @@
 			dummybar.fontStringRight:SetTextColor(classR, classG, classB, classA)
 			dummybar.fontStringLeft:SetTextColor(classR, classG, classB, classA)
 		end
+		dummybar:SetBackdropColor(tdps.barbackdrop[1], tdps.barbackdrop[2], tdps.barbackdrop[3], tdps.barbackdrop[4])
+		dummybar:SetBackdropBorderColor(0, 0, 0, 0)
 		-- save bar
-		tinsert(bar, dummybar)
+		t_insert(bar, dummybar)
 	end
 
 
@@ -2131,10 +2253,10 @@
 	local function makeCombatant(k, n, pgl, c)
 		if c == 'PET' then
 			tdpsPet[k] = {name = n, guid = pgl, class = c, stamp = 0, fight = {}}
-			while #tdpsPet[k].fight < tdpsNumberOfFights do tinsert(tdpsPet[k].fight, {d = 0, ds = {}, h = 0, hs = {}, t = 0}) end
+			while #tdpsPet[k].fight < tdpsNumberOfFights do t_insert(tdpsPet[k].fight, {d = 0, ds = {}, h = 0, hs = {}, t = 0}) end
 		else
 			tdpsPlayer[k] = {name = n, pet = pgl, class = c, stamp = 0, fight = {}}
-			while #tdpsPlayer[k].fight < tdpsNumberOfFights do tinsert(tdpsPlayer[k].fight, {d = 0, ds = {}, h = 0, hs = {}, t = 0}) end
+			while #tdpsPlayer[k].fight < tdpsNumberOfFights do t_insert(tdpsPlayer[k].fight, {d = 0, ds = {}, h = 0, hs = {}, t = 0}) end
 		end
 	end
 
@@ -2143,10 +2265,10 @@
 	local function trackSpell(amount, target, spell, dh)
 		if tdps.trackSpells then
 			local t = dh .. 's'
-			if not tmp.fight[1][t][spell] then tmp.fight[1][t][spell] = {} end -- make the spell
-			if not tmp.fight[2][t][spell] then tmp.fight[2][t][spell] = {} end
-			tmp.fight[1][t][spell][target] = (tmp.fight[1][t][spell][target] or 0) + amount -- record the amount
-			tmp.fight[2][t][spell][target] = (tmp.fight[2][t][spell][target] or 0) + amount
+			if not com.fight[1][t][spell] then com.fight[1][t][spell] = {} end -- make the spell
+			if not com.fight[2][t][spell] then com.fight[2][t][spell] = {} end
+			com.fight[1][t][spell][target] = (com.fight[1][t][spell][target] or 0) + amount -- record the amount
+			com.fight[2][t][spell][target] = (com.fight[2][t][spell][target] or 0) + amount
 		end
 	end
 
@@ -2164,20 +2286,37 @@
 	local function tdpsCombatEvent(self, event, ...)
 	
 		local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 = ...
+		
+		-- check combat when outsider starts attacking an insider
+		if isNewFightEvent[arg2] and arg5%8==0 and arg8%8~=0 then tdpsInCombat = true end
+		
+		-- boss check on kill
+		if arg2 == 'PARTY_KILL' and not tdpsFight[2].boss then tdpsFight[2].name = arg7 tdpsFight[2].boss = isBoss[toNum(arg6:sub(7, 10), 16)] end
+
+		-- absorbs
+		if arg2 == 'SPELL_AURA_APPLIED' and isAbsorb[arg9] and arg5%8~=0 and arg8%8~=0 then tdpsShield[arg3..arg9..arg6] = arg13 return end
+		if arg2 == 'SPELL_AURA_REMOVED' and isAbsorb[arg9] and arg5%8~=0 and arg8%8~=0 then tdpsShield[arg3..arg9..arg6] = nil return end
+		if arg2 == 'SPELL_AURA_REFRESH' and isAbsorb[arg9] and arg5%8~=0 and arg8%8~=0 and tdpsShield[arg3..arg9..arg6] then
+			if arg13 < tdpsShield[arg3..arg9..arg6] then
+				tdpsCombatEvent(self, event, arg1, 'SPELL_HEAL', arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, tdpsShield[arg3..arg9..arg6] - arg13, 0, 0, 0)
+			end
+			tdpsShield[arg3..arg9..arg6] = arg13 return
+		end
 
 		-- filter
-		if arg5 % 8 == 0 -- source is outsider
+		if	arg5%8 == 0 -- source is outsider
 			or not isValidEvent[arg2] -- invalid event
 			or arg3 == '0x0000000000000000' -- environmental
 			or sub(arg3,5,5) == '5' -- vehicular stuff
-			or (bitband(arg8,16) > 0 and (isSpellDamage[arg2] or arg2 == 'SWING_DAMAGE')) -- friendly fire
-			or (bitband(arg8,16) == 0 and (arg2 == 'SPELL_PERIODIC_HEAL' or arg2 == 'SPELL_HEAL')) -- hostile healing
-			or arg12 == 'EVADE' -- evaded
-		then return end
+			or (band(arg8,16) > 0 and isDamage[arg2]) -- friendly fire
+			or (band(arg8,16) == 0 and isHeal[arg2]) -- hostile healing
+			or arg12 == 'EVADE' then -- evaded
+			return
+		end
 
-		-- summon event
+		-- create summoned pets
 		if arg2 == 'SPELL_SUMMON' then
-			if UnitIsPlayer(arg4) and not isExcludedPet[tonumber(arg6:sub(7, 10), 16)] then -- add pet when player summons
+			if UnitIsPlayer(arg4) and not isExcludedPet[toNum(arg6:sub(7, 10), 16)] then -- add pet when player summons
 				-- make owner if necessary
 				if not tdpsPlayer[arg3] then
 					makeCombatant(arg3, arg4, {arg4..': '..arg7}, getClass(arg4))
@@ -2189,7 +2328,7 @@
 				if not tdpsPet[arg4..': '..arg7] then makeCombatant(arg4..': '..arg7, arg7, arg6, 'PET') end
 				-- add pet to owner if it's not there yet
 				local found = nil for i=1,#tdpsPlayer[arg3]['pet'] do if tdpsPlayer[arg3]['pet'][i] == arg4..': '..arg7 then found = true break end end
-				if not found then tinsert(tdpsPlayer[arg3]['pet'], arg4..': '..arg7) end
+				if not found then t_insert(tdpsPlayer[arg3]['pet'], arg4..': '..arg7) end
 			elseif tdpsLink[arg3] then -- the summoner is also a pet (example: totem summons greater fire elemental)
 				 -- ownername of owner
 				local oo = split(':', tdpsLink[arg3])
@@ -2200,16 +2339,16 @@
 				-- add pet to owner if it's not there yet
 				local found = nil
 				for i=1,#tdpsPlayer[UnitGUID(oo)]['pet'] do if tdpsPlayer[UnitGUID(oo)]['pet'][i] == oo..': '..arg7 then found = true break end end
-				if not found then tinsert(tdpsPlayer[UnitGUID(oo)]['pet'], oo..': '..arg7) end
-			end return
+				if not found then t_insert(tdpsPlayer[UnitGUID(oo)]['pet'], oo..': '..arg7) end
+			end
+			return
 		end
 
-		-- add player or a pet
+		-- create player or a pet
 		if not tdpsPlayer[arg3] and not tdpsLink[arg3] then
 			if UnitIsPlayer(arg4) then
 				makeCombatant(arg3, arg4, {}, getClass(arg4))
 				newBar(arg3)
-				tdpsCombatEvent(self, event, ...)
 			elseif isPartyPet(arg3) then
 				-- get owner
 				local oGuid, oName = getPetOwnerGUID(arg3), getPetOwnerName(arg3)
@@ -2227,44 +2366,46 @@
 				-- add pet to owner if it's not there yet
 				local found = nil
 				for i=1,#tdpsPlayer[oGuid]['pet'] do if tdpsPlayer[oGuid]['pet'][i] == oName..': '.. arg4 then found = true break end end
-				if not found then tinsert(tdpsPlayer[oGuid]['pet'], oName..': '.. arg4) end
-				tdpsCombatEvent(self, event, ...)
+				if not found then t_insert(tdpsPlayer[oGuid]['pet'], oName..': '.. arg4) end
+			else
+				return			
 			end
-			return
 		end
 
 		-- select combatant
-		if UnitIsPlayer(arg4) then tmp = tdpsPlayer[arg3]
-		elseif tdpsPet[tdpsLink[arg3]] then tmp = tdpsPet[tdpsLink[arg3]] end
-		if tmp == nil then return end
+		if tdpsPlayer[arg3] then com = tdpsPlayer[arg3]
+		elseif tdpsPet[tdpsLink[arg3]] then com = tdpsPet[tdpsLink[arg3]]
+		else com = nil return end
 
 		-- track numbers
 		if isMissed[arg2] then
-			if tdpsNewFight then newFight(arg7) end -- also a miss should start a new fight
-		elseif isSpellDamage[arg2] or arg2 == 'SWING_DAMAGE' then
-			if tdpsNewFight then newFight(arg7) end -- check for new fight
-			if not foundBoss then foundBoss = bosses[tonumber(arg6:sub(7, 10), 16)] tdpsFight[2].name = arg7 end -- check if we are fighting a boss
+			tdpsInCombat = true
+			if tdpsNewFight then newFight(arg7) end
+		elseif isDamage[arg2] then
+			tdpsInCombat = true
+			if tdpsNewFight then newFight(arg7) end
 			if arg2 == 'SWING_DAMAGE' then arg = arg9 trackSpell(arg, arg7, 'Melee', 'd') else arg = arg12 trackSpell(arg, arg7, arg10, 'd') end
-			tdpsFight[1].d = tdpsFight[1].d + arg
-			tdpsFight[2].d = tdpsFight[2].d + arg
-			tmp.fight[1].d = tmp.fight[1].d + arg
-			tmp.fight[2].d = tmp.fight[2].d + arg
-		elseif arg2 == 'SPELL_PERIODIC_HEAL' or arg2 == 'SPELL_HEAL' then
+			tdpsFight[1].d, tdpsFight[2].d = tdpsFight[1].d + arg, tdpsFight[2].d + arg
+			com.fight[1].d, com.fight[2].d = com.fight[1].d + arg, com.fight[2].d + arg
+		elseif isHeal[arg2] then
 			arg = arg12 - arg13 -- effective healing
-			if arg == 0 or not tdpsInCombat then return end -- stop on complete overheal or out of combat
+			if arg < 1 or not tdpsInCombat then return end -- quit on complete overheal or out of combat
+			if tdpsNewFight then newFight(arg4) end
 			trackSpell(arg, arg7, arg10, 'h')
-			tdpsFight[1].h = tdpsFight[1].h + arg
-			tdpsFight[2].h = tdpsFight[2].h + arg
-			tmp.fight[1].h = tmp.fight[1].h + arg
-			tmp.fight[2].h = tmp.fight[2].h + arg
+			tdpsFight[1].h, tdpsFight[2].h = tdpsFight[1].h + arg, tdpsFight[2].h + arg
+			com.fight[1].h, com.fight[2].h = com.fight[1].h + arg, com.fight[2].h + arg
 		end
 
 		-- add combat time
-		tmp.fight[1].t = tmp.fight[1].t + min(3.5, arg1 - tmp.stamp)
-		tmp.fight[2].t = tmp.fight[2].t + min(3.5, arg1 - tmp.stamp)
+		arg = arg1 - com.stamp
+		if arg < 3.5 then com.fight[1].t = com.fight[1].t + arg else com.fight[1].t = com.fight[1].t + 3.5 end
+		if arg < 3.5 then com.fight[2].t = com.fight[2].t + arg else com.fight[2].t = com.fight[2].t + 3.5 end
 
 		-- save time stamp
-		tmp.stamp, lastStamp = arg1, arg1
+		com.stamp, lastStamp = arg1, GetTime()
+
+		-- set onupdate
+		if not tdpsAnchor:GetScript('OnUpdate') then tdpsAnchor:SetScript('OnUpdate', tdpsOnUpdate) end
 
 	end
 
@@ -2286,14 +2427,14 @@
 	tdpsFrame:SetScript('OnEvent', function(self, event)
 
 		-- global version mismatch
-		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdps.version and '0.85' ~= tdps.version then
+		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdps.version then -- and '0.86' ~= tdps.version
 			initialiseSavedVariables()
 			echo('Global variables have been reset to version ' .. GetAddOnMetadata('TinyDPS', 'Version'))
 			tdps.version = GetAddOnMetadata('TinyDPS', 'Version') -- save new version
 		end
 
 		-- character version mismatch
-		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdpsVersion and '0.85' ~= tdpsVersion then
+		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdpsVersion then
 			initialiseSavedVariablesPerCharacter()
 			echo('Character variables have been reset to version ' .. GetAddOnMetadata('TinyDPS', 'Version'))
 			tdpsFrame:SetHeight(tdps.barHeight + 4)
@@ -2340,36 +2481,30 @@
 
 
 
-	tdpsAnchor:SetScript('OnEvent', function(self, event)
-		if event == 'PLAYER_REGEN_ENABLED' or event == 'PLAYER_REGEN_DISABLED' then
-			visibilityEvent()
-		elseif event == 'PARTY_MEMBERS_CHANGED' then
+	tdpsAnchor:SetScript('OnEvent', function(self, event, ...)
+		visibilityEvent()
+		if event == 'PARTY_MEMBERS_CHANGED' then
 			if tdps.autoReset and tdpsPartySize == 0 and max(GetNumPartyMembers(), GetNumRaidMembers()) > 0 then reset() end
 			tdpsPartySize = max(GetNumPartyMembers(), GetNumRaidMembers())
-			visibilityEvent()
-		elseif event == 'PLAYER_ENTERING_WORLD' then
-			visibilityEvent()
 		end
 	end)
 
 
 
-	local delay = -1
-	tdpsAnchor:SetScript('OnUpdate', function(self, elapsed)
-		delay = delay - elapsed
-		if delay < 0 then
-			-- check if any group member is in combat
+	local delay = 0
+	function tdpsOnUpdate(self, elapsed)
+		delay = delay + elapsed
+		if delay > tdps.speed then
 			checkCombat()
-			-- if there is no combat, the next attack will start a new fight
-			if not tdpsInCombat then tdpsNewFight = true end
-			-- initial update after the add-on is loaded
-			if delay < -1 then tdpsRefreshBars() end
-			-- check if we need to update: we don't refresh the bars if the last combat event was more than 2 seconds ago
-			if (time() - lastStamp) < 2 and tdpsFrame:IsVisible() and not isMovingOrSizing then tdpsRefreshBars() end
-			-- reset the delay
-			delay = tdps.speed
+			if not tdpsInCombat then
+				tdpsNewFight = true
+				tdpsAnchor:SetScript('OnUpdate', nil)
+			end
+			if tdpsFrame:IsVisible() and not isMovingOrSizing and not tdpsAnimationGroup:IsPlaying() then tdpsRefresh() end
+			delay = 0
 		end
-	end)
+	end
+	tdpsAnchor:SetScript('OnUpdate', tdpsOnUpdate)
 
 
 
@@ -2418,7 +2553,7 @@
 	tdpsButtonFrame:SetScript('OnMouseUp', function(self, button)
 		if button == 'LeftButton' then
 			if tdpsFrame:IsVisible() then tdpsFrame:Hide()
-			else tdpsRefreshBars() tdpsFrame:Show() end
+			else tdpsRefresh() tdpsFrame:Show() end
 			PlaySound('gsTitleOptionExit')
 		end
 	end)
@@ -2447,8 +2582,8 @@
 		GameTooltip:SetOwner(tdpsButtonFrame)
 		GameTooltip:SetText('TinyDPS')
 		if tdpsPlayer[UnitGUID('player')] then
-			GameTooltip:AddDoubleLine('Current:', tdpsPlayer[UnitGUID('player')].fight[2].d .. ' (' .. fmtDps(tdpsPlayer[UnitGUID('player')].fight[2].d / tdpsPlayer[UnitGUID('player')].fight[2].t) .. ')', 1, 1, 1, 1, 1, 1, 1)
-			GameTooltip:AddDoubleLine('Overall:', tdpsPlayer[UnitGUID('player')].fight[1].d .. ' (' .. fmtDps(tdpsPlayer[UnitGUID('player')].fight[2].d / tdpsPlayer[UnitGUID('player')].fight[2].t) .. ')', 1, 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddDoubleLine('Current:', fmt('%i %i', tdpsPlayer[UnitGUID('player')].fight[2].d, tdpsPlayer[UnitGUID('player')].fight[2].d / tdpsPlayer[UnitGUID('player')].fight[2].t), 1, 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddDoubleLine('Overall:', fmt('%i %i', tdpsPlayer[UnitGUID('player')].fight[1].d, tdpsPlayer[UnitGUID('player')].fight[1].d / tdpsPlayer[UnitGUID('player')].fight[1].t), 1, 1, 1, 1, 1, 1, 1)
 		end
 		GameTooltip:Show()
 	end)
@@ -2479,7 +2614,7 @@
 		isMovingOrSizing = nil
 		tdps.width = tdpsFrame:GetWidth()
 		for i=1,#bar do bar[i]:SetWidth(tdps.width-4) bar[i]:SetValue(0) end
-		tdpsRefreshBars()
+		tdpsRefresh()
 	end)
 
 
