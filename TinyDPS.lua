@@ -4,14 +4,19 @@
 
 	* written by Sideshow (Draenor EU)
 	* initial release: May 21th, 2010
-	* last update: October 22th, 2010
+	* last update: October 26th, 2010
 
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
+
+	Version 0.89
+	* fixed bug with frame width; this also fixes ocasionally 'empty' bars
+	* added Sacred Shield and Guarded by the Light to absorb list
+	* various tweaks
 
 	Version 0.88
-	* healing now includes (trackable) absorbs ('Power Word: Barrier' is not trackable)
+	* healing now includes (trackable) absorbs
 	* optimized cpu usage: 'OnUpdate' halted when out of combat
 	* optimized cpu usage: refreshing bar text is now much faster
 	* various other optimizations, changes and tweaks
@@ -165,7 +170,6 @@
 
 
 	local isValidEvent = {SPELL_SUMMON = true, SPELL_HEAL = true, SPELL_PERIODIC_HEAL = true, SWING_DAMAGE = true, RANGE_DAMAGE = true, SPELL_DAMAGE = true, SPELL_PERIODIC_DAMAGE = true, DAMAGE_SHIELD = true, DAMAGE_SPLIT = true, SPELL_EXTRA_ATTACKS = true, SWING_MISSED = true, RANGE_MISSED = true, SPELL_MISSED = true, SPELL_PERIODIC_MISSED = true}
-	local isNewFightEvent = {SWING_DAMAGE = true, RANGE_DAMAGE = true, SPELL_DAMAGE = true, DAMAGE_SHIELD = true, DAMAGE_SPLIT = true, SWING_MISSED = true, RANGE_MISSED = true, SPELL_MISSED = true}
 	local isMissed = {SWING_MISSED = true, RANGE_MISSED = true, SPELL_MISSED = true, SPELL_PERIODIC_MISSED = true}
 	local isHeal = {SPELL_PERIODIC_HEAL = true, SPELL_HEAL = true}
 	local isDamage = {SWING_DAMAGE = true, RANGE_DAMAGE = true, SPELL_DAMAGE = true, SPELL_PERIODIC_DAMAGE = true, DAMAGE_SHIELD = true, DAMAGE_SPLIT = true}
@@ -176,14 +180,22 @@
 
 		-- Priest
 		[17]    = true, -- Power Word: Shield
-		--[62618] = true, -- Power Word: Barrier NOT TRACKABLE
 		[47753] = true, -- Divine Aegis
+		--[62618] = true, -- Power Word: Barrier NOT TRACKABLE
 
 		-- Paladin
-		[86273] = true, -- Illuminated Healing TRACKABLE ?
+		[86273] = true, -- Illuminated Healing
+		[58597] = true, -- Sacred Shield
+		[88063] = true, -- Guarded by the Light
 
 		-- Death Knight
-		[77535] = true, -- Blood Shield  TRACKABLE ?
+		--[77535] = true, -- Blood Shield NOT TRACKABLE
+
+		-- Mage
+		--[] = true, -- Ice Barrier
+		--[] = true, -- Frost Ward
+		--[] = true, -- Mana Shield
+		--[] = true, -- Fire Ward
 
 	}
 
@@ -1336,7 +1348,7 @@
 
 	-- main window
 	CreateFrame('Frame', 'tdpsFrame', UIParent)
-	tdpsFrame:SetWidth(tdps.width)
+	tdpsFrame:SetWidth(190)
 	tdpsFrame:SetHeight(tdps.barHeight+4)
 	tdpsFrame:EnableMouse(1)
 	tdpsFrame:EnableMouseWheel(1)
@@ -1440,7 +1452,7 @@
 
 
 
-	-- random crap
+	-- random
 	--local function round(num, idp) return floor(num * (10^(idp or 0)) + .5) / (10^(idp or 0)) end
 	local function echo(str) print('|cfffef00fTinyDPS |cff82e2eb' .. (str or '')) end
 	local function getClass(name) return select(2,UnitClass(name)) or 'UNKNOWN' end
@@ -1521,7 +1533,7 @@
 
 
 
-	local fmtBar = { -- bits:   8 = dps    4 = percentage    2 = dmg    1 = short format    This means that 13 = 1101 = dps (short) and percentage
+	local textLayout = { -- bits: 8 = dps, 4 = percentage, 2 = dmg, 1 = short format. Example: 13 -> 1101 -> dps (short) and percentage
 		[0]  = function(n, t) return '' end,
 		[1]  = function(n, t) return '' end,
 		[2]  = function(n, t) return fmt('%i', n) end,
@@ -1557,8 +1569,7 @@
 			if n > 0 then
 				barsWithValue = barsWithValue + 1
 				if n > maxValue then maxValue = n end
-				bar[i].fontStringRight:SetText(fmtBar[tdps.layout](n, t))
-				--setBarText[tdps.layout](i, n, t)
+				bar[i].fontStringRight:SetText(textLayout[tdps.layout](n, t))
 			end
 			bar[i].n = n
 		end
@@ -1680,14 +1691,14 @@
 
 
 
-	local function newFight(target)
+	local function startNewFight(target, mobid)
 
-		tdpsNewFight = false
+		tdpsStartNewFight = false
 		if tdpsSelectedFight ~= 1 then scrollPosition = 1 end
 
 		-- inserting a new table
 		if tdpsFight[2].d + tdpsFight[2].h > 0 and ((tdps.onlyBossSegments and tdpsFight[2].boss) or not tdps.onlyBossSegments) then
-			t_insert(tdpsFight, 2, {name = target, boss = false, d = 0, h = 0})
+			t_insert(tdpsFight, 2, {name = target, boss = isBoss[toNum((mobid or '00000000000000'):sub(7, 10), 16)], d = 0, h = 0})
 			t_remove(tdpsFight)
 			for _,v in pairs(tdpsPlayer) do
 				t_insert(v.fight, 2, {d = 0, ds = {}, h = 0, hs = {}, t = 0})
@@ -1700,7 +1711,7 @@
 
 		-- resetting current fight
 		else
-			tdpsFight[2] = {name = target, boss = false, d = 0, h = 0}
+			tdpsFight[2] = {name = target, boss = isBoss[toNum((mobid or '00000000000000'):sub(7, 10), 16)], d = 0, h = 0}
 			for _,v in pairs(tdpsPlayer) do
 				v.fight[2] = {d = 0, ds = {}, h = 0, hs = {}, t = 0}
 			end
@@ -1714,13 +1725,13 @@
 
 
 	local function checkCombat()
-		if tdpsNewFight then return end
+		if tdpsStartNewFight then return end
 		if UnitAffectingCombat('player') or UnitAffectingCombat('pet') then tdpsInCombat = true return end
 		for i=1,GetNumRaidMembers() do
-			if UnitAffectingCombat('raid'..i) or UnitAffectingCombat('raidpet'..i) then tdpsInCombat = true return end
+			if UnitAffectingCombat(fmt('raid%i', i)) or UnitAffectingCombat(fmt('raidpet%i', i)) then tdpsInCombat = true return end
 		end
 		for i=1,GetNumPartyMembers() do
-			if UnitAffectingCombat('party'..i) or UnitAffectingCombat('partypet'..i) then tdpsInCombat = true return end
+			if UnitAffectingCombat(fmt('party%i', i)) or UnitAffectingCombat(fmt('partypet%i', i)) then tdpsInCombat = true return end
 		end
 		tdpsInCombat = false
 	end
@@ -1732,10 +1743,10 @@
 		if petguid == UnitGUID('pet') then n, s = UnitName('player') if s then return n..'-'..s else return n end
 		else
 			for i=1,GetNumRaidMembers() do
-				if petguid == UnitGUID('raidpet'..i) then n, s = UnitName('raid'..i) if s then return n..'-'..s else return n end end
+				if petguid == UnitGUID(fmt('raidpet%i', i)) then n, s = UnitName(fmt('raid%i', i)) if s then return n..'-'..s else return n end end
 			end
 			for i=1,GetNumPartyMembers() do
-				if petguid == UnitGUID('partypet'..i) then n, s = UnitName('party'..i) if s then return n..'-'..s else return n end end
+				if petguid == UnitGUID(fmt('partypet%i', i)) then n, s = UnitName(fmt('party%i', i)) if s then return n..'-'..s else return n end end
 			end
 		end
 	end
@@ -1743,10 +1754,10 @@
 		if petguid == UnitGUID('pet') then return UnitGUID('player')
 		else
 			for i=1,GetNumRaidMembers() do
-				if petguid == UnitGUID('raidpet'..i) then return UnitGUID('raid'..i) end
+				if petguid == UnitGUID(fmt('raidpet%i', i)) then return UnitGUID(fmt('raid%i', i)) end
 			end
 			for i=1,GetNumPartyMembers() do
-				if petguid == UnitGUID('partypet'..i) then return UnitGUID('party'..i) end
+				if petguid == UnitGUID(fmt('partypet%i', i)) then return UnitGUID(fmt('party%i', i)) end
 			end
 		end
 	end
@@ -1757,10 +1768,10 @@
 		if petguid == UnitGUID('pet') then return true
 		else
 			for i=1,GetNumRaidMembers() do
-				if petguid == UnitGUID('raidpet'..i) then return true end
+				if petguid == UnitGUID(fmt('raidpet%i', i)) then return true end
 			end
 			for i=1,GetNumPartyMembers() do
-				if petguid == UnitGUID('partypet'..i) then return true end
+				if petguid == UnitGUID(fmt('partypet%i', i)) then return true end
 			end
 		end
 	end
@@ -1907,7 +1918,7 @@
 									{ text = 'Rank', isNotRadio = true, func = function() tdps.showRank = not tdps.showRank tdpsRefresh() end, checked = function() return tdps.showRank end, keepShownOnClick = 1 },
 									{ text = 'Percent', isNotRadio = true, func = function() if band(tdps.layout,4) > 0 then tdps.layout = tdps.layout - 4 else tdps.layout = tdps.layout + 4 end tdpsRefresh() end, checked = function() if band(tdps.layout,4) > 0 then return true end end, keepShownOnClick = 1 },
 									{ text = 'Amount', isNotRadio = true, func = function() if band(tdps.layout,2) > 0 then tdps.layout = tdps.layout - 2 else tdps.layout = tdps.layout + 2 end tdpsRefresh() end, checked = function() if band(tdps.layout,2) > 0 then return true end end, keepShownOnClick = 1 },
-									{ text = 'Short Format', isNotRadio = true, func = function() if band(tdps.layout,1) > 0 then tdps.layout = tdps.layout - 1 else tdps.layout = tdps.layout + 1 end tdpsRefresh() end, checked = function() if band(tdps.layout,1) > 0 then return true end end, keepShownOnClick = 1 }
+									{ text = 'Short Format', isNotRadio = true, func = function() if band(tdps.layout,1) > 0 then tdps.layout = tdps.layout - 1 else tdps.layout = tdps.layout + 1 end textLayout = textLayouts[tdps.layout] tdpsRefresh() end, checked = function() if band(tdps.layout,1) > 0 then return true end end, keepShownOnClick = 1 }
 								}
 							},
 							{ text = 'Outline    ', notCheckable = 1, hasArrow = true,
@@ -2153,7 +2164,7 @@
 		dummybar:SetOrientation('HORIZONTAL')
 		dummybar:EnableMouse(1)
 		dummybar:EnableMouseWheel(1)
-		dummybar:SetWidth((tdps.width or 200) - 4)
+		dummybar:SetWidth(tdpsFrame:GetWidth() - 4)
 		dummybar:SetHeight(tdps.barHeight)
 		dummybar:Hide()
 		dummybar:SetPoint('RIGHT', tdpsFrame, 'RIGHT', -2, 0)
@@ -2257,6 +2268,7 @@
 		else
 			tdpsPlayer[k] = {name = n, pet = pgl, class = c, stamp = 0, fight = {}}
 			while #tdpsPlayer[k].fight < tdpsNumberOfFights do t_insert(tdpsPlayer[k].fight, {d = 0, ds = {}, h = 0, hs = {}, t = 0}) end
+			newBar(k)
 		end
 	end
 
@@ -2284,35 +2296,22 @@
 
 
 	local function tdpsCombatEvent(self, event, ...)
-	
+
 		local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 = ...
-		
-		-- check combat when outsider starts attacking an insider
-		if isNewFightEvent[arg2] and arg5%8==0 and arg8%8~=0 then tdpsInCombat = true end
-		
-		-- boss check on kill
-		if arg2 == 'PARTY_KILL' and not tdpsFight[2].boss then tdpsFight[2].name = arg7 tdpsFight[2].boss = isBoss[toNum(arg6:sub(7, 10), 16)] end
 
-		-- absorbs
-		if arg2 == 'SPELL_AURA_APPLIED' and isAbsorb[arg9] and arg5%8~=0 and arg8%8~=0 then tdpsShield[arg3..arg9..arg6] = arg13 return end
-		if arg2 == 'SPELL_AURA_REMOVED' and isAbsorb[arg9] and arg5%8~=0 and arg8%8~=0 then tdpsShield[arg3..arg9..arg6] = nil return end
-		if arg2 == 'SPELL_AURA_REFRESH' and isAbsorb[arg9] and arg5%8~=0 and arg8%8~=0 and tdpsShield[arg3..arg9..arg6] then
-			if arg13 < tdpsShield[arg3..arg9..arg6] then
-				tdpsCombatEvent(self, event, arg1, 'SPELL_HEAL', arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, tdpsShield[arg3..arg9..arg6] - arg13, 0, 0, 0)
-			end
-			tdpsShield[arg3..arg9..arg6] = arg13 return
-		end
-
-		-- filter
-		if	arg5%8 == 0 -- source is outsider
-			or not isValidEvent[arg2] -- invalid event
-			or arg3 == '0x0000000000000000' -- environmental
-			or sub(arg3,5,5) == '5' -- vehicular stuff
-			or (band(arg8,16) > 0 and isDamage[arg2]) -- friendly fire
-			or (band(arg8,16) == 0 and isHeal[arg2]) -- hostile healing
-			or arg12 == 'EVADE' then -- evaded
+		-- track absorbs or do fake healing event
+		if arg2 == 'SPELL_AURA_APPLIED' and arg8%8>0 and isAbsorb[arg9] then tdpsShield[arg3..arg9..arg6] = arg13 return
+		elseif arg2 == 'SPELL_AURA_REMOVED' and arg8%8>0 and isAbsorb[arg9] then tdpsShield[arg3..arg9..arg6] = nil return
+		elseif arg2 == 'SPELL_AURA_REFRESH' and arg8%8>0 and isAbsorb[arg9] and tdpsShield[arg3..arg9..arg6] then
+			tdpsInCombat = true
+			if arg13 < tdpsShield[arg3..arg9..arg6] then tdpsCombatEvent(self, event, arg1, 'SPELL_HEAL', arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, tdpsShield[arg3..arg9..arg6] - arg13, 0, 0, 0) end
+			tdpsShield[arg3..arg9..arg6] = arg13
 			return
 		end
+
+		-- filter: outsider, invalid event, environmental, vehicle, friendly fire, hostile healing, evaded
+		if arg5%8==0 then return end
+		if not isValidEvent[arg2] or arg3 == '0x0000000000000000' or sub(arg3,5,5) == '5' or (band(arg8,16) > 0 and isDamage[arg2]) or (band(arg8,16) == 0 and isHeal[arg2]) or arg12 == 'EVADE' then return end
 
 		-- create summoned pets
 		if arg2 == 'SPELL_SUMMON' then
@@ -2320,7 +2319,6 @@
 				-- make owner if necessary
 				if not tdpsPlayer[arg3] then
 					makeCombatant(arg3, arg4, {arg4..': '..arg7}, getClass(arg4))
-					newBar(arg3)
 				end
 				-- make pointer
 				tdpsLink[arg6] = arg4..': '..arg7
@@ -2344,53 +2342,51 @@
 			return
 		end
 
-		-- create player or a pet
-		if not tdpsPlayer[arg3] and not tdpsLink[arg3] then
-			if UnitIsPlayer(arg4) then
-				makeCombatant(arg3, arg4, {}, getClass(arg4))
-				newBar(arg3)
-			elseif isPartyPet(arg3) then
-				-- get owner
-				local oGuid, oName = getPetOwnerGUID(arg3), getPetOwnerName(arg3)
-				-- make owner if it does not exist yet
-				if not tdpsPlayer[oGuid] then
-					makeCombatant(oGuid, oName, {oName..': '..arg4}, getClass(oName))
-					newBar(oGuid)
-				end
-				-- make pointer
-				tdpsLink[arg3] = oName .. ': ' .. arg4
-				-- make pet if it does not exist yet
-				if not tdpsPet[oName..': '..arg4] then
-					makeCombatant(oName..': '..arg4, arg4, arg3, 'PET')
-				end
-				-- add pet to owner if it's not there yet
-				local found = nil
-				for i=1,#tdpsPlayer[oGuid]['pet'] do if tdpsPlayer[oGuid]['pet'][i] == oName..': '.. arg4 then found = true break end end
-				if not found then t_insert(tdpsPlayer[oGuid]['pet'], oName..': '.. arg4) end
-			else
-				return			
-			end
-		end
-
-		-- select combatant
+		-- select or create combatant
 		if tdpsPlayer[arg3] then com = tdpsPlayer[arg3]
 		elseif tdpsPet[tdpsLink[arg3]] then com = tdpsPet[tdpsLink[arg3]]
-		else com = nil return end
+		elseif UnitIsPlayer(arg4) then
+			makeCombatant(arg3, arg4, {}, getClass(arg4))
+			tdpsCombatEvent(self, event, ...)
+			return
+		elseif isPartyPet(arg3) then
+			-- get owner
+			local oGuid, oName = getPetOwnerGUID(arg3), getPetOwnerName(arg3)
+			-- make owner if it does not exist yet
+			if not tdpsPlayer[oGuid] then
+				makeCombatant(oGuid, oName, {oName..': '..arg4}, getClass(oName))
+			end
+			-- make pointer
+			tdpsLink[arg3] = oName .. ': ' .. arg4
+			-- make pet if it does not exist yet
+			if not tdpsPet[oName..': '..arg4] then
+				makeCombatant(oName..': '..arg4, arg4, arg3, 'PET')
+			end
+			-- add pet to owner if it's not there yet
+			local found = nil
+			for i=1,#tdpsPlayer[oGuid]['pet'] do if tdpsPlayer[oGuid]['pet'][i] == oName..': '.. arg4 then found = true break end end
+			if not found then t_insert(tdpsPlayer[oGuid]['pet'], oName..': '.. arg4) end
+			-- event
+			tdpsCombatEvent(self, event, ...)
+			return
+		else
+			return
+		end
 
 		-- track numbers
 		if isMissed[arg2] then
 			tdpsInCombat = true
-			if tdpsNewFight then newFight(arg7) end
+			if tdpsStartNewFight then startNewFight(arg7, arg6) end
 		elseif isDamage[arg2] then
 			tdpsInCombat = true
-			if tdpsNewFight then newFight(arg7) end
+			if tdpsStartNewFight then startNewFight(arg7, arg6) end
 			if arg2 == 'SWING_DAMAGE' then arg = arg9 trackSpell(arg, arg7, 'Melee', 'd') else arg = arg12 trackSpell(arg, arg7, arg10, 'd') end
 			tdpsFight[1].d, tdpsFight[2].d = tdpsFight[1].d + arg, tdpsFight[2].d + arg
 			com.fight[1].d, com.fight[2].d = com.fight[1].d + arg, com.fight[2].d + arg
 		elseif isHeal[arg2] then
 			arg = arg12 - arg13 -- effective healing
 			if arg < 1 or not tdpsInCombat then return end -- quit on complete overheal or out of combat
-			if tdpsNewFight then newFight(arg4) end
+			if tdpsStartNewFight then startNewFight(arg4) end
 			trackSpell(arg, arg7, arg10, 'h')
 			tdpsFight[1].h, tdpsFight[2].h = tdpsFight[1].h + arg, tdpsFight[2].h + arg
 			com.fight[1].h, com.fight[2].h = com.fight[1].h + arg, com.fight[2].h + arg
@@ -2427,19 +2423,21 @@
 	tdpsFrame:SetScript('OnEvent', function(self, event)
 
 		-- global version mismatch
-		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdps.version then -- and '0.86' ~= tdps.version
+		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdps.version and '0.88' ~= tdps.version then
 			initialiseSavedVariables()
 			echo('Global variables have been reset to version ' .. GetAddOnMetadata('TinyDPS', 'Version'))
-			tdps.version = GetAddOnMetadata('TinyDPS', 'Version') -- save new version
 		end
 
 		-- character version mismatch
-		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdpsVersion then
+		if GetAddOnMetadata('TinyDPS', 'Version') ~= tdpsVersion and '0.88' ~= tdpsVersion then
 			initialiseSavedVariablesPerCharacter()
 			echo('Character variables have been reset to version ' .. GetAddOnMetadata('TinyDPS', 'Version'))
 			tdpsFrame:SetHeight(tdps.barHeight + 4)
-			tdpsVersion = GetAddOnMetadata('TinyDPS', 'Version') -- save new version
 		end
+		
+		-- save current version
+		tdps.version = GetAddOnMetadata('TinyDPS', 'Version')
+		tdpsVersion = GetAddOnMetadata('TinyDPS', 'Version')
 
 		-- set position of anchor
 		if tdpsAnchorPosition then
@@ -2447,7 +2445,10 @@
 			tdpsAnchor:SetPoint(tdpsAnchorPosition[1], tdpsAnchorPosition[2], tdpsAnchorPosition[3], tdpsAnchorPosition[4], tdpsAnchorPosition[5])
 		end
 
-		-- remake bars if any
+		-- set width (this will only work if the layout is gone for some reason in layout-local.txt because layout-local is used later than addon_loaded)
+		tdpsFrame:SetWidth(tdps.width)
+
+		-- make bars if any
 		for k,_ in pairs(tdpsPlayer) do newBar(k) end
 
 		-- set font and colors
@@ -2491,13 +2492,13 @@
 
 
 
-	local delay = 0
+	local delay = 2
 	function tdpsOnUpdate(self, elapsed)
 		delay = delay + elapsed
 		if delay > tdps.speed then
 			checkCombat()
 			if not tdpsInCombat then
-				tdpsNewFight = true
+				tdpsStartNewFight = true
 				tdpsAnchor:SetScript('OnUpdate', nil)
 			end
 			if tdpsFrame:IsVisible() and not isMovingOrSizing and not tdpsAnimationGroup:IsPlaying() then tdpsRefresh() end
@@ -2613,7 +2614,7 @@
 		tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor)
 		isMovingOrSizing = nil
 		tdps.width = tdpsFrame:GetWidth()
-		for i=1,#bar do bar[i]:SetWidth(tdps.width-4) bar[i]:SetValue(0) end
+		for i=1,#bar do bar[i]:SetWidth(tdpsFrame:GetWidth() - 4) bar[i]:SetValue(0) end
 		tdpsRefresh()
 	end)
 
