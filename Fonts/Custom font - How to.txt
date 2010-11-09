@@ -1,0 +1,3 @@
+
+	- Drop your font into this folder
+	- Open 'AddOns\TinyDPS\TinyDPS.lua' and edit line 2319: remove the '--' and edit the three 'custom' strings)

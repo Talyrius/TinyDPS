@@ -4,11 +4,21 @@
 
 	* written by: Sideshow, Draenor EU
 	* initial release: May 21th, 2010
-	* last updated: October 29th, 2010
+	* last updated: November 9th, 2010
 
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
+
+	Version 0.91
+	* tweaked short number format
+	* updated bossIds (author: elsia)
+	* dropdownmenu creates much less garbage memory
+	* tooltips do not create garbage memory anymore
+	* text on statusbars has been lowered by 1 pixel
+	* fixed absorbs (spell_aura_removed) and updated id's
+	* excluded fonts due to licenses, added default system fonts
+	* added koKR localization (thanks to eastkiki for help and testing)
 
 	Version 0.90
 	* fixed bug with 'Hide When Solo'
@@ -155,7 +165,218 @@
 	* code optimization
 
 	Version 0.37 BETA
-	* initial public release
+	* initial public release]]
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+--- localization ----------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+	local tdpsL = {}
+	if GetLocale() == 'koKR' then
+
+		tdpsL.fight = '전투'
+		tdpsL.allFight = '전체     모든 전투'
+		tdpsL.currentFight = '현재 '
+		tdpsL.resetAllData = '초기화'
+		tdpsL.showDamage = '데미지 보기'
+		tdpsL.showHealing = '힐량 보기'
+
+		tdpsL.report = '보고'
+		tdpsL.top3 = '상위 3'
+		tdpsL.top5 = '상위 5'
+		tdpsL.top10 = '상위 10'
+		tdpsL.say = '일반'
+		tdpsL.raid = '공격대'
+		tdpsL.party = '파티'
+		tdpsL.guild = '길드'
+		tdpsL.officer = '지휘관'
+		tdpsL.whisper = '귓속말'
+		tdpsL.channel = '채널'
+
+		tdpsL.options = '설정'
+		tdpsL.text = '문자'
+		tdpsL.size = '크기'
+		tdpsL.increase = '증가'
+		tdpsL.decrease = '감소'
+		tdpsL.font = '글꼴'
+		tdpsL.layout = '표시'
+		tdpsL.outline = '외곽선'
+
+		tdpsL.visitor = '기본 글꼴'
+		tdpsL.dps = 'DPS'
+		tdpsL.rank = '순위'
+		tdpsL.percent = '퍼센트'
+		tdpsL.amount = '데미지'
+		tdpsL.short = '요약'
+		tdpsL.none = '없음'
+		tdpsL.thin = '얇게'
+		tdpsL.thick = '굵게'
+		tdpsL.shadow = '그림자'
+		tdpsL.mono = '단색'
+		
+		tdpsL.bars = '바'
+		tdpsL.height = '높이'
+		tdpsL.spacing = '간격'
+		tdpsL.maximum = '줄'
+		tdpsL.oneYourself = '1 (당신)'
+		tdpsL.five = '5'
+		tdpsL.ten = '10'
+		tdpsL.fifteen = '15'
+		tdpsL.twenty = '20'
+		tdpsL.unlimited = '? (무제한)'
+
+		tdpsL.colors = '색상'
+		tdpsL.barBackdrop = '바 색상'
+		tdpsL.frameBorder = '테두리 색상'
+		tdpsL.frameBackdrop = '배경 색상'
+		tdpsL.dimClassColors = '직업 색상 어둡게'
+		tdpsL.resetClassColors = '직업 색상 초기화'
+		tdpsL.swapBarTextColor = '직업 색상으로 표시'
+		
+		tdpsL.history = '기록수'
+		tdpsL.disabled = '없음'
+		tdpsL.threeFights = '3 전투'
+		tdpsL.fiveFights = '5 전투'
+		tdpsL.nineFights = '9 전투'
+
+		tdpsL.toggles = '전환'
+		tdpsL.hideInPvP = '전장/투기장에서 숨김'
+		tdpsL.hideWhenSolo = '솔로잉시 숨김'
+		tdpsL.hideOutOfCombat = '비전투시 숨김'
+		tdpsL.growUpwards = '하단을 기준으로'
+		tdpsL.minimapButton = '미니맵 버튼 보기'
+		tdpsL.trackSpellDetails = '툴팁에 기술/대상 보기'
+		tdpsL.resetOnNewGroup = '새 그룹시 자동삭제'
+		tdpsL.refreshEverySecond = '매시간 초기화'
+		tdpsL.keepOnlyBossFights = '보스만 세분화 유지'
+
+		tdpsL.tooltips = '툴팁'
+		tdpsL.spells = ' 기술'
+		tdpsL.targets = ' 타겟'
+		tdpsL.more = '증가'
+		tdpsL.less = '감소'
+
+		tdpsL.close = '취소'
+		tdpsL.empty = '<없음>'
+
+		tdpsL.helpVersion = '버젼'
+		tdpsL.helpMove = '- 이동: 쉬프트를 누른채로 마우스 드래그'
+		tdpsL.helpResize = '- 사이즈조절: 우측하단 모서리를 드래그'
+		tdpsL.helpCommand = '- 명령: /tdps 입력시 프레임 숨김/보기'
+		tdpsL.helpParameters = '- 추가옵션: /tpds reset | damage | healing'
+
+		tdpsL.allClear = '모든 데이터 초기화'
+		tdpsL.personal = '자신'
+		tdpsL.topAbilities = '상위 기술'
+		tdpsL.topTargets = '상위 대상'
+
+	else
+
+		tdpsL.fight = 'Fight'
+		tdpsL.allFight = 'Overall     All Fights'
+		tdpsL.currentFight = 'Current'
+		tdpsL.resetAllData = 'Reset All Data'
+		tdpsL.showDamage = 'Show Damage'
+		tdpsL.showHealing = 'Show Healing'	
+
+		tdpsL.report = 'Report'
+		tdpsL.top3 = 'Top 3'
+		tdpsL.top5 = 'Top 5'
+		tdpsL.top10 = 'Top 10'
+		tdpsL.say = 'Say'
+		tdpsL.raid = 'Raid'
+		tdpsL.party = 'Party'
+		tdpsL.guild = 'Guild'
+		tdpsL.officer = 'Officer'
+		tdpsL.whisper = 'Whisper'
+		tdpsL.channel = 'Channel'
+
+		tdpsL.options = 'Options'
+		tdpsL.text = 'Text'
+		tdpsL.size = 'Size'
+		tdpsL.increase = 'Increase'
+		tdpsL.decrease = 'Decrease'
+		tdpsL.font = 'Font'
+		tdpsL.layout = 'Layout'
+		tdpsL.outline = 'Outline'
+
+		tdpsL.dps = 'DPS'
+		tdpsL.rank = 'Rank'
+		tdpsL.percent = 'Percent'
+		tdpsL.amount = 'Amount'
+		tdpsL.short = 'Short Format'
+		tdpsL.none = 'None'
+		tdpsL.thin = 'Thin'
+		tdpsL.thick = 'Thick'
+		tdpsL.shadow = 'Shadow'
+		tdpsL.mono = 'Monochrome'
+		
+		tdpsL.bars = 'Bars'
+		tdpsL.height = 'Height'
+		tdpsL.spacing = 'Spacing'
+		tdpsL.maximum = 'Maximum'
+		tdpsL.oneYourself = '1 (Yourself)'
+		tdpsL.five = '5'
+		tdpsL.ten = '10'
+		tdpsL.fifteen = '15'
+		tdpsL.twenty = '20'
+		tdpsL.unlimited = '? (Unlimited)'
+
+		tdpsL.colors = 'Colors'
+		tdpsL.barBackdrop = 'Bar Backdrop'
+		tdpsL.frameBorder = 'Frame Border'
+		tdpsL.frameBackdrop = 'Frame Backdrop'
+		tdpsL.dimClassColors = 'Dim Class Colors'
+		tdpsL.resetClassColors = 'Reset Class Colors'
+		tdpsL.swapBarTextColor = 'Swap Bar/Text Color'
+		
+		tdpsL.history = 'History'
+		tdpsL.disabled = 'Disabled'
+		tdpsL.threeFights = '3 Fights'
+		tdpsL.fiveFights = '5 Fights'
+		tdpsL.nineFights = '9 Fights'
+
+		tdpsL.toggles = 'Toggles'
+		tdpsL.hideInPvP = 'Hide In PvP'
+		tdpsL.hideWhenSolo = 'Hide When Solo'
+		tdpsL.hideOutOfCombat = 'Hide Out Of Combat'
+		tdpsL.growUpwards = 'Grow Upwards'
+		tdpsL.minimapButton = 'Minimap Button'
+		tdpsL.trackSpellDetails = 'Track Spell Details'
+		tdpsL.resetOnNewGroup = 'Reset On New Group'
+		tdpsL.refreshEverySecond = 'Refresh Every Second'
+		tdpsL.keepOnlyBossFights = 'Keep Only Boss Fights'
+
+		tdpsL.tooltips = 'Tooltips'
+		tdpsL.spells = 'Spells'
+		tdpsL.targets = 'Targets'
+		tdpsL.more = 'More'
+		tdpsL.less = 'Less'
+
+		tdpsL.close = 'Cancel'
+		tdpsL.empty = '<Empty>'
+
+		tdpsL.helpVersion = 'Version'
+		tdpsL.helpMove = '- move: hold shift and drag the frame'
+		tdpsL.helpResize = '- resize: drag the bottom right corner'
+		tdpsL.helpCommand = '- command: type /tdps to hide or show'
+		tdpsL.helpParameters = '- parameters: /tpds reset | damage | healing'
+
+		tdpsL.allClear = 'All data has been reset'
+		tdpsL.personal = 'Personal'
+		tdpsL.topAbilities = 'Top Abilities'
+		tdpsL.topTargets = 'Top Targets'
+
+	end
+
+
 
 
 
@@ -163,20 +384,21 @@
 
 ---------------------------------------------------------------------------------------------------------------------------------
 --- variables -------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------]]
+---------------------------------------------------------------------------------------------------------------------------------
 
 
 
+	local bu = {}
 	local bar = {}
 	local tdpsShield = {}
 	local px, com, key, arg
 	local maxValue, barsWithValue
 	local scrollPosition, isMovingOrSizing = 1, false
-	local tooltipSpellMerge, tooltipMobMerge, tooltipSort = {}, {}, {}
+	local ttSpellMerge, ttMobMerge, ttSort = {}, {}, {}
 	local viewTitle = {d = 'Damage', h = 'Healing'}
 
 	local isHeal = {SPELL_PERIODIC_HEAL = true, SPELL_HEAL = true}
-	local isMissed = {SWING_MISSED = true, RANGE_MISSED = true, SPELL_MISSED = true, SPELL_PERIODIC_MISSED = true}
+	local isMiss = {SWING_MISSED = true, RANGE_MISSED = true, SPELL_MISSED = true, SPELL_PERIODIC_MISSED = true}
 	local isDamage = {SWING_DAMAGE = true, RANGE_DAMAGE = true, SPELL_DAMAGE = true, SPELL_PERIODIC_DAMAGE = true, DAMAGE_SHIELD = true, DAMAGE_SPLIT = true}
 	local isValidEvent = {SPELL_SUMMON = true, SPELL_HEAL = true, SPELL_PERIODIC_HEAL = true, SWING_DAMAGE = true, RANGE_DAMAGE = true, SPELL_DAMAGE = true, SPELL_PERIODIC_DAMAGE = true, DAMAGE_SHIELD = true, DAMAGE_SPLIT = true, SPELL_EXTRA_ATTACKS = true, SWING_MISSED = true, RANGE_MISSED = true, SPELL_MISSED = true, SPELL_PERIODIC_MISSED = true}
 
@@ -187,25 +409,29 @@
 		-- Priest
 		[17]    = true, -- Power Word: Shield
 		[47753] = true, -- Divine Aegis
-		--[62618] = true, -- Power Word: Barrier NOT TRACKABLE
+		--[62618] = true, -- Power Word: Barrier (not trackable)
 
 		-- Paladin
 		[86273] = true, -- Illuminated Healing
-		[58597] = true, -- Sacred Shield
 		[88063] = true, -- Guarded by the Light
 
 		-- Death Knight
-		--[77535] = true, -- Blood Shield NOT TRACKABLE
+		[51271] = true, -- Unbreakable Armor
+		--[77535] = true, -- Blood Shield (not trackable)
 
 		-- Mage
-		--[] = true, -- Ice Barrier
-		--[] = true, -- Frost Ward
-		--[] = true, -- Mana Shield
-		--[] = true, -- Fire Ward
+		[11426] = true, -- Ice Barrier
+		[6143]  = true, -- Frost Ward
+		[1463]  = true, -- Mana shield
+		[543]   = true, -- Fire Ward
 
-		-- Various
-		[64411] = true, -- Val'anyr Hammer of Ancient Kings -> Blessing of the Ancient
-		[64413] = true, -- Val'anyr Hammer of Ancient Kings -> Protection of Ancient Kings
+		-- Warlock
+		[7812]  = true, -- Sacrifice
+		[6229]  = true, -- Shadow Ward
+
+		-- Miscellaneous
+		[64411] = true, -- Blessing of the Ancient (Val'anyr Hammer of Ancient Kings)
+		[64413] = true, -- Protection of Ancient Kings (Val'anyr Hammer of Ancient Kings)
 
 	}
 
@@ -228,7 +454,7 @@
 		[3579]  = true, -- Stoneclaw Totem
 		[5950]  = true, -- Flametongue Totem
 
-		-- Special
+		-- Miscellaneous
 		[29742] = true, -- Snake Wrap
 		[38163] = true, -- Swarming Shadows
 		[36619] = true, -- Bone Spike
@@ -243,7 +469,7 @@
 
 
 
-	local isBoss = { -- LibBossIDs-1.0 (Author: Elsia) http://www.wowace.com/addons/libbossids-1-0
+	local isBoss = { -- LibBossIDs-1.0 r47 (Author: Elsia) http://www.wowace.com/addons/libbossids-1-0
 
 		-- Ragefire Chasm
 		[11517] = true, -- Oggleflint
@@ -251,7 +477,7 @@
 		[11518] = true, -- Jergosh the Invoker
 		[11519] = true, -- Bazzalan
 		[17830] = true, -- Zelemar the Wrathful
-		
+
 		-- The Deadmines
 		[644]   = true, -- Rhahk'Zor
 		[3586]  = true, -- Miner Johnson
@@ -265,7 +491,7 @@
 		[596]   = true, -- Brainwashed Noble, outside
 		[626]   = true, -- Foreman Thistlenettle, outside
 		[599]   = true, -- Marisa du'Paige, outside
-		
+
 		-- Wailing Caverns
 		[5775]  = true, -- Verdan the Everliving
 		[3670]  = true, -- Lord Pythas
@@ -279,7 +505,7 @@
 		[3672]  = true, -- Boahn, outside
 		[3655]  = true, -- Mad Magglish, outside
 		[3652]  = true, -- Trigore the Lasher, outside
-		
+
 		-- Shadowfang Keep
 		[3914]  = true, -- Rethilgore
 		[3886]  = true, -- Razorclaw the Butcher
@@ -291,7 +517,7 @@
 		[14682] = true, -- Sever (Scourge invasion only)
 		[4275]  = true, -- Archmage Arugal
 		[3872]  = true, -- Deathsworn Captain
-		
+
 		-- Blackfathom Deeps
 		[4887]  = true, -- Ghamoo-ra
 		[4831]  = true, -- Lady Sarevess
@@ -301,7 +527,7 @@
 		[4830]  = true, -- Old Serra'kis
 		[4832]  = true, -- Twilight Lord Kelris
 		[4829]  = true, -- Aku'mai
-		
+
 		-- Stormwind Stockade
 		[1716]  = true, -- Bazil Thredd
 		[1663]  = true, -- Dextren Ward
@@ -309,7 +535,7 @@
 		[1666]  = true, -- Kam Deepfury
 		[1696]  = true, -- Targorr the Dread
 		[1720]  = true, -- Bruegal Ironknuckle
-		
+
 		-- Razorfen Kraul
 		[4421]  = true, -- Charlga Razorflank
 		[4420]  = true, -- Overlord Ramtusk
@@ -319,7 +545,7 @@
 		[6168]  = true, -- Roogug
 		[4425]  = true, -- Blind Hunter
 		[4842]  = true, -- Earthcaller Halmgar
-		
+
 		-- Gnomeregan
 		[7800]  = true, -- Mekgineer Thermaplugg
 		[7079]  = true, -- Viscous Fallout
@@ -328,7 +554,7 @@
 		[6229]  = true, -- Crowd Pummeler 9-60
 		[6228]  = true, -- Dark Iron Ambassador
 		[6231]  = true, -- Techbot, outside
-		
+
 		-- Scarlet Monastery: The Graveyard
 		[3983]  = true, -- Interrogator Vishas
 		[6488]  = true, -- Fallen Champion
@@ -338,19 +564,19 @@
 		[4543]  = true, -- Bloodmage Thalnos
 		[23682] = true, -- Headless Horseman
 		[23800] = true, -- Headless Horseman
-		
+
 		-- Scarley Monastery: Library
 		[3974]  = true, -- Houndmaster Loksey
 		[6487]  = true, -- Arcanist Doan
-		
+
 		-- Scarley Monastery: Armory
 		[3975]  = true, -- Herod
-		
+
 		-- Scarley Monastery: Cathedral
 		[4542]  = true, -- High Inquisitor Fairbanks
 		[3976]  = true, -- Scarlet Commander Mograine
 		[3977]  = true, -- High Inquisitor Whitemane
-		
+
 		-- Razorfen Downs
 		[7355]  = true, -- Tuten'kash
 		[14686] = true, -- Lady Falther'ess (Scourge invasion only)
@@ -359,7 +585,7 @@
 		[8567]  = true, -- Glutton
 		[7354]  = true, -- Ragglesnout
 		[7358]  = true, -- Amnennar the Coldbringer
-		
+
 		-- Uldaman
 		[7057]  = true, -- Digmaster Shovelphlange
 		-- [2932]  = true, -- Magregan Deepshadow (Outside the instance, not elite)
@@ -371,7 +597,7 @@
 		[4854]  = true, -- Grimlok
 		[2748]  = true, -- Archaedas
 		[6906]  = true, -- Baelog
-		
+
 		-- Zul'Farrak
 		[10082] = true, -- Zerillis
 		[10080] = true, -- Sandarr Dunereaver
@@ -389,7 +615,7 @@
 		[7608]  = true, -- Murta Grimgut
 		[7606]  = true, -- Oro Eyegouge
 		[7604]  = true, -- Sergeant Bly
-		
+
 		-- Maraudon
 		-- [13718] = true, -- The Nameless Prophet (Pre-instance)
 		[13742] = true, -- Kolk <The First Khan>
@@ -406,7 +632,7 @@
 		[13601] = true, -- Tinkerer Gizlock
 		[13596] = true, -- Rotgrip
 		[12201] = true, -- Princess Theradras
-		
+
 		-- Temple of Atal'Hakkar
 		[1063]  = true, -- Jade
 		[5400]  = true, -- Zekkis
@@ -427,14 +653,14 @@
 		[5719]  = true, -- Morphaz
 		[5722]  = true, -- Hazzas
 		[5709]  = true, -- Shade of Eranikus
-		
+
 		-- The Blackrock Depths: Detention Block
 		[9018]  = true, -- High Interrogator Gerstahn
-		
+
 		-- The Blackrock Depths: Halls of the Law
 		[9025]  = true, -- Lord Roccor
 		[9319]  = true, -- Houndmaster Grebmar
-		
+
 		-- The Blackrock Depths: Ring of Law (Arena)
 		[9031]  = true, -- Anub'shiah
 		[9029]  = true, -- Eviscerator
@@ -443,7 +669,7 @@
 		[9032]  = true, -- Hedrum the Creeper
 		[9030]  = true, -- Ok'thor the Breaker
 		[16059] = true, -- Theldren
-		
+
 		-- The Blackrock Depths: Outer Blackrock Depths
 		[9024]  = true, -- Pyromancer Loregrain
 		[9041]  = true, -- Warder Stilgiss
@@ -455,14 +681,14 @@
 		[9016]  = true, -- Bael'Gar
 		[9033]  = true, -- General Angerforge
 		[8983]  = true, -- Golem Lord Argelmach
-		
+
 		-- The Blackrock Depths: Grim Guzzler
 		[9543]  = true, -- Ribbly Screwspigot
 		[9537]  = true, -- Hurley Blackbreath
 		[9502]  = true, -- Phalanx
 		[9499]  = true, -- Plugger Spazzring
 		[23872] = true, -- Coren Direbrew
-		
+
 		-- The Blackrock Depths: Inner Blackrock Depths
 		[9156]  = true, -- Ambassador Flamelash
 		[8923]  = true, -- Panzor the Invincible
@@ -477,12 +703,12 @@
 		[10076] = true, -- High Priestess of Thaurissan
 		[8929]  = true, -- Princess Moira Bronzebeard
 		[9019]  = true, -- Emperor Dagran Thaurissan
-		
+
 		-- Dire Maul: Arena
 		[11447] = true, -- Mushgog
 		[11498] = true, -- Skarr the Unbreakable
 		[11497] = true, -- The Razza
-		
+
 		-- Dire Maul: East
 		[14354] = true, -- Pusillin
 		[14327] = true, -- Lethtendris
@@ -491,7 +717,7 @@
 		[11490] = true, -- Zevrim Thornhoof
 		[11492] = true, -- Alzzin the Wildshaper
 		[16097] = true, -- Isalien
-		
+
 		-- Dire Maul: North
 		[14326] = true, -- Guard Mol'dar
 		[14322] = true, -- Stomper Kreeg
@@ -500,7 +726,7 @@
 		[14325] = true, -- Captain Kromcrush
 		[14324] = true, -- Cho'Rush the Observer
 		[11501] = true, -- King Gordok
-		
+
 		-- Dire Maul: West
 		[11489] = true, -- Tendris Warpwood
 		[11487] = true, -- Magister Kalendris
@@ -510,7 +736,7 @@
 		[11496] = true, -- Immol'thar
 		[14506] = true, -- Lord Hel'nurath
 		[11486] = true, -- Prince Tortheldrin
-		
+
 		-- Lower Blackrock Spire
 		[10263] = true, -- Burning Felguard
 		[9218]  = true, -- Spirestone Battle Lord
@@ -529,7 +755,7 @@
 		[10268] = true, -- Gizrul the Slavener
 		[9718]  = true, -- Ghok Bashguud
 		[9568]  = true, -- Overlord Wyrmthalak
-		
+
 		-- Stratholme: Scarlet Stratholme
 		[10393] = true, -- Skul
 		[14684] = true, -- Balzaphon (Scourge Invasion)
@@ -547,7 +773,7 @@
 		[10813] = true, -- Balnazzar
 		[16101] = true, -- Jarien
 		[16102] = true, -- Sothos
-		
+
 		-- Stratholme: Undead Stratholme
 		[10809] = true, -- Stonespine
 		[10437] = true, -- Nerub'enkan
@@ -564,7 +790,7 @@
 		[17910] = true, -- Gregor the Justiciar
 		[17914] = true, -- Vicar Hieronymus
 		[17912] = true, -- Nemas the Arbiter
-		
+
 		-- Scholomance
 		[14861] = true, -- Blood Steward of Kirtonos
 		[10506] = true, -- Kirtonos the Herald
@@ -583,7 +809,7 @@
 		[10504] = true, -- Lord Alexei Barov
 		[10502] = true, -- Lady Illucia Barov
 		[1853]  = true, -- Darkmaster Gandling
-		
+
 		-- Upper Blackrock Spire
 		[9816]  = true, -- Pyroguard Emberseer
 		[10264] = true, -- Solakar Flamewreath
@@ -594,7 +820,7 @@
 		[10430] = true, -- The Beast
 		[16042] = true, -- Lord Valthalak
 		[10363] = true, -- General Drakkisath
-		
+
 		-- Zul'Gurub
 		[14517] = true, -- High Priestess Jeklik
 		[14507] = true, -- High Priest Venoxis
@@ -609,10 +835,10 @@
 		[15083] = true, -- Hazza'rah
 		[15084] = true, -- Renataki
 		[15085] = true, -- Wushoolay
-		
+
 		-- Onyxia's Lair
 		[10184] = true, -- Onyxia
-		
+
 		-- Molten Core
 		[12118] = true, -- Lucifron
 		[11982] = true, -- Magmadar
@@ -624,7 +850,7 @@
 		[11988] = true, -- Golemagg the Incinerator
 		[12018] = true, -- Majordomo Executus
 		[11502] = true, -- Ragnaros
-		
+
 		-- Blackwing Lair
 		[12435] = true, -- Razorgore the Untamed
 		[13020] = true, -- Vaelastrasz the Corrupt
@@ -636,7 +862,7 @@
 		[11583] = true, -- Nefarian
 		[12557] = true, -- Grethok the Controller
 		[10162] = true, -- Lord Victor Nefarius <Lord of Blackrock> (Also found in Blackrock Spire)
-		
+
 		-- Ruins of Ahn'Qiraj
 		[15348] = true, -- Kurinnaxx
 		[15341] = true, -- General Rajaxx
@@ -644,7 +870,7 @@
 		[15370] = true, -- Buru the Gorger
 		[15369] = true, -- Ayamiss the Hunter
 		[15339] = true, -- Ossirian the Unscarred
-		
+
 		-- Temple of Ahn'Qiraj
 		[15263] = true, -- The Prophet Skeram
 		[15511] = true, -- Lord Kri
@@ -659,140 +885,139 @@
 		[15517] = true, -- Ouro
 		[15727] = true, -- C'Thun
 		[15589] = true, -- Eye of C'Thun
-		
+
 		-- Naxxramas
 		[30549] = true, -- Baron Rivendare (Naxxramas)
 		[16803] = true, -- Death Knight Understudy
 		[15930] = true, -- Feugen
 		[15929] = true, -- Stalagg
-		
+
 		-- Naxxramas: Spider Wing
 		[15956] = true, -- Anub'Rekhan
 		[15953] = true, -- Grand Widow Faerlina
 		[15952] = true, -- Maexxna
-		
+
 		-- Naxxramas: Abomination Wing
 		[16028] = true, -- Patchwerk
 		[15931] = true, -- Grobbulus
 		[15932] = true, -- Gluth
 		[15928] = true, -- Thaddius
-		
+
 		-- Naxxramas: Plague Wing
 		[15954] = true, -- Noth the Plaguebringer
 		[15936] = true, -- Heigan the Unclean
 		[16011] = true, -- Loatheb
-		
+
 		-- Naxxramas: Deathknight Wing
 		[16061] = true, -- Instructor Razuvious
 		[16060] = true, -- Gothik the Harvester
-		
+
 		-- Naxxramas: The Four Horsemen
 		[16065] = true, -- Lady Blaumeux
 		[16064] = true, -- Thane Korth'azz
 		[16062] = true, -- Highlord Mograine
 		[16063] = true, -- Sir Zeliek
-		
+
 		-- Naxxramas: Frostwyrm Lair
 		[15989] = true, -- Sapphiron
 		[15990] = true, -- Kel'Thuzad
 		[25465] = true, -- Kel'Thuzad
-		
-		
+
 		-- Hellfire Citadel: Hellfire Ramparts
 		[17306] = true, -- Watchkeeper Gargolmar
 		[17308] = true, -- Omor the Unscarred
 		[17537] = true, -- Vazruden
 		[17307] = true, -- Vazruden the Herald
 		[17536] = true, -- Nazan
-		
+
 		-- Hellfire Citadel: The Blood Furnace
 		[17381] = true, -- The Maker
 		[17380] = true, -- Broggok
 		[17377] = true, -- Keli'dan the Breaker
-		
+
 		-- Coilfang Reservoir: Slave Pens
 		[25740] = true, -- Ahune
 		[17941] = true, -- Mennu the Betrayer
 		[17991] = true, -- Rokmar the Crackler
 		[17942] = true, -- Quagmirran
-		
+
 		-- Coilfang Reservoir: The Underbog
 		[17770] = true, -- Hungarfen
 		[18105] = true, -- Ghaz'an
 		[17826] = true, -- Swamplord Musel'ek
 		[17827] = true, -- Claw <Swamplord Musel'ek's Pet>
 		[17882] = true, -- The Black Stalker
-		
+
 		-- Auchindoun: Mana-Tombs
 		[18341] = true, -- Pandemonius
 		[18343] = true, -- Tavarok
 		[22930] = true, -- Yor (Heroic)
 		[18344] = true, -- Nexus-Prince Shaffar
-		
+
 		-- Auchindoun: Auchenai Crypts
 		[18371] = true, -- Shirrak the Dead Watcher
 		[18373] = true, -- Exarch Maladaar
-		
+
 		-- Caverns of Time: Escape from Durnholde Keep
 		[17848] = true, -- Lieutenant Drake
 		[17862] = true, -- Captain Skarloc
 		[18096] = true, -- Epoch Hunter
 		[28132] = true, -- Don Carlos
-		
+
 		-- Auchindoun: Sethekk Halls
 		[18472] = true, -- Darkweaver Syth
 		[23035] = true, -- Anzu (Heroic)
 		[18473] = true, -- Talon King Ikiss
-		
+
 		-- Coilfang Reservoir: The Steamvault
 		[17797] = true, -- Hydromancer Thespia
 		[17796] = true, -- Mekgineer Steamrigger
 		[17798] = true, -- Warlord Kalithresh
-		
+
 		-- Auchindoun: Shadow Labyrinth
 		[18731] = true, -- Ambassador Hellmaw
 		[18667] = true, -- Blackheart the Inciter
 		[18732] = true, -- Grandmaster Vorpil
 		[18708] = true, -- Murmur
-		
+
 		-- Hellfire Citadel: Shattered Halls
 		[16807] = true, -- Grand Warlock Nethekurse
 		[20923] = true, -- Blood Guard Porung (Heroic)
 		[16809] = true, -- Warbringer O'mrogg
 		[16808] = true, -- Warchief Kargath Bladefist
-		
+
 		-- Caverns of Time: Opening the Dark Portal
 		[17879] = true, -- Chrono Lord Deja
 		[17880] = true, -- Temporus
 		[17881] = true, -- Aeonus
-		
+
 		-- Tempest Keep: The Mechanar
 		[19218] = true, -- Gatewatcher Gyro-Kill
 		[19710] = true, -- Gatewatcher Iron-Hand
 		[19219] = true, -- Mechano-Lord Capacitus
 		[19221] = true, -- Nethermancer Sepethrea
 		[19220] = true, -- Pathaleon the Calculator
-		
+
 		-- Tempest Keep: The Botanica
 		[17976] = true, -- Commander Sarannis
 		[17975] = true, -- High Botanist Freywinn
 		[17978] = true, -- Thorngrin the Tender
 		[17980] = true, -- Laj
 		[17977] = true, -- Warp Splinter
-		
+
 		-- Tempest Keep: The Arcatraz
 		[20870] = true, -- Zereketh the Unbound
 		[20886] = true, -- Wrath-Scryer Soccothrates
 		[20885] = true, -- Dalliah the Doomsayer
 		[20912] = true, -- Harbinger Skyriss
 		[20904] = true, -- Warden Mellichar
-		
+
 		-- Magisters' Terrace
 		[24723] = true, -- Selin Fireheart
 		[24744] = true, -- Vexallus
 		[24560] = true, -- Priestess Delrissa
 		[24664] = true, -- Kael'thas Sunstrider
-		
+
 		-- Karazhan
 		[15550] = true, -- Attumen the Huntsman
 		[16151] = true, -- Midnight
@@ -807,12 +1032,12 @@
 		[17225] = true, -- Nightbane
 		[17229] = true, -- Kil'rek
 		-- Chess event
-		
+
 		-- Karazhan: Servants' Quarters Beasts
 		[16179] = true, -- Hyakiss the Lurker
 		[16181] = true, -- Rokad the Ravager
 		[16180] = true, -- Shadikith the Glider
-		
+
 		-- Karazhan: Opera Event
 		[17535] = true, -- Dorothee
 		[17546] = true, -- Roar
@@ -823,20 +1048,20 @@
 		[17521] = true, -- The Big Bad Wolf
 		[17533] = true, -- Romulo
 		[17534] = true, -- Julianne
-		
+
 		-- Gruul's Lair
 		[18831] = true, -- High King Maulgar
 		[19044] = true, -- Gruul the Dragonkiller
-		
+
 		-- Gruul's Lair: Maulgar's Ogre Council
 		[18835] = true, -- Kiggler the Crazed
 		[18836] = true, -- Blindeye the Seer
 		[18834] = true, -- Olm the Summoner
 		[18832] = true, -- Krosh Firehand
-		
+
 		-- Hellfire Citadel: Magtheridon's Lair
 		[17257] = true, -- Magtheridon
-		
+
 		-- Zul'Aman: Animal Bosses
 		[29024] = true, -- Nalorakk
 		[28514] = true, -- Nalorakk
@@ -849,11 +1074,11 @@
 		[28517] = true, -- Halazzi
 		[29022] = true, -- Halazzi
 		[24239] = true, -- Malacrass
-		
+
 		-- Zul'Aman: Final Bosses
 		[24239] = true, -- Hex Lord Malacrass
 		[23863] = true, -- Zul'jin
-		
+
 		-- Coilfang Reservoir: Serpentshrine Cavern
 		[21216] = true, -- Hydross the Unstable
 		[21217] = true, -- The Lurker Below
@@ -862,7 +1087,7 @@
 		[21213] = true, -- Morogrim Tidewalker
 		[21212] = true, -- Lady Vashj
 		[21875] = true, -- Shadow of Leotheras
-		
+
 		-- Tempest Keep: The Eye
 		[19514] = true, -- Al'ar
 		[19516] = true, -- Void Reaver
@@ -879,14 +1104,14 @@
 		[21273] = true, -- Phaseshift Bulwark
 		[21274] = true, -- Staff of Disintegration
 		[21272] = true, -- Warp Slicer
-		
+
 		-- Caverns of Time: Battle for Mount Hyjal
 		[17767] = true, -- Rage Winterchill
 		[17808] = true, -- Anetheron
 		[17888] = true, -- Kaz'rogal
 		[17842] = true, -- Azgalor
 		[17968] = true, -- Archimonde
-		
+
 		-- Black Temple
 		[22887] = true, -- High Warlord Naj'entus
 		[22898] = true, -- Supremus
@@ -903,7 +1128,7 @@
 		[22950] = true, -- High Nethermancer Zerevor
 		[22951] = true, -- Lady Malande
 		[22952] = true, -- Veras Darkshadow
-		
+
 		-- Sunwell Plateau
 		[24891] = true, -- Kalecgos
 		[25319] = true, -- Kalecgos
@@ -916,19 +1141,18 @@
 		[25315] = true, -- Kil'jaeden
 		[25840] = true, -- Entropius
 		[24892] = true, -- Sathrovarr the Corruptor
-		
-		
+
 		-- Utgarde Keep: Main Bosses
 		[23953] = true, -- Prince Keleseth (Utgarde Keep)
 		[27390] = true, -- Skarvald the Constructor
 		[24200] = true, -- Skarvald the Constructor
 		[23954] = true, -- Ingvar the Plunderer
 		[23980] = true, -- Ingvar the Plunderer
-		
+
 		-- Utgarde Keep: Secondary Bosses
 		[27389] = true, -- Dalronn the Controller
 		[24201] = true, -- Dalronn the Controller
-		
+
 		-- The Nexus
 		[26798] = true, -- Commander Kolurg (Heroic)
 		[26796] = true, -- Commander Stoutbeard (Heroic)
@@ -940,26 +1164,26 @@
 		[26763] = true, -- Anomalus
 		[26794] = true, -- Ormorok the Tree-Shaper
 		[26723] = true, -- Keristrasza
-		
+
 		-- Azjol-Nerub
 		[28684] = true, -- Krik'thir the Gatewatcher
 		[28921] = true, -- Hadronox
 		[29120] = true, -- Anub'arak
-		
+
 		-- Ahn'kahet: The Old Kingdom
 		[29309] = true, -- Elder Nadox
 		[29308] = true, -- Prince Taldaram (Ahn'kahet: The Old Kingdom)
 		[29310] = true, -- Jedoga Shadowseeker
 		[29311] = true, -- Herald Volazj
 		[30258] = true, -- Amanitar (Heroic)
-		
+
 		-- Drak'Tharon Keep
 		[26630] = true, -- Trollgore
 		[26631] = true, -- Novos the Summoner
 		[27483] = true, -- King Dred
 		[26632] = true, -- The Prophet Tharon'ja
 		[27696] = true, -- The Prophet Tharon'ja
-		
+
 		-- The Violet Hold
 		[29315] = true, -- Erekem
 		[29313] = true, -- Ichoron
@@ -968,32 +1192,32 @@
 		[29266] = true, -- Xevozz
 		[29314] = true, -- Zuramat the Obliterator
 		[31134] = true, -- Cyanigosa
-		
+
 		-- Gundrak
 		[29304] = true, -- Slad'ran
 		[29305] = true, -- Moorabi
 		[29307] = true, -- Drakkari Colossus
 		[29306] = true, -- Gal'darah
 		[29932] = true, -- Eck the Ferocious (Heroic)
-		
+
 		-- Halls of Stone
 		[27977] = true, -- Krystallus
 		[27975] = true, -- Maiden of Grief
 		[28234] = true, -- The Tribunal of Ages
 		[27978] = true, -- Sjonnir The Ironshaper
-		
+
 		-- Halls of Lightning
 		[28586] = true, -- General Bjarngrim
 		[28587] = true, -- Volkhan
 		[28546] = true, -- Ionar
 		[28923] = true, -- Loken
-		
+
 		-- The Oculus
 		[27654] = true, -- Drakos the Interrogator
 		[27447] = true, -- Varos Cloudstrider
 		[27655] = true, -- Mage-Lord Urom
 		[27656] = true, -- Ley-Guardian Eregos
-		
+
 		-- Caverns of Time: Culling of Stratholme
 		[26529] = true, -- Meathook
 		[26530] = true, -- Salramm the Fleshcrafter
@@ -1001,63 +1225,63 @@
 		[32273] = true, -- Infinite Corruptor
 		[26533] = true, -- Mal'Ganis
 		[29620] = true, -- Mal'Ganis
-		
+
 		-- Utgarde Pinnacle
 		[26668] = true, -- Svala Sorrowgrave
 		[26687] = true, -- Gortok Palehoof
 		[26693] = true, -- Skadi the Ruthless
 		[26861] = true, -- King Ymiron
-		
+
 		-- Trial of the Champion: Alliance
 		[35617] = true, -- Deathstalker Visceri <Grand Champion of Undercity>
 		[35569] = true, -- Eressea Dawnsinger <Grand Champion of Silvermoon>
 		[35572] = true, -- Mokra the Skullcrusher <Grand Champion of Orgrimmar>
 		[35571] = true, -- Runok Wildmane <Grand Champion of the Thunder Bluff>
 		[35570] = true, -- Zul'tore <Grand Champion of Sen'jin>
-		
+
 		-- Trial of the Champion: Horde
 		[34702] = true, -- Ambrose Boltspark <Grand Champion of Gnomeregan>
 		[34701] = true, -- Colosos <Grand Champion of the Exodar>
 		[34705] = true, -- Marshal Jacob Alerius <Grand Champion of Stormwind>
 		[34657] = true, -- Jaelyne Evensong <Grand Champion of Darnassus>
 		[34703] = true, -- Lana Stouthammer <Grand Champion of Ironforge>
-		
+
 		-- Trial of the Champion: Neutral
 		[34928] = true, -- Argent Confessor Paletress
 		[35119] = true, -- Eadric the Pure
 		[35451] = true, -- The Black Knight
-		
+
 		-- Forge of Souls
 		[36497] = true, -- Bronjahm
 		[36502] = true, -- Devourer of Souls
-		
+
 		-- Pit of Saron
 		[36494] = true, -- Forgemaster Garfrost
 		[36477] = true, -- Krick
 		[36476] = true, -- Ick <Krick's Minion>
 		[36658] = true, -- Scourgelord Tyrannus
-		
+
 		-- Halls of Reflection
 		[38112] = true, -- Falric
 		[38113] = true, -- Marwyn
 		[37226] = true, -- The Lich King
 		[38113] = true, -- Marvyn
-		
+
 		-- Obsidian Sanctum
 		[30451] = true, -- Shadron
 		[30452] = true, -- Tenebron
 		[30449] = true, -- Vesperon
 		[28860] = true, -- Sartharion
-		
+
 		-- Vault of Archavon
 		[31125] = true, -- Archavon the Stone Watcher
 		[33993] = true, -- Emalon the Storm Watcher
 		[35013] = true, -- Koralon the Flamewatcher
 		[38433] = true, --Toravon the Ice Watcher
-		
+
 		-- The Eye of Eternity
 		[28859] = true, -- Malygos
-		
+
 		-- Ulduar: The Siege of Ulduar
 		[33113] = true, -- Flame Leviathan
 		[33118] = true, -- Ignis the Furnace Master
@@ -1066,7 +1290,7 @@
 		[33670] = true, -- Aerial Command Unit
 		[33329] = true, -- Heart of the Deconstructor
 		[33651] = true, -- VX-001
-		
+
 		-- Ulduar: The Antechamber of Ulduar
 		[32867] = true, -- Steelbreaker
 		[32927] = true, -- Runemaster Molgeim
@@ -1077,13 +1301,13 @@
 		[32933] = true, -- Left Arm
 		[32934] = true, -- Right Arm
 		[33524] = true, -- Saronite Animus
-		
+
 		-- Ulduar: The Keepers of Ulduar
 		[33350] = true, -- Mimiron
 		[32906] = true, -- Freya
 		[32865] = true, -- Thorim
 		[32845] = true, -- Hodir
-		
+
 		-- Ulduar: The Descent into Madness
 		[33271] = true, -- General Vezax
 		[33890] = true, -- Brain of Yogg-Saron
@@ -1095,18 +1319,16 @@
 		[32882] = true, -- Jormungar Behemoth
 		[33432] = true, -- Leviathan Mk II
 		[34014] = true, -- Sanctum Sentry
-		
+
 		-- Ulduar: The Celestial Planetarium
 		[32871] = true, -- Algalon the Observer
-		
+
 		-- Trial of the Crusader
 		[34796] = true, -- Gormok
 		[35144] = true, -- Acidmaw
 		[34799] = true, -- Dreadscale
 		[34797] = true, -- Icehowl
-		
 		[34780] = true, -- Jaraxxus
-		
 		[34461] = true, -- Tyrius Duskblade <Death Knight>
 		[34460] = true, -- Kavina Grovesong <Druid>
 		[34469] = true, -- Melador Valestrider <Druid>
@@ -1121,7 +1343,6 @@
 		[34463] = true, -- Shaabad <Shaman>
 		[34474] = true, -- Serissa Grimdabbler <Warlock>
 		[34475] = true, -- Shocuul <Warrior>
-		
 		[34458] = true, -- Gorgrim Shadowcleave <Death Knight>
 		[34451] = true, -- Birana Stormhoof <Druid>
 		[34459] = true, -- Erin Misthoof <Druid>
@@ -1136,14 +1357,12 @@
 		[34455] = true, -- Broln Stouthorn <Shaman>
 		[34450] = true, -- Harkzog <Warlock>
 		[34453] = true, -- Narrhok Steelbreaker <Warrior>
-		
 		[35610] = true, -- Cat <Ruj'kah's Pet / Alyssia Moonstalker's Pet>
 		[35465] = true, -- Zhaagrym <Harkzog's Minion / Serissa Grimdabbler's Minion>
-		
 		[34497] = true, -- Fjola Lightbane
 		[34496] = true, -- Eydis Darkbane
 		[34564] = true, -- Anub'arak (Trial of the Crusader)
-		
+
 		-- Icecrown Citadel
 		[36612] = true, -- Lord Marrowgar
 		[36855] = true, -- Lady Deathwhisper
@@ -1168,7 +1387,7 @@
 		[37217] = true, -- Precious
 		[37025] = true, -- Stinki
 		[36661] = true, -- Rimefang <Drake of Tyrannus>
-		
+
 		--Ruby Sanctum (PTR 3.3.5)
 		[39746] = true,	--Zarithrian
 		[39747] = true, --Saviana
@@ -1177,39 +1396,75 @@
 		[39899] = true, -- Baltharus (Copy has an own id apparently)
 		[40142] = true, -- Halion (twilight realm)
 
+		-- Blackrock Caverns
+		[39665] = true, -- Rom'ogg Bonecrusher
+		[39679] = true, -- Corla, Herald of Twilight
+		[39698] = true, -- Karsh Steelbender
+		[39700] = true, -- Beauty
+		[39705] = true, -- Ascendant Lord Obsidius
+
+		-- Throne of the Tides
+		[40586] = true, -- Lady Naz'jar
+		[40765] = true, -- Commander Ulthok
+		[40825] = true, -- Erunak Stonespeaker
+		[40788] = true, -- Mindbender Ghur'sha
+		[42172] = true, -- Ozumat
+
+		-- The Stonecore
+		[43438] = true, -- Corborus
+		[43214] = true,	-- Slabhide
+		[42188] = true,	-- Ozruk
+		[42333] = true, -- High Priestess Azil
+
+		-- The Vortex Pinnacle
+		[43878] = true, -- Grand Vizier Ertan
+		[43873] = true, -- Altairus
+		[43875] = true, -- Asaad
+
+		-- Grim Batol
+		[39625] = true, -- General Umbriss
+		[40177] = true, -- Forgemaster Throngus
+		[40319] = true, -- Drahga Shadowburner
+		[40484] = true, -- Erudax
+
+		-- Halls of Origination
+		[39425] = true, -- Temple Guardian Anhuur
+
+		-- Lost City of the Tol'vir
+
 		-- World Dragons
 		[14889] = true, -- Emeriss
 		[14888] = true, -- Lethon
 		[14890] = true, -- Taerar
 		[14887] = true, -- Ysondre
-		
+
 		-- Azshara
 		[14464] = true, -- Avalanchion
 		[6109]  = true, -- Azuregos
-		
+
 		-- Un'Goro Crater
 		[14461] = true, -- Baron Charr
-		
+
 		-- Silithus
 		[15205] = true, -- Baron Kazum <Abyssal High Council>
 		[15204] = true, -- High Marshal Whirlaxis <Abyssal High Council>
 		[15305] = true, -- Lord Skwol <Abyssal High Council>
 		[15203] = true, -- Prince Skaldrenox <Abyssal High Council>
 		[14454] = true, -- The Windreaver
-		
+
 		-- Searing Gorge
 		[9026]  = true, -- Overmaster Pyron
-		
+
 		-- Winterspring
 		[14457] = true, -- Princess Tempestria
-		
+
 		-- Hellfire Peninsula
 		[18728] = true, -- Doom Lord Kazzak
 		[12397] = true, -- Lord Kazzak
-		
+
 		-- Shadowmoon Valley
 		[17711] = true, -- Doomwalker
-		
+
 		-- Nagrand
 		[18398] = true, -- Brokentoe
 		[18069] = true, -- Mogor <Hero of the Warmaul>, friendly
@@ -1239,11 +1494,13 @@
 			showMinimapButton = false,
 			maxBars = 10, spacing = 2, barHeight = 15,
 			bar = {.9, .9, .9, 1}, barbackdrop = {1, 1, 1, .05}, border = {0, 0, 0, .8}, backdrop = {0, 0, 0, .8},
-			font = {name = 'Interface\\AddOns\\TinyDPS\\Fonts\\Berlin Sans.ttf', size = 13, outline = 'Outline', shadow = 0},
 			classColor = {}
 		}
-		
+
 		tdpsPosition = {x = 0, y = 0}
+
+		if GameFontNormal then tdpsFont = {name = GameFontNormal:GetFont(), size = 12, outline = '', shadow = 1}
+		else tdpsFont = {name = [[Interface\AddOns\TinyDPS\Fonts\Visitor.ttf]], size = 13, outline = 'Outlinemonochrome', shadow = 0} end
 
 		for k,v in pairs(RAID_CLASS_COLORS) do -- copy global class colors
 			tdps.classColor[k] = {}
@@ -1266,8 +1523,8 @@
 		tdpsFight = {{name = 'Overall Data', d = 0, h = 0}, {name = nil, boss = nil, d = 0, h = 0}}
 
 		tdpsPartySize = 0
-		tdpsSelectedFight = 1
-		tdpsSelectedView = 'd'
+		tdspF = 1
+		tdspV = 'd'
 		tdpsNumberOfFights = 2
 
 	end
@@ -1295,10 +1552,10 @@
 	tdpsAnchor:SetMovable(1)
 	tdpsAnchor:SetPoint('CENTER', UIParent, 'CENTER', 0, 0)
 	tdpsAnchor:SetFrameStrata('BACKGROUND')
-	tdpsAnchor:SetBackdrop({bgFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', edgeFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', tile = false, tileSize = 1, edgeSize = 1, insets = {left = 1, right = 1, top = 1, bottom = 1}})
+	tdpsAnchor:SetBackdrop({bgFile = [[Interface\AddOns\TinyDPS\Textures\blank.tga]], edgeFile = [[Interface\AddOns\TinyDPS\Textures\blank.tga]], tile = false, tileSize = 1, edgeSize = 1, insets = {left = 1, right = 1, top = 1, bottom = 1}})
 	tdpsAnchor:SetBackdropColor(0,0,0,0)
 	tdpsAnchor:SetBackdropBorderColor(0,0,0,0)
-	
+
 
 
 	-- main window
@@ -1311,7 +1568,7 @@
 	tdpsFrame:SetPoint('TOPLEFT', tdpsAnchor, 'TOPLEFT', 0, 0)
 	tdpsFrame:SetFrameStrata('MEDIUM')
 	tdpsFrame:SetFrameLevel(1)
-	tdpsFrame:SetBackdrop({bgFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', edgeFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', tile = false, tileSize = 1, edgeSize = 1, insets = {left = 1, right = 1, top = 1, bottom = 1}})
+	tdpsFrame:SetBackdrop({bgFile = [[Interface\AddOns\TinyDPS\Textures\blank.tga]], edgeFile = [[Interface\AddOns\TinyDPS\Textures\blank.tga]], tile = false, tileSize = 1, edgeSize = 1, insets = {left = 1, right = 1, top = 1, bottom = 1}})
 
 
 
@@ -1326,14 +1583,14 @@
 
 	-- title font string
 	tdpsFrame:CreateFontString('noData', 'OVERLAY')
-	noData:SetPoint('CENTER', tdpsFrame, 'CENTER', 0, 1)
+	noData:SetPoint('CENTER', tdpsFrame, 'CENTER', 0, 0)
 	noData:SetJustifyH('CENTER')
-	noData:SetFont(tdps.font.name, tdps.font.size)
+	noData:SetFont(tdpsFont.name, tdpsFont.size)
 	noData:SetShadowColor(.1, .1, .1, 1)
-	noData:SetShadowOffset(tdps.font.shadow, tdps.font.shadow * -1)
+	noData:SetShadowOffset(tdpsFont.shadow, tdpsFont.shadow * -1)
 	noData:SetTextColor(1, 1, 1, .07)
 	noData:SetText('TinyDPS')
-	
+
 
 
 	-- resize frame
@@ -1345,14 +1602,14 @@
 	tdpsResizeFrame:SetPoint('BOTTOMRIGHT', tdpsFrame, 'BOTTOMRIGHT', 0, 0)
 	tdpsResizeFrame:EnableMouse(1)
 	tdpsResizeFrame:CreateTexture('tdpsResizeTexture')
-	tdpsResizeTexture:SetTexture('Interface\\Buttons\\UI-AutoCastableOverlay')
+	tdpsResizeTexture:SetTexture([[Interface\Buttons\UI-AutoCastableOverlay]])
 	tdpsResizeTexture:SetTexCoord(.619, .760, .612, .762)
 	tdpsResizeTexture:SetDesaturated(1)
 	tdpsResizeTexture:SetAlpha(.2)
 	tdpsResizeTexture:ClearAllPoints()
 	tdpsResizeTexture:SetPoint('TOPLEFT', tdpsResizeFrame)
 	tdpsResizeTexture:SetPoint('BOTTOMRIGHT', tdpsResizeFrame, 'BOTTOMRIGHT', 0, 0)
-	
+
 
 
 	-- minimap button frame
@@ -1368,21 +1625,27 @@
 	tdpsButtonFrame:CreateTexture('tdpsButtonTexture', 'BACKGROUND')
 	tdpsButtonTexture:SetWidth(24)
 	tdpsButtonTexture:SetHeight(24)
-	tdpsButtonTexture:SetTexture('Interface\\AddOns\\TinyDPS\\Textures\\minimapbutton.blp')
+	tdpsButtonTexture:SetTexture([[Interface\AddOns\TinyDPS\Textures\minimapbutton.blp]])
 	tdpsButtonTexture:SetPoint('CENTER')
 	tdpsButtonFrame:SetNormalTexture(tdpsButtonTexture)
 	tdpsButtonFrame:CreateTexture('tdpsButtonTexturePushed', 'BACKGROUND')
 	tdpsButtonTexturePushed:SetWidth(24)
 	tdpsButtonTexturePushed:SetHeight(24)
-	tdpsButtonTexturePushed:SetTexture('Interface\\AddOns\\TinyDPS\\Textures\\minimapbutton.blp')
+	tdpsButtonTexturePushed:SetTexture([[Interface\AddOns\TinyDPS\Textures\minimapbutton.blp]])
 	tdpsButtonTexturePushed:SetPoint('CENTER', 1, -1)
 	tdpsButtonFrame:SetPushedTexture(tdpsButtonTexturePushed)
-	tdpsButtonFrame:SetHighlightTexture('Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight')
+	tdpsButtonFrame:SetHighlightTexture([[Interface\Minimap\UI-Minimap-ZoomButton-Highlight]])
 	tdpsButtonFrame:CreateTexture('tdpsButtonOverlay', 'OVERLAY')
 	tdpsButtonOverlay:SetWidth(53)
 	tdpsButtonOverlay:SetHeight(53)
-	tdpsButtonOverlay:SetTexture('Interface\\Minimap\\MiniMap-TrackingBorder')
+	tdpsButtonOverlay:SetTexture([[Interface\Minimap\MiniMap-TrackingBorder]])
 	tdpsButtonOverlay:SetPoint('TOPLEFT')
+
+
+
+	-- dropdown frame
+	CreateFrame('Frame', 'tdpsDropDown')
+	tdpsDropDown.displayMode = 'MENU'
 
 
 
@@ -1398,7 +1661,7 @@
 	-- copy global functions (faster)
 	local toNum, GetTime, select, band = tonumber, GetTime, select, bit.band
 	local floor, ceil, min, max, abs, random = math.floor, math.ceil, math.min, math.max, abs, random
-	local t_sort, t_remove, t_insert = table.sort, table.remove, table.insert
+	local t_sort, t_remove, t_insert, t_wipe = table.sort, table.remove, table.insert, table.wipe
 	local pairs, ipairs, type, CreateFrame = pairs, ipairs, type, CreateFrame
 	local GetNumRaidMembers, GetNumPartyMembers = GetNumRaidMembers, GetNumPartyMembers
 	local find, sub, split, lower, len, fmt = strfind, strsub, strsplit, strlower, strlen, string.format
@@ -1415,7 +1678,10 @@
 
 
 
-	local function report(channel, reportlength, destination)
+	local function report(button, channel, length)
+
+		if type(channel) == 'number' then destination = channel channel = 'CHANNEL' end
+		if channel == 'WHISPER' then destination = UnitName('target') end
 
 		-- check whisper target
 		if channel == 'WHISPER' and (not destination or not UnitIsPlayer(destination) or not UnitCanCooperate('player', destination)) then echo('Invalid or no target selected') return end
@@ -1423,13 +1689,13 @@
 		-- make table for sorting
 		local report = {}
 		for k,v in pairs(tdpsPlayer) do
-			local reportPlayer = {name = split('-', tdpsPlayer[k].name), n = tdpsPlayer[k].fight[tdpsSelectedFight][tdpsSelectedView], t = tdpsPlayer[k].fight[tdpsSelectedFight].t}
+			local reportPlayer = {name = split('-', tdpsPlayer[k].name), n = tdpsPlayer[k].fight[tdspF][tdspV], t = tdpsPlayer[k].fight[tdspF].t}
 			local pet = tdpsPlayer[k].pet
 			for i=1,#pet do
 				-- add pet number
-				reportPlayer.n = reportPlayer.n + tdpsPet[pet[i]].fight[tdpsSelectedFight][tdpsSelectedView]
+				reportPlayer.n = reportPlayer.n + tdpsPet[pet[i]].fight[tdspF][tdspV]
 				-- check time
-				if tdpsPet[pet[i]].fight[tdpsSelectedFight].t > reportPlayer.t then reportPlayer.t = tdpsPet[pet[i]].fight[tdpsSelectedFight].t end
+				if tdpsPet[pet[i]].fight[tdspF].t > reportPlayer.t then reportPlayer.t = tdpsPet[pet[i]].fight[tdspF].t end
 			end
 			t_insert(report, reportPlayer)
 		end
@@ -1439,16 +1705,16 @@
 		if not report[1] or report[1].n == 0 then echo('No data to report') return end
 
 		-- output report title
-		if tdpsSelectedFight == 2 then
-			SendChatMessage(fmt('%s Done for Last Fight', viewTitle[tdpsSelectedView]), channel, nil, destination)
+		if tdspF == 2 then
+			SendChatMessage(fmt('%s Done for Last Fight', viewTitle[tdspV]), channel, nil, destination)
 		else
-			SendChatMessage(fmt('%s Done for %s', viewTitle[tdpsSelectedView], tdpsFight[tdpsSelectedFight].name or 'Unknown'), channel, nil, destination)
+			SendChatMessage(fmt('%s Done for %s', viewTitle[tdspV], tdpsFight[tdspF].name or 'Unknown'), channel, nil, destination)
 		end
 
 		-- output the text lines
-		for i=1,min(#report, reportlength) do
+		for i=1,min(#report, length) do
 			if report[i].n > 0 then
-				SendChatMessage(fmt('%i. %s    %i    %i%%    (%i)', i, report[i].name, report[i].n, report[i].n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100, report[i].n/report[i].t), channel, nil, destination)
+				SendChatMessage(fmt('%i. %s    %i    %i%%    (%i)', i, report[i].name, report[i].n, report[i].n/tdpsFight[tdspF][tdspV]*100, report[i].n/report[i].t), channel, nil, destination)
 			end
 		end
 
@@ -1487,24 +1753,33 @@
 
 
 
-	local textLayout = { -- bits: 8 = dps, 4 = percentage, 2 = dmg, 1 = short format. Example: 13 = 1101 = dps (short) and percentage
+	local function short(n)
+		if n > 999999 then return fmt('%.1fM', n/1000000)
+		elseif n > 9999 then return fmt('%.0fK', n/1000)
+		elseif n > 999 then return fmt('%.1fK', n/1000)
+		else return fmt('%i', n) end
+	end
+
+
+
+	local textLayout = { -- bits: 8 = dps, 4 = percentage, 2 = amount, 1 = short format. Example: 13 = 1101 = percentage and dps (short)
 
 		[0]  = function(i, n, t) bar[i].fontStringRight:SetText('') end,
 		[1]  = function(i, n, t) bar[i].fontStringRight:SetText('') end,
 		[2]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i', n) end,
-		[3]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%.0fK', n/1000) end,
-		[4]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%%', n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100) end,
-		[5]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%%', n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100) end,
-		[6]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%% %i', n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100, n/t) end,
-		[7]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%% %.0fK', n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100, n/t/1000) end,
+		[3]  = function(i, n, t) bar[i].fontStringRight:SetText(short(n)) end,
+		[4]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%%', n/tdpsFight[tdspF][tdspV]*100) end,
+		[5]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%%', n/tdpsFight[tdspF][tdspV]*100) end,
+		[6]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%% %i', n/tdpsFight[tdspF][tdspV]*100, n/t) end,
+		[7]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%s %i%%', short(n), n/tdpsFight[tdspF][tdspV]*100) end,
 		[8]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i', n/t) end,
-		[9]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%.1fK', n/t/1000) end,
+		[9]  = function(i, n, t) bar[i].fontStringRight:SetText(short(n/t)) end,
 		[10] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i %i', n, n/t) end,
-		[11] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%.0fK %.1fK', n/1000, n/t/1000) end,
-		[12] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%% %i', n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100, n/t) end,
-		[13] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%% %.1fK', n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100, n/t/1000) end,
-		[14] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i %i%% %i', n, n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100, n/t) end,
-		[15] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%.0fK %i%% %.1fK', n/1000, n/tdpsFight[tdpsSelectedFight][tdpsSelectedView]*100, n/t/1000) end
+		[11] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%s %s', short(n), short(n/t)) end,
+		[12] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%% %i', n/tdpsFight[tdspF][tdspV]*100, n/t) end,
+		[13] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%% %s', n/tdpsFight[tdspF][tdspV]*100, short(n/t)) end,
+		[14] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i %i%% %i', n, n/tdpsFight[tdspF][tdspV]*100, n/t) end,
+		[15] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%s %i%% %s', short(n), n/tdpsFight[tdspF][tdspV]*100, short(n/t)) end
 
 	}
 
@@ -1519,8 +1794,8 @@
 		for i=1,#bar do
 			bar[i]:Hide()
 			g = bar[i].guid
-			n, t, p = tdpsPlayer[g].fight[tdpsSelectedFight][tdpsSelectedView], tdpsPlayer[g].fight[tdpsSelectedFight].t, tdpsPlayer[g].pet
-			for i=1,#p do n = n + tdpsPet[p[i]].fight[tdpsSelectedFight][tdpsSelectedView] if tdpsPet[p[i]].fight[tdpsSelectedFight].t > t then t = tdpsPet[p[i]].fight[tdpsSelectedFight].t end end
+			n, t, p = tdpsPlayer[g].fight[tdspF][tdspV], tdpsPlayer[g].fight[tdspF].t, tdpsPlayer[g].pet
+			for i=1,#p do n = n + tdpsPet[p[i]].fight[tdspF][tdspV] if tdpsPet[p[i]].fight[tdspF].t > t then t = tdpsPet[p[i]].fight[tdspF].t end end
 			-- update bar values
 			if n > 0 then
 				barsWithValue = barsWithValue + 1
@@ -1567,18 +1842,23 @@
 
 	--local function tdpsShowStatus()
 	--	ACTION_STATUS_FADETIME = 3
-	--	if tdpsSelectedFight == 2 then ActionStatus_DisplayMessage(fmt('%s for Current Fight', viewTitle[tdpsSelectedView]), true)
-	--	else ActionStatus_DisplayMessage(fmt('%s for %s', viewTitle[tdpsSelectedView], tdpsFight[tdpsSelectedFight].name), true) end
+	--	if tdspF == 2 then ActionStatus_DisplayMessage(fmt('%s for Current Fight', viewTitle[tdspV]), true)
+	--	else ActionStatus_DisplayMessage(fmt('%s for %s', viewTitle[tdspV], tdpsFight[tdspF].name), true) end
 	--end
 
 
 
-	local function changeView(v) if tdpsSelectedView == v then return end tdpsSelectedView = v scrollPosition = 1 tdpsAnimationGroup:Play() end
-	local function changeFight(f) if tdpsSelectedFight == f then return end CloseDropDownMenus() tdpsSelectedFight = f scrollPosition = 1 tdpsAnimationGroup:Play() end
+	local function changeView(button, v) if tdspV == v then return end tdspV = v scrollPosition = 1 CloseDropDownMenus() tdpsAnimationGroup:Play() end
+	local function checkView(v) if tdspV == v then return true end end
+	local function changeFight(button, f) if tdspF == f then return else tdspF = f scrollPosition = 1 CloseDropDownMenus() tdpsAnimationGroup:Play() end end
+	local function checkFight(f) if tdspF == f then return true end end
+	local function changeTextLayout(button, bit) if band(tdps.layout,bit) > 0 then tdps.layout = tdps.layout - bit else tdps.layout = tdps.layout + bit end tdpsRefresh() end
 
 
 
-	local function changeNumberOfFights()
+	local function changeNumberOfFights(button, n)
+	
+		tdpsNumberOfFights = n
 
 		-- make or delete entries for global fight data
 		while #tdpsFight > tdpsNumberOfFights do t_remove(tdpsFight) end
@@ -1596,7 +1876,7 @@
 
 		-- adjust the current selected fight
 		-- example: selected fight is 5; user disables fight history; we now have only 2 fights (overall and current); the new selected fight has to be 2
-		while not tdpsFight[tdpsSelectedFight] do tdpsSelectedFight = tdpsSelectedFight - 1 end
+		while not tdpsFight[tdspF] do tdspF = tdspF - 1 end
 
 		-- clean up memory
 		collectgarbage()
@@ -1605,25 +1885,26 @@
 
 
 
-	local function changeSpacing(s) if s < 0 then tdps.spacing = 0 elseif s > 10 then tdps.spacing = 10 else tdps.spacing = s end tdpsRefresh() end
-	local function changeMaxBars(v) tdps.maxBars = v scrollPosition = 1 tdpsRefresh() end
-	local function changeBarHeight(h) if h < 2 then h = 2 elseif h > 40 then h = 40 end for i=1,#bar do bar[i]:SetHeight(h) end tdps.barHeight = h tdpsRefresh() end
+	local function changeBarSpacing(button, d) if tdps.spacing + d < 0 then tdps.spacing = 0 elseif tdps.spacing + d > 10 then tdps.spacing = 10 else tdps.spacing = tdps.spacing + d end tdpsRefresh() end
+	local function changeMaxBars(button, d) tdps.maxBars = d scrollPosition = 1 tdpsRefresh() end
+	local function changeBarHeight(button, d) if tdps.barHeight + d < 2 then tdps.barHeight = 2 elseif tdps.barHeight + d > 40 then tdps.barHeight = 40 else tdps.barHeight = tdps.barHeight + d end for i=1,#bar do bar[i]:SetHeight(tdps.barHeight) end tdpsRefresh() end
 
 
 
-	local function changeFont(name, size, outline, shadow)
-		-- save parameters
-		tdps.font.name = name
-		if size < 4 then tdps.font.size = 4 elseif size > 30 then tdps.font.size = 30 else tdps.font.size = size end
-		tdps.font.outline, tdps.font.shadow = outline, shadow
+	local function changeFont(button, change, arg)
+		-- check arg
+		if change == 'font' then tdpsFont.name = arg end
+		if change == 'size' then if tdpsFont.size + arg < 4 then tdpsFont.size = 4 elseif tdpsFont.size + arg > 30 then tdpsFont.size = 30 else tdpsFont.size = tdpsFont.size + arg end end
+		if change == 'outline' then tdpsFont.outline, tdpsFont.shadow = arg, 0 end
+		if change == 'shadow' then tdpsFont.outline, tdpsFont.shadow = '', arg end
 		-- set the font
-		noData:SetFont(tdps.font.name, tdps.font.size, tdps.font.outline)
-		noData:SetShadowOffset(tdps.font.shadow, tdps.font.shadow * -1)
+		noData:SetFont(tdpsFont.name, tdpsFont.size, tdpsFont.outline)
+		noData:SetShadowOffset(tdpsFont.shadow, tdpsFont.shadow * -1)
 		for i=1,#bar do
-			bar[i].fontStringLeft:SetFont(tdps.font.name, tdps.font.size, tdps.font.outline)
-			bar[i].fontStringRight:SetFont(tdps.font.name, tdps.font.size, tdps.font.outline)
-			bar[i].fontStringLeft:SetShadowOffset(tdps.font.shadow, tdps.font.shadow * -1)
-			bar[i].fontStringRight:SetShadowOffset(tdps.font.shadow, tdps.font.shadow * -1)
+			bar[i].fontStringLeft:SetFont(tdpsFont.name, tdpsFont.size, tdpsFont.outline)
+			bar[i].fontStringRight:SetFont(tdpsFont.name, tdpsFont.size, tdpsFont.outline)
+			bar[i].fontStringLeft:SetShadowOffset(tdpsFont.shadow, tdpsFont.shadow * -1)
+			bar[i].fontStringRight:SetShadowOffset(tdpsFont.shadow, tdpsFont.shadow * -1)
 		end
 	end
 
@@ -1659,9 +1940,9 @@
 
 		tdpsStartNewFight = false
 		tdpsInCombat = true
-		if tdpsSelectedFight ~= 1 then scrollPosition = 1 end
+		if tdspF ~= 1 then scrollPosition = 1 end
 
-		-- insert a new table
+		-- insert a new fight at position 2
 		if tdpsFight[2].d + tdpsFight[2].h > 0 and ((tdps.onlyBossSegments and tdpsFight[2].boss) or not tdps.onlyBossSegments) then
 			t_insert(tdpsFight, 2, {name = target, boss = isBoss[toNum(mobid:sub(7, 10), 16)], d = 0, h = 0})
 			t_remove(tdpsFight)
@@ -1700,7 +1981,7 @@
 		end
 		tdpsInCombat = false
 	end
-	
+
 
 
 	local function getPetOwnerName(petguid)
@@ -1751,12 +2032,11 @@
 
 
 	local function help()
-		echo('Version ' .. GetAddOnMetadata('TinyDPS', 'Version') .. ' by Sideshow (Draenor EU)')
-		echo('- move: hold shift and drag the frame')
-		echo('- resize: drag the bottom right corner')
-		echo('- command: type /tdps to hide or show')
-		echo('- parameters: /tpds reset | damage | healing')
-		--echo('- middle click to reset all data, mouse back to show overall data, mouse forward to show current fight')
+		echo(tdpsL.helpVersion .. ' ' .. GetAddOnMetadata('TinyDPS', 'Version') .. ' by Sideshow (Draenor EU)')
+		echo(tdpsL.helpMove)
+		echo(tdpsL.helpResize)
+		echo(tdpsL.helpCommand)
+		echo(tdpsL.helpParameters)
 	end
 
 
@@ -1772,12 +2052,15 @@
 		-- reset scroll position
 		scrollPosition = 1
 		-- return to current fight if needed
-		if tdpsSelectedFight > 2 then tdpsSelectedFight = 2 end
+		if tdspF > 2 then tdspF = 2 end
 		-- reset the window
 		tdpsFrame:SetHeight(tdps.barHeight + 4)
 		noData:Show()
 		-- output message
-		echo('All data has been reset')
+		echo(tdpsL.allClear)
+		CloseDropDownMenus()
+		-- clean up memory
+		collectgarbage()
 	end
 
 
@@ -1785,8 +2068,8 @@
 	SLASH_TINYDPS1, SLASH_TINYDPS2 = '/tinydps', '/tdps'
 	function SlashCmdList.TINYDPS(msg, editbox)
 		if lower(msg) == 'reset' or lower(msg) == 'r' then reset()
-		elseif lower(msg) == 'damage' or lower(msg) == 'd' then changeView('d')
-		elseif lower(msg) == 'healing' or lower(msg) == 'h' then changeView('h')
+		elseif lower(msg) == 'damage' or lower(msg) == 'd' then changeView(nil, 'd')
+		elseif lower(msg) == 'healing' or lower(msg) == 'h' then changeView(nil, 'h')
 		elseif msg == '' then if tdpsFrame:IsVisible() then tdpsFrame:Hide() else tdpsRefresh() tdpsFrame:Show() end
 		else help() end
 	end
@@ -1802,321 +2085,282 @@
 
 
 
-	local tdpsDropDown = CreateFrame('Frame', 'tdpsDropDown', nil, 'UIDropDownMenuTemplate')
-	local tdpsMenuTable
-	local function tdpsShowMenu()
-		tdpsMenuTable = {
-			{ text = 'TinyDPS         ', isTitle = 1, notCheckable = 1 },
-			{ text = 'Fight', notCheckable = 1, hasArrow = true,
-				menuList = {
-					{ text = 'Overall      All Fights', checked = function() if tdpsSelectedFight == 1 then return true end end, func = function() changeFight(1) end },
-					{ text = 'Current     ' .. (tdpsFight[2].name or '<Empty>'), checked = function() if tdpsSelectedFight == 2 then return true end end, func = function() changeFight(2) end },
-					{ text = '', disabled = true, notCheckable = true },
-					{ text = 'Show Damage', checked = function() if tdpsSelectedView == 'd' then return true end end, func = function() changeView('d') end },
-					{ text = 'Show Healing', checked = function() if tdpsSelectedView == 'h' then return true end end, func = function() changeView('h') end },
-					{ text = '', disabled = true, notCheckable = true },
-					{ text = '     Reset All Data', notCheckable = true, func = function() reset() CloseDropDownMenus() end }
-				}
-			},
-			{ text = 'Report', notCheckable = 1, hasArrow = true,
-				menuList = {
-					{ text = 'Top 3', notCheckable = 1, hasArrow = true,
-						menuList = {
-							{ text = 'Say', func = function() report('SAY', 3) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Raid', func = function() report('RAID', 3) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Party', func = function() report('PARTY', 3) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Guild', func = function() report('GUILD', 3) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Officer', func = function() report('OFFICER', 3) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Whisper', func = function() report('WHISPER', 3, UnitName('target')) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Channel    ', notCheckable = 1, hasArrow = true, menuList = {} }
-						}
-					},
-					{ text = 'Top 5', notCheckable = 1, hasArrow = true,
-						menuList = {
-							{ text = 'Say', func = function() report('SAY', 5) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Raid', func = function() report('RAID', 5) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Party', func = function() report('PARTY', 5) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Guild', func = function() report('GUILD', 5) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Officer', func = function() report('OFFICER', 5) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Whisper', func = function() report('WHISPER', 5, UnitName('target')) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Channel    ', notCheckable = 1, hasArrow = true, menuList = {} }
-						}
-					},
-					{ text = 'Top 10    ', notCheckable = 1, hasArrow = true,
-						menuList = {
-							{ text = 'Say', func = function() report('SAY', 10) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Raid', func = function() report('RAID', 10) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Party', func = function() report('PARTY', 10) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Guild', func = function() report('GUILD', 10) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Officer', func = function() report('OFFICER', 10) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Whisper', func = function() report('WHISPER', 10, UnitName('target')) CloseDropDownMenus() end, notCheckable = 1 },
-							{ text = 'Channel    ', notCheckable = 1, hasArrow = true, menuList = {} }
-						}
-					}
-				}
-			},
-			{ text = 'Options', notCheckable = 1, hasArrow = true,
-				menuList = {
-					{ text = 'Text', notCheckable = 1, hasArrow = true,
-						menuList = {
-							{ text = 'Size', notCheckable = 1, hasArrow = true,
-								menuList = {
-									{ text = 'Increase', func = function() changeFont(tdps.font.name, tdps.font.size + 1, tdps.font.outline, tdps.font.shadow) end, notCheckable = 1, keepShownOnClick = 1 },
-									{ text = 'Decrease', func = function() changeFont(tdps.font.name, tdps.font.size - 1, tdps.font.outline, tdps.font.shadow) end, notCheckable = 1, keepShownOnClick = 1 }
-								}
-							},
-							{ text = 'Font', notCheckable = 1, hasArrow = true,
-								menuList = {
-									{ text = 'Visitor', func = function() changeFont('Interface\\AddOns\\TinyDPS\\Fonts\\Visitor.ttf', tdps.font.size, tdps.font.outline, tdps.font.shadow) end, checked = function() if find(tdps.font.name, 'Visitor') then return true end end },
-									{ text = 'Berlin Sans', func = function() changeFont('Interface\\AddOns\\TinyDPS\\Fonts\\Berlin Sans.ttf', tdps.font.size, tdps.font.outline, tdps.font.shadow) end, checked = function() if find(tdps.font.name, 'Berlin') then return true end end },
-									{ text = 'Avant Garde', func = function() changeFont('Interface\\AddOns\\TinyDPS\\Fonts\\Avant Garde.ttf', tdps.font.size, tdps.font.outline, tdps.font.shadow) end, checked = function() if find(tdps.font.name, 'Avant') then return true end end },
-									{ text = 'Franklin Gothic', func = function() changeFont('Interface\\AddOns\\TinyDPS\\Fonts\\Franklin Gothic.ttf', tdps.font.size, tdps.font.outline, tdps.font.shadow) end, checked = function() if find(tdps.font.name, 'Franklin') then return true end end }
-								}
-							},
-							{ text = 'Layout', notCheckable = 1, hasArrow = true,
-								menuList = {
-									{ text = 'DPS', isNotRadio = true, func = function() if band(tdps.layout,8) > 0 then tdps.layout = tdps.layout - 8 else tdps.layout = tdps.layout + 8 end tdpsRefresh() end, checked = function() if band(tdps.layout,8) > 0 then return true end end, keepShownOnClick = 1 },
-									{ text = 'Rank', isNotRadio = true, func = function() tdps.showRank = not tdps.showRank tdpsRefresh() end, checked = function() return tdps.showRank end, keepShownOnClick = 1 },
-									{ text = 'Percent', isNotRadio = true, func = function() if band(tdps.layout,4) > 0 then tdps.layout = tdps.layout - 4 else tdps.layout = tdps.layout + 4 end tdpsRefresh() end, checked = function() if band(tdps.layout,4) > 0 then return true end end, keepShownOnClick = 1 },
-									{ text = 'Amount', isNotRadio = true, func = function() if band(tdps.layout,2) > 0 then tdps.layout = tdps.layout - 2 else tdps.layout = tdps.layout + 2 end tdpsRefresh() end, checked = function() if band(tdps.layout,2) > 0 then return true end end, keepShownOnClick = 1 },
-									{ text = 'Short Format', isNotRadio = true, func = function() if band(tdps.layout,1) > 0 then tdps.layout = tdps.layout - 1 else tdps.layout = tdps.layout + 1 end tdpsRefresh() end, checked = function() if band(tdps.layout,1) > 0 then return true end end, keepShownOnClick = 1 }
-								}
-							},
-							{ text = 'Outline    ', notCheckable = 1, hasArrow = true,
-								menuList = {
-									{ text = 'None', isNotRadio = true, func = function() changeFont(tdps.font.name, tdps.font.size, '', 0) end, checked = function() if tdps.font.outline == '' and tdps.font.shadow == 0 then return true end end },
-									{ text = 'Thin', isNotRadio = true, func = function() changeFont(tdps.font.name, tdps.font.size, 'Outline', 0) end, checked = function() if tdps.font.outline == 'Outline' and tdps.font.shadow == 0 then return true end end },
-									{ text = 'Thick', isNotRadio = true, func = function() changeFont(tdps.font.name, tdps.font.size, 'Thickoutline', 0) end, checked = function() if tdps.font.outline == 'Thickoutline' and tdps.font.shadow == 0 then return true end end },
-									{ text = 'Shadow', isNotRadio = true, func = function() changeFont(tdps.font.name, tdps.font.size, '', 1) end, checked = function() if tdps.font.outline == '' and tdps.font.shadow == 1 then return true end end },
-									{ text = 'Monochrome', isNotRadio = true, func = function() changeFont(tdps.font.name, tdps.font.size, 'Outlinemonochrome', 0) end, checked = function() if tdps.font.outline == 'Outlinemonochrome' and tdps.font.shadow == 0 then return true end end }
-								}
-							}
-						}
-					},
-					{ text = 'Bars', notCheckable = 1, hasArrow = true,
-						menuList = {
-							{ text = 'Height', notCheckable = 1, hasArrow = true,
-								menuList = {
-									{ text = 'Increase', func = function() changeBarHeight(tdps.barHeight+1) end, notCheckable = 1, keepShownOnClick = 1 },
-									{ text = 'Decrease', func = function() changeBarHeight(tdps.barHeight-1) end, notCheckable = 1, keepShownOnClick = 1 }
-								}
-							},
-							{ text = 'Spacing', notCheckable = 1, hasArrow = true,
-								menuList = {
-									{ text = 'Increase', func = function() changeSpacing(tdps.spacing+1) end, notCheckable = 1, keepShownOnClick = 1 },
-									{ text = 'Decrease', func = function() changeSpacing(tdps.spacing-1) end, notCheckable = 1, keepShownOnClick = 1 }
-								}
-							},
-							{ text = 'Maximum    ', notCheckable = 1, hasArrow = true,
-								menuList = {
-									{ text = '1 (Yourself)', isNotRadio = true, func = function() changeMaxBars(1) end, checked = function() if tdps.maxBars == 1 then return true end end },
-									{ text = '5', isNotRadio = true, func = function() changeMaxBars(5) end, checked = function() if tdps.maxBars == 5 then return true end end },
-									{ text = '10', isNotRadio = true, func = function() changeMaxBars(10) end, checked = function() if tdps.maxBars == 10 then return true end end },
-									{ text = '15', isNotRadio = true, func = function() changeMaxBars(15) end, checked = function() if tdps.maxBars == 15 then return true end end },
-									{ text = '20', isNotRadio = true, func = function() changeMaxBars(20) end, checked = function() if tdps.maxBars == 20 then return true end end },
-									{ text = '? (Unlimited)', isNotRadio = true, func = function() changeMaxBars(99) end, checked = function() if tdps.maxBars == 99 then return true end end }
-								}
-							}
-						}
-					},
-					{ text = 'Colors', notCheckable = 1, hasArrow = true,
-						menuList = {
-							{ text = 'Bars', notClickable = 1,
-								hasColorSwatch = true,
-								swatchFunc = function()
-									ColorPickerOkayButton:Hide()
-									ColorPickerCancelButton:SetText('Close')
-									local red, green, blue = ColorPickerFrame:GetColorRGB()
-									local alpha = 1 - OpacitySliderFrame:GetValue()
-									tdps.bar[1], tdps.bar[2], tdps.bar[3], tdps.bar[4] = red, green, blue, alpha
-									changeBarColor()
-								end,
-								hasOpacity = true,
-								opacityFunc = function()
-									local red, green, blue = ColorPickerFrame:GetColorRGB()
-									local alpha = 1 - OpacitySliderFrame:GetValue()
-									tdps.bar[1], tdps.bar[2], tdps.bar[3], tdps.bar[4] = red, green, blue, alpha
-									changeBarColor()
-								end,
-								r = tdps.bar[1], g = tdps.bar[2], b = tdps.bar[3], opacity = 1 - tdps.bar[4],
-								notCheckable = 1
-							},
-							{ text = 'Bar Backdrop', notClickable = 1,
-								hasColorSwatch = true,
-								swatchFunc = function()
-									ColorPickerOkayButton:Hide()
-									ColorPickerCancelButton:SetText('Close')
-									local red, green, blue = ColorPickerFrame:GetColorRGB()
-									local alpha = 1 - OpacitySliderFrame:GetValue()
-									tdps.barbackdrop[1], tdps.barbackdrop[2], tdps.barbackdrop[3], tdps.barbackdrop[4] = red, green, blue, alpha
-									changeBarBackdropColor()
-								end,
-								hasOpacity = true,
-								opacityFunc = function()
-									local red, green, blue = ColorPickerFrame:GetColorRGB()
-									local alpha = 1 - OpacitySliderFrame:GetValue()
-									tdps.barbackdrop[1], tdps.barbackdrop[2], tdps.barbackdrop[3], tdps.barbackdrop[4] = red, green, blue, alpha
-									changeBarBackdropColor()
-								end,
-								r = tdps.barbackdrop[1], g = tdps.barbackdrop[2], b = tdps.barbackdrop[3], opacity = 1 - tdps.barbackdrop[4],
-								notCheckable = 1
-							},
-							{ text = 'Frame Border', notClickable = 1,
-								hasColorSwatch = true,
-								swatchFunc = function()
-									ColorPickerOkayButton:Hide()
-									ColorPickerCancelButton:SetText('Close')
-									local red, green, blue = ColorPickerFrame:GetColorRGB()
-									local alpha = 1 - OpacitySliderFrame:GetValue()
-									tdpsFrame:SetBackdropBorderColor(red, green, blue, alpha)
-									tdps.border[1], tdps.border[2], tdps.border[3], tdps.border[4] = red, green, blue, alpha
-								end,
-								hasOpacity = true,
-								opacityFunc = function()
-									local red, green, blue = ColorPickerFrame:GetColorRGB()
-									local alpha = 1 - OpacitySliderFrame:GetValue()
-									tdpsFrame:SetBackdropBorderColor(red, green, blue, alpha)
-									tdps.border[1], tdps.border[2], tdps.border[3], tdps.border[4] = red, green, blue, alpha
-								end,
-								r = tdps.border[1], g = tdps.border[2], b = tdps.border[3], opacity = 1 - tdps.border[4],
-								notCheckable = 1
-							},
-							{ text = 'Frame Backdrop        ', notClickable = 1,
-								hasColorSwatch = true,
-								swatchFunc = function()
-									ColorPickerOkayButton:Hide()
-									ColorPickerCancelButton:SetText('Close')
-									local red, green, blue = ColorPickerFrame:GetColorRGB()
-									local alpha = 1 - OpacitySliderFrame:GetValue()
-									tdpsFrame:SetBackdropColor(red, green, blue, alpha)
-									tdps.backdrop[1], tdps.backdrop[2], tdps.backdrop[3], tdps.backdrop[4] = red, green, blue, alpha
-								end,
-								hasOpacity = true,
-								opacityFunc = function()
-									local red, green, blue = ColorPickerFrame:GetColorRGB()
-									local alpha = 1 - OpacitySliderFrame:GetValue()
-									tdpsFrame:SetBackdropColor(red, green, blue, alpha)
-									tdps.backdrop[1], tdps.backdrop[2], tdps.backdrop[3], tdps.backdrop[4] = red, green, blue, alpha
-								end,
-								r = tdps.backdrop[1], g = tdps.backdrop[2], b = tdps.backdrop[3], opacity = 1 - tdps.backdrop[4],
-								notCheckable = 1
-							},
-							{ text = 'Dim Class Colors', notCheckable = 1, func = function() for _,v in pairs(tdps.classColor) do if v.a-.1 < 0 then v.a = 0 else v.a = v.a-.1 end end changeBarColor() end, keepShownOnClick = 1 },
-							{ text = 'Reset Class Colors', notCheckable = 1, func = function() tdps.classColor = RAID_CLASS_COLORS for k,v in pairs(tdps.classColor) do v.a = 1 end tdps.classColor['UNKNOWN'] = {r = .63, g = .58, b = .24, a = 1} changeBarColor() end, keepShownOnClick = 1 },
-							{ text = 'Swap Bar/Text Color', notCheckable = 1,
-								func = function()
-									tdps.swapColor = not tdps.swapColor
-									if tdps.swapColor then
-										tdpsMenuTable[4]['menuList'][3]['menuList'][1].text = 'Text'
-										DropDownList3Button1:SetText('Text')
-									else
-										tdpsMenuTable[4]['menuList'][3]['menuList'][1].text = 'Bars'
-										DropDownList3Button1:SetText('Bars')
-									end
-									changeBarColor()
-								end,
-								keepShownOnClick = 1
-							}
-						}
-					},
-					{ text = 'History', notCheckable = 1, hasArrow = true,
-						menuList = {
-							{ text = 'Disabled', func = function() tdpsNumberOfFights = 2 changeNumberOfFights() CloseDropDownMenus() end, checked = function() if tdpsNumberOfFights == 2 then return true end end },
-							{ text = '3 fights', func = function() tdpsNumberOfFights = 5 changeNumberOfFights() CloseDropDownMenus() end, checked = function() if tdpsNumberOfFights == 5 then return true end end },
-							{ text = '5 fights', func = function() tdpsNumberOfFights = 7 changeNumberOfFights() CloseDropDownMenus() end, checked = function() if tdpsNumberOfFights == 7 then return true end end },
-							{ text = '9 fights', func = function() tdpsNumberOfFights = 11 changeNumberOfFights() CloseDropDownMenus() end, checked = function() if tdpsNumberOfFights == 11 then return true end end }
-						}
-					},
-					{ text = 'Toggles', notCheckable = 1, hasArrow = true,
-						menuList = {
-							{ text = 'Hide In PvP', isNotRadio = true, func = function() tdps.hidePvP = not tdps.hidePvP visibilityEvent() end, checked = function() return tdps.hidePvP end, keepShownOnClick = 1 },
-							{ text = 'Hide When Solo', isNotRadio = true, func = function() tdps.hideSolo = not tdps.hideSolo visibilityEvent() end, checked = function() return tdps.hideSolo end, keepShownOnClick = 1 },
-							{ text = 'Hide Out Of Combat', isNotRadio = true, func = function() tdps.hideOOC = not tdps.hideOOC visibilityEvent() end, checked = function() return tdps.hideOOC end, keepShownOnClick = 1 },
-							{ text = '', disabled = true, notCheckable = true },
-							{ text = 'Grow Upwards', isNotRadio = true, func = function() if tdps.anchor == 'TOPLEFT' then tdps.anchor = 'BOTTOMLEFT' else tdps.anchor = 'TOPLEFT' end tdpsFrame:ClearAllPoints() tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor) end,  checked = function() if tdps.anchor == 'BOTTOMLEFT' then return true end end, keepShownOnClick = 1 },
-							{ text = 'Minimap Button', isNotRadio = true, func = function() toggleMinimapButton() end, checked = function() return tdps.showMinimapButton end, keepShownOnClick = 1 },
-							{ text = 'Track Spell Details', isNotRadio = true, func = function() tdps.trackSpells = not tdps.trackSpells if not tdps.trackSpells then deleteSpellData() end end, checked = function() return tdps.trackSpells end, keepShownOnClick = 1 },
-							{ text = 'Reset On New Group', isNotRadio = true, func = function() tdps.autoReset = not tdps.autoReset end, checked = function() return tdps.autoReset end, keepShownOnClick = 1 },
-							{ text = 'Refresh Every Second', isNotRadio = true, func = function() if tdps.speed == 2 then tdps.speed = 1 else tdps.speed = 2 end end, checked = function() if tdps.speed == 1 then return true end end, keepShownOnClick = 1 },
-							{ text = 'Keep Only Boss Fights', isNotRadio = true, func = function() tdps.onlyBossSegments = not tdps.onlyBossSegments end, checked = function() return tdps.onlyBossSegments end, keepShownOnClick = 1 }
-						}
-					},
-					{ text = 'Tooltips    ', notCheckable = 1, hasArrow = true,
-						menuList = {
-							{ text = tdps.tooltipSpells .. ' Spells', notCheckable = 1, hasArrow = true,
-								menuList = {
-									{ text = 'More',
-										func = function()
-											tdps.tooltipSpells = min(10, tdps.tooltipSpells + 1)
-											DropDownList3Button1:SetText(tdps.tooltipSpells .. ' Spells')
-											tdpsMenuTable[4]['menuList'][6]['menuList'][1].text = tdps.tooltipSpells .. ' Spells'
-										end,
-										notCheckable = 1,
-										keepShownOnClick = 1
-									},
-									{ text = 'Less',
-										func = function()
-											tdps.tooltipSpells = max(0, tdps.tooltipSpells - 1)
-											DropDownList3Button1:SetText(tdps.tooltipSpells .. ' Spells')
-											tdpsMenuTable[4]['menuList'][6]['menuList'][1].text = tdps.tooltipSpells .. ' Spells'
-										end,
-										notCheckable = 1,
-										keepShownOnClick = 1
-									}
-								}
-							},
-							{ text = tdps.tooltipTargets .. ' Targets    ', notCheckable = 1, hasArrow = true,
-								menuList = {
-									{ text = 'More',
-										func = function()
-											tdps.tooltipTargets = min(10, tdps.tooltipTargets + 1)
-											DropDownList3Button2:SetText(tdps.tooltipTargets .. ' Targets    ')
-											tdpsMenuTable[4]['menuList'][6]['menuList'][2].text = tdps.tooltipTargets .. ' Targets    '
-										end,
-										notCheckable = 1,
-										keepShownOnClick = 1
-									},
-									{ text = 'Less',
-										func = function()
-											tdps.tooltipTargets = max(0, tdps.tooltipTargets - 1)
-											DropDownList3Button2:SetText(tdps.tooltipTargets .. ' Targets    ')
-											tdpsMenuTable[4]['menuList'][6]['menuList'][2].text = tdps.tooltipTargets .. ' Targets    '
-										end,
-										notCheckable = 1,
-										keepShownOnClick = 1
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			{ text = 'Cancel', func = function() CloseDropDownMenus() end, notCheckable = 1 }
-		}
-			
-
-		-- add fights to menu
-		if tdpsNumberOfFights > 2 then
-			t_insert(tdpsMenuTable[2]['menuList'], 3, { text = '', disabled = true, notCheckable = true })
-		end
-		for i=3,tdpsNumberOfFights do
-			t_insert(tdpsMenuTable[2]['menuList'], i+1, { text = fmt('%s %i      %s', 'Fight', i-2, (tdpsFight[i].name or '<Empty>')), checked = function() if tdpsSelectedFight == (i) then return true end end, func = function() changeFight(i) end })
-		end
-		-- add channels to menu
-		for i=1,20 do
-			if select(2,GetChannelName(i)) then
-				t_insert(tdpsMenuTable[3]['menuList'][1]['menuList'][7]['menuList'], {text = split(' ',select(2,GetChannelName(i))), func = function() report('CHANNEL', 3, i) CloseDropDownMenus() end, notCheckable = 1})
-				t_insert(tdpsMenuTable[3]['menuList'][2]['menuList'][7]['menuList'], {text = split(' ',select(2,GetChannelName(i))), func = function() report('CHANNEL', 5, i) CloseDropDownMenus() end, notCheckable = 1})
-				t_insert(tdpsMenuTable[3]['menuList'][3]['menuList'][7]['menuList'], {text = split(' ',select(2,GetChannelName(i))), func = function() report('CHANNEL', 10, i) CloseDropDownMenus() end, notCheckable = 1})
-			end
-		end
-		-- adjust color option string
-		if tdps.swapColor then tdpsMenuTable[4]['menuList'][3]['menuList'][1].text = 'Text'
-		else tdpsMenuTable[4]['menuList'][3]['menuList'][1].text = 'Bars' end
-		-- display the menu
-		EasyMenu(tdpsMenuTable, tdpsDropDown, 'cursor', 0, 0, 'MENU')
-		PlaySound('gsTitleOptionExit')
+	local function newBu(...) -- text, title, notCheckable, hasArrow, value, keepShownOnClick, func, arg1, arg2, checked, disabled, isNotRadio, hasColorSwatch, swatchFunc, hasOpacity, opacityFunc, r, g, b, opacity, notClickable
+		level, bu.text, bu.isTitle, bu.notCheckable, bu.hasArrow, bu.value, bu.keepShownOnClick, bu.func, bu.arg1, bu.arg2, bu.checked, bu.disabled, bu.isNotRadio, bu.hasColorSwatch, bu.swatchFunc, bu.hasOpacity, bu.opacityFunc, bu.r, bu.g, bu.b, bu.opacity, bu.notClickable = ...
+		UIDropDownMenu_AddButton(bu, level)
+		t_wipe(bu)
 	end
+
+
+
+	tdpsDropDown.initialize = function(self, level)
+
+		if level == 1 then
+
+			PlaySound('gsTitleOptionExit')
+			newBu(level, 'TinyDPS       ', 1, 1)
+			newBu(level, tdpsL.fight, nil, 1, 1, 'fight', 1)
+			newBu(level, tdpsL.report, nil, 1, 1, 'report', 1)
+			newBu(level, tdpsL.options, nil, 1, 1, 'options', 1)
+			newBu(level, tdpsL.close, nil, 1)
+
+		elseif level == 2 and UIDROPDOWNMENU_MENU_VALUE == 'fight' then
+
+			newBu(level, tdpsL.allFight, nil, nil, nil, nil, nil, changeFight, 1, nil, checkFight(1))
+			newBu(level, tdpsL.currentFight .. '    ' .. (tdpsFight[2].name or tdpsL.empty), nil, nil, nil, nil, nil, changeFight, 2, nil, checkFight(2))
+			if tdpsNumberOfFights > 2 then newBu(level, '', nil, 1, nil, nil, nil, nil, nil, nil, nil, 1) end
+			for i=3,tdpsNumberOfFights do newBu(level, fmt('%s %i     %s', tdpsL.fight, i-2, (tdpsFight[i].name or tdpsL.empty)), nil, nil, nil, nil, nil, changeFight, i, nil, checkFight(i)) end
+			newBu(level, '', nil, 1, nil, nil, nil, nil, nil, nil, nil, 1)
+			newBu(level, tdpsL.showDamage, nil, nil, nil, nil, nil, changeView, 'd', nil, checkView('d'))
+			newBu(level, tdpsL.showHealing, nil, nil, nil, nil, nil, changeView, 'h', nil, checkView('h'))
+			newBu(level, '', nil, 1, nil, nil, nil, nil, nil, nil, nil, 1)
+			newBu(level, '     ' .. tdpsL.resetAllData, nil, 1, nil, nil, nil , reset)
+
+		elseif level == 2 and UIDROPDOWNMENU_MENU_VALUE == 'report' then
+
+			newBu(level, tdpsL.top3, nil, 1, 1, 'report3', 1)
+			newBu(level, tdpsL.top5, nil, 1, 1, 'report5', 1)
+			newBu(level, tdpsL.top10 .. '  ', nil, 1, 1, 'report10', 1)
+
+		elseif level == 2 and UIDROPDOWNMENU_MENU_VALUE == 'options' then
+
+			newBu(level, tdpsL.text, nil, 1, 1, 'text', 1)
+			newBu(level, tdpsL.bars, nil, 1, 1, 'bars', 1)
+			newBu(level, tdpsL.colors, nil, 1, 1, 'colors', 1)
+			newBu(level, tdpsL.history, nil, 1, 1, 'history', 1)
+			newBu(level, tdpsL.toggles, nil, 1, 1, 'toggles', 1)
+			newBu(level, tdpsL.tooltips .. '    ', nil, 1, 1, 'tooltips', 1)
+
+		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'report3' then
+
+			newBu(level, tdpsL.say, nil, 1, nil, nil, nil, report, 'SAY', 3)
+			newBu(level, tdpsL.raid, nil, 1, nil, nil, nil, report, 'RAID', 3)
+			newBu(level, tdpsL.party, nil, 1, nil, nil, nil, report, 'PARTY', 3)
+			newBu(level, tdpsL.guild, nil, 1, nil, nil, nil, report, 'GUILD', 3)
+			newBu(level, tdpsL.officer, nil, 1, nil, nil, nil, report, 'OFFICER', 3)
+			newBu(level, tdpsL.whisper, nil, 1, nil, nil, nil, report, 'WHISPER', 3)
+			for i=1,20 do if select(2,GetChannelName(i)) then newBu(level, split(' ',select(2,GetChannelName(i))) .. '     ', nil, 1, nil, nil, nil, report, i, 3) end end			
+
+		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'report5' then
+
+			newBu(level, tdpsL.say, nil, 1, nil, nil, nil, report, 'SAY', 5)
+			newBu(level, tdpsL.raid, nil, 1, nil, nil, nil, report, 'RAID', 5)
+			newBu(level, tdpsL.party, nil, 1, nil, nil, nil, report, 'PARTY', 5)
+			newBu(level, tdpsL.guild, nil, 1, nil, nil, nil, report, 'GUILD', 5)
+			newBu(level, tdpsL.officer, nil, 1, nil, nil, nil, report, 'OFFICER', 5)
+			newBu(level, tdpsL.whisper, nil, 1, nil, nil, nil, report, 'WHISPER', 5)
+			for i=1,20 do if select(2,GetChannelName(i)) then newBu(level, split(' ',select(2,GetChannelName(i))) .. '     ', nil, 1, nil, nil, nil, report, i, 5) end end	
+
+		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'report10' then
+
+			newBu(level, tdpsL.say, nil, 1, nil, nil, nil, report, 'SAY', 10)
+			newBu(level, tdpsL.raid, nil, 1, nil, nil, nil, report, 'RAID', 10)
+			newBu(level, tdpsL.party, nil, 1, nil, nil, nil, report, 'PARTY', 10)
+			newBu(level, tdpsL.guild, nil, 1, nil, nil, nil, report, 'GUILD', 10)
+			newBu(level, tdpsL.officer, nil, 1, nil, nil, nil, report, 'OFFICER', 10)
+			newBu(level, tdpsL.whisper, nil, 1, nil, nil, nil, report, 'WHISPER', 10)
+			for i=1,20 do if select(2,GetChannelName(i)) then newBu(level, split(' ',select(2,GetChannelName(i))) .. '     ', nil, 1, nil, nil, nil, report, i, 10) end end	
+
+		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'text' then
+
+			newBu(level, tdpsL.size, nil, 1, 1, 'size', 1)
+			newBu(level, tdpsL.font, nil, 1, 1, 'font', 1)
+			newBu(level, tdpsL.layout, nil, 1, 1, 'layout', 1)
+			newBu(level, tdpsL.outline, nil, 1, 1, 'outline', 1)
+
+		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'bars' then
+
+			newBu(level, tdpsL.height, nil, 1, 1, 'height', 1)
+			newBu(level, tdpsL.spacing, nil, 1, 1, 'spacing', 1)
+			newBu(level, tdpsL.maximum, nil, 1, 1, 'maximum', 1)
+
+		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'colors' then
+
+			local st if tdps.swapColor then st = tdpsL.text else st = tdpsL.bars end
+			newBu(level, st, nil, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1, 
+				function()
+					ColorPickerOkayButton:Hide()
+					ColorPickerCancelButton:SetText('Close')
+					local red, green, blue = ColorPickerFrame:GetColorRGB()
+					local alpha = 1 - OpacitySliderFrame:GetValue()
+					tdps.bar[1], tdps.bar[2], tdps.bar[3], tdps.bar[4] = red, green, blue, alpha
+					changeBarColor() end,
+				1,
+				function()
+					local red, green, blue = ColorPickerFrame:GetColorRGB()
+					local alpha = 1 - OpacitySliderFrame:GetValue()
+					tdps.bar[1], tdps.bar[2], tdps.bar[3], tdps.bar[4] = red, green, blue, alpha
+					changeBarColor() end,
+				tdps.bar[1], tdps.bar[2], tdps.bar[3], 1 - tdps.bar[4], 1)
+				
+			newBu(level, tdpsL.barBackdrop, nil, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1, 
+				function()
+					ColorPickerOkayButton:Hide()
+					ColorPickerCancelButton:SetText('Close')
+					local red, green, blue = ColorPickerFrame:GetColorRGB()
+					local alpha = 1 - OpacitySliderFrame:GetValue()
+					tdps.barbackdrop[1], tdps.barbackdrop[2], tdps.barbackdrop[3], tdps.barbackdrop[4] = red, green, blue, alpha
+					changeBarBackdropColor() end,
+				1,
+				function()
+					local red, green, blue = ColorPickerFrame:GetColorRGB()
+					local alpha = 1 - OpacitySliderFrame:GetValue()
+					tdps.barbackdrop[1], tdps.barbackdrop[2], tdps.barbackdrop[3], tdps.barbackdrop[4] = red, green, blue, alpha
+					changeBarBackdropColor() end,
+					tdps.barbackdrop[1], tdps.barbackdrop[2], tdps.barbackdrop[3], 1 - tdps.barbackdrop[4], 1)
+				
+			newBu(level, tdpsL.frameBorder, nil, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1, 
+				function()
+					ColorPickerOkayButton:Hide()
+					ColorPickerCancelButton:SetText('Close')
+					local red, green, blue = ColorPickerFrame:GetColorRGB()
+					local alpha = 1 - OpacitySliderFrame:GetValue()
+					tdpsFrame:SetBackdropBorderColor(red, green, blue, alpha)
+					tdps.border[1], tdps.border[2], tdps.border[3], tdps.border[4] = red, green, blue, alpha end,
+				1,
+				function()
+					local red, green, blue = ColorPickerFrame:GetColorRGB()
+					local alpha = 1 - OpacitySliderFrame:GetValue()
+					tdpsFrame:SetBackdropBorderColor(red, green, blue, alpha)
+					tdps.border[1], tdps.border[2], tdps.border[3], tdps.border[4] = red, green, blue, alpha end,
+					tdps.border[1], tdps.border[2], tdps.border[3], 1 - tdps.border[4], 1)
+				
+			newBu(level, tdpsL.frameBackdrop, nil, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1, 
+				function()
+					ColorPickerOkayButton:Hide()
+					ColorPickerCancelButton:SetText('Close')
+					local red, green, blue = ColorPickerFrame:GetColorRGB()
+					local alpha = 1 - OpacitySliderFrame:GetValue()
+					tdpsFrame:SetBackdropColor(red, green, blue, alpha)
+					tdps.backdrop[1], tdps.backdrop[2], tdps.backdrop[3], tdps.backdrop[4] = red, green, blue, alpha end,
+				1,
+				function()
+					local red, green, blue = ColorPickerFrame:GetColorRGB()
+					local alpha = 1 - OpacitySliderFrame:GetValue()
+					tdpsFrame:SetBackdropColor(red, green, blue, alpha)
+					tdps.backdrop[1], tdps.backdrop[2], tdps.backdrop[3], tdps.backdrop[4] = red, green, blue, alpha end,
+					tdps.backdrop[1], tdps.backdrop[2], tdps.backdrop[3], 1 - tdps.backdrop[4], 1)
+
+			newBu(level, tdpsL.dimClassColors, nil, 1, nil, nil, 1, function() for _,v in pairs(tdps.classColor) do if v.a-.1 < 0 then v.a = 0 else v.a = v.a-.1 end end changeBarColor() end)
+			newBu(level, tdpsL.resetClassColors, nil, 1, nil, nil, 1, function() tdps.classColor = RAID_CLASS_COLORS for k,v in pairs(tdps.classColor) do v.a = 1 end tdps.classColor['UNKNOWN'] = {r = .63, g = .58, b = .24, a = 1} changeBarColor() end)
+			newBu(level, tdpsL.swapBarTextColor .. '     ', nil, 1, nil, nil, 1, function() tdps.swapColor = not tdps.swapColor if tdps.swapColor then DropDownList3Button1:SetText(tdpsL.text) else DropDownList3Button1:SetText(tdpsL.bars) end changeBarColor() end)
+
+		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'history' then
+
+			newBu(level, tdpsL.disabled, nil, nil, nil, nil, nil, changeNumberOfFights, 2, nil, function() if tdpsNumberOfFights == 2 then return true end end)
+			newBu(level, tdpsL.threeFights, nil, nil, nil, nil, nil, changeNumberOfFights, 5, nil, function() if tdpsNumberOfFights == 5 then return true end end)
+			newBu(level, tdpsL.fiveFights, nil, nil, nil, nil, nil, changeNumberOfFights, 7, nil, function() if tdpsNumberOfFights == 7 then return true end end)
+			newBu(level, tdpsL.nineFights, nil, nil, nil, nil, nil, changeNumberOfFights, 11, nil, function() if tdpsNumberOfFights == 11 then return true end end)
+
+		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'toggles' then
+
+			newBu(level, tdpsL.hideInPvP, nil, nil, nil, nil, 1, function() tdps.hidePvP = not tdps.hidePvP visibilityEvent() end, nil, nil, tdps.hidePvP, nil, 1)
+			newBu(level, tdpsL.hideWhenSolo, nil, nil, nil, nil, 1, function() tdps.hideSolo = not tdps.hideSolo visibilityEvent() end, nil, nil, tdps.hideSolo, nil, 1)
+			newBu(level, tdpsL.hideOutOfCombat, nil, nil, nil, nil, 1, function() tdps.hideOOC = not tdps.hideOOC visibilityEvent() end, nil, nil, tdps.hideOOC, nil, 1)
+			newBu(level, '', nil, 1, nil, nil, nil, nil, nil, nil, nil, 1)
+			newBu(level, tdpsL.growUpwards, nil, nil, nil, nil, 1, function() if tdps.anchor == 'TOPLEFT' then tdps.anchor = 'BOTTOMLEFT' else tdps.anchor = 'TOPLEFT' end tdpsFrame:ClearAllPoints() tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor) end, nil, nil, function() if tdps.anchor == 'BOTTOMLEFT' then return true end end, nil, 1)
+			newBu(level, tdpsL.minimapButton, nil, nil, nil, nil, 1, toggleMinimapButton, nil, nil, tdps.showMinimapButton, nil, 1)
+			newBu(level, tdpsL.trackSpellDetails, nil, nil, nil, nil, 1, function() tdps.trackSpells = not tdps.trackSpells if not tdps.trackSpells then deleteSpellData() end end, nil, nil, tdps.trackSpells, nil, 1)
+			newBu(level, tdpsL.resetOnNewGroup, nil, nil, nil, nil, 1, function() tdps.autoReset = not tdps.autoReset end, nil, nil, tdps.autoReset, nil, 1)
+			newBu(level, tdpsL.refreshEverySecond, nil, nil, nil, nil, 1, function() if tdps.speed == 2 then tdps.speed = 1 else tdps.speed = 2 end end, nil, nil, function() if tdps.speed == 1 then return true end end, nil, 1)
+			newBu(level, tdpsL.keepOnlyBossFights, nil, nil, nil, nil, 1, function() tdps.onlyBossSegments = not tdps.onlyBossSegments end, nil, nil, tdps.onlyBossSegments, nil, 1)
+
+		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'tooltips' then
+
+			newBu(level, tdps.tooltipSpells .. ' ' .. tdpsL.spells, nil, 1, 1, 'spells', 1)
+			newBu(level, tdps.tooltipTargets .. ' ' .. tdpsL.targets, nil, 1, 1, 'targets', 1)
+
+		elseif level == 4 and UIDROPDOWNMENU_MENU_VALUE == 'spells' then
+
+			newBu(level, tdpsL.more, nil, 1, nil, nil, 1, function() tdps.tooltipSpells = min(10, tdps.tooltipSpells + 1) DropDownList3Button1:SetText(tdps.tooltipSpells .. ' ' .. tdpsL.spells) end)
+			newBu(level, tdpsL.less, nil, 1, nil, nil, 1, function() tdps.tooltipSpells = max(0, tdps.tooltipSpells - 1) DropDownList3Button1:SetText(tdps.tooltipSpells .. ' ' .. tdpsL.spells) end)
+
+		elseif level == 4 and UIDROPDOWNMENU_MENU_VALUE == 'targets' then			
+								
+			newBu(level, tdpsL.more, nil, 1, nil, nil, 1, function() tdps.tooltipTargets = min(10, tdps.tooltipTargets + 1) DropDownList3Button2:SetText(tdps.tooltipTargets .. ' ' .. tdpsL.targets) end)
+			newBu(level, tdpsL.less, nil, 1, nil, nil, 1, function() tdps.tooltipTargets = max(0, tdps.tooltipTargets - 1) DropDownList3Button2:SetText(tdps.tooltipTargets .. ' ' .. tdpsL.targets) end)
+
+		elseif level == 4 and UIDROPDOWNMENU_MENU_VALUE == 'size' then
+
+			newBu(level, tdpsL.increase, nil, 1, nil, nil, 1, changeFont, 'size', 1)
+			newBu(level, tdpsL.decrease, nil, 1, nil, nil, 1, changeFont, 'size', -1)
+
+		elseif level == 4 and UIDROPDOWNMENU_MENU_VALUE == 'font' then
+
+			if GetLocale() == "koKR" then
+				newBu(level, '굵은 글꼴', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\2002B.TTF]], function() if tdpsFont.name == [[Fonts\2002B.TTF]] then return true end end, nil, nil)
+				newBu(level, '기본 글꼴', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\2002.TTF]], function() if tdpsFont.name == [[Fonts\2002.TTF]] then return true end end, nil, nil)
+				newBu(level, '데미지 글꼴', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\K_Damage.TTF]], function() if tdpsFont.name == [[Fonts\K_Damage.TTF]] then return true end end, nil, nil)
+				newBu(level, '퀘스트 글꼴', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\K_Pagetext.TTF]], function() if tdpsFont.name == [[Fonts\K_Pagetext.TTF]] then return true end end, nil, nil)
+			elseif GetLocale() == "zhCN" then
+				newBu(level, '默认', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\ZYKai_T.TTF]], function() if tdpsFont.name == [[Fonts\ZYKai_T.TTF]] then return true end end, nil, nil)
+				newBu(level, '聊天', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\ZYHei.TTF]], function() if tdpsFont.name == [[Fonts\ZYHei.TTF]] then return true end end, nil, nil)
+				newBu(level, '伤害数字', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\ZYKai_C.TTF]], function() if tdpsFont.name == [[Fonts\ZYKai_C.TTF]] then return true end end, nil, nil)
+			elseif GetLocale() == "zhTW" then
+				newBu(level, '預設', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\bLEI00D.TTF]], function() if tdpsFont.name == [[Fonts\bLEI00D.TTF]] then return true end end, nil, nil)
+				newBu(level, '聊天', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\bHEI01B.TTF]], function() if tdpsFont.name == [[Fonts\bHEI01B.TTF]] then return true end end, nil, nil)
+				newBu(level, '傷害數字', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\bKAI00M.TTF]], function() if tdpsFont.name == [[Fonts\bKAI00M.TTF]] then return true end end, nil, nil)
+				newBu(level, '提示訊息', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\bHEI00M.TTF]], function() if tdpsFont.name == [[Fonts\bHEI00M.TTF]] then return true end end, nil, nil)
+			elseif GetLocale() == "ruRU" then
+				newBu(level, 'Skurri', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\SKURRI.TTF]], function() if tdpsFont.name == [[Fonts\SKURRI.TTF]] then return true end end, nil, nil)
+				newBu(level, 'Visitor', nil, nil, nil, nil, nil, changeFont, 'font', [[Interface\AddOns\TinyDPS\Fonts\Visitor.ttf]], function() if find(tdpsFont.name, 'isitor') then return true end end, nil, nil)
+				newBu(level, 'Morpheus', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\MORPHEUS.TTF]], function() if tdpsFont.name == [[Fonts\MORPHEUS.TTF]] then return true end end, nil, nil)
+				newBu(level, 'Nimrod MT', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\NIM_____.TTF]], function() if tdpsFont.name == [[Fonts\NIM_____.TTF]] then return true end end, nil, nil)
+				newBu(level, 'Arial Narrow', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\ARIALN.TTF]], function() if tdpsFont.name == [[Fonts\ARIALN.TTF]] then return true end end, nil, nil)
+				newBu(level, 'Friz Quadrata TT', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\FRIZQT__.TTF]], function() if tdpsFont.name == [[Fonts\FRIZQT__.TTF]] then return true end end, nil, nil)
+			else
+				newBu(level, 'Skurri', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\SKURRI.TTF]], function() if tdpsFont.name == [[Fonts\SKURRI.TTF]] then return true end end, nil, nil)
+				newBu(level, 'Visitor', nil, nil, nil, nil, nil, changeFont, 'font', [[Interface\AddOns\TinyDPS\Fonts\Visitor.ttf]], function() if find(tdpsFont.name, 'isitor') then return true end end, nil, nil)
+				newBu(level, 'Morpheus', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\MORPHEUS.TTF]], function() if tdpsFont.name == [[Fonts\MORPHEUS.TTF]] then return true end end, nil, nil)
+				newBu(level, 'Arial Narrow', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\ARIALN.TTF]], function() if tdpsFont.name == [[Fonts\ARIALN.TTF]] then return true end end, nil, nil)				
+				newBu(level, 'Friz Quadrata TT', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\FRIZQT__.TTF]], function() if tdpsFont.name == [[Fonts\FRIZQT__.TTF]] then return true end end, nil, nil)
+			end
+
+			--newBu(level, 'Custom', nil, nil, nil, nil, nil, changeFont, 'font', [[Interface\AddOns\TinyDPS\Fonts\custom.TTF]], function() if tdpsFont.name == [[Interface\AddOns\TinyDPS\Fonts\custom.TTF]] then return true end end, nil, nil)
+
+		elseif level == 4 and UIDROPDOWNMENU_MENU_VALUE == 'layout' then
+
+			newBu(level, tdpsL.dps, nil, nil, nil, nil, 1, changeTextLayout, 8, nil, function() if band(tdps.layout,8) > 0 then return true end end, nil, 1)
+			newBu(level, tdpsL.rank, nil, nil, nil, nil, 1, function() tdps.showRank = not tdps.showRank tdpsRefresh() end, nil, nil, tdps.showRank, nil, 1)
+			newBu(level, tdpsL.percent, nil, nil, nil, nil, 1, changeTextLayout, 4, nil, function() if band(tdps.layout,4) > 0 then return true end end, nil, 1)
+			newBu(level, tdpsL.amount, nil, nil, nil, nil, 1, changeTextLayout, 2, nil, function() if band(tdps.layout,2) > 0 then return true end end, nil, 1)
+			newBu(level, tdpsL.short, nil, nil, nil, nil, 1, changeTextLayout, 1, nil, function() if band(tdps.layout,1) > 0 then return true end end, nil, 1)
+
+		elseif level == 4 and UIDROPDOWNMENU_MENU_VALUE == 'outline' then
+
+			newBu(level, tdpsL.none, nil, nil, nil, nil, nil, changeFont, 'outline', '', function() if tdpsFont.outline == '' and tdpsFont.shadow == 0 then return true end end)
+			newBu(level, tdpsL.thin, nil, nil, nil, nil, nil, changeFont, 'outline', 'Outline', function() if tdpsFont.outline == 'Outline' and tdpsFont.shadow == 0 then return true end end)
+			newBu(level, tdpsL.thick, nil, nil, nil, nil, nil, changeFont, 'outline', 'Thickoutline', function() if tdpsFont.outline == 'Thickoutline' and tdpsFont.shadow == 0 then return true end end)
+			newBu(level, tdpsL.shadow, nil, nil, nil, nil, nil, changeFont, 'shadow', 1, function() if tdpsFont.outline == '' and tdpsFont.shadow > 0 then return true end end)
+			newBu(level, tdpsL.mono , nil, nil, nil, nil, nil, changeFont, 'outline', 'Outlinemonochrome', function() if tdpsFont.outline == 'Outlinemonochrome' and tdpsFont.shadow == 0 then return true end end)
+
+		elseif level == 4 and UIDROPDOWNMENU_MENU_VALUE == 'height' then
+
+			newBu(level, tdpsL.increase, nil, 1, nil, nil, 1, changeBarHeight, 1)
+			newBu(level, tdpsL.decrease, nil, 1, nil, nil, 1, changeBarHeight, -1)
+
+		elseif level == 4 and UIDROPDOWNMENU_MENU_VALUE == 'spacing' then
+
+			newBu(level, tdpsL.increase, nil, 1, nil, nil, 1, changeBarSpacing, 1)
+			newBu(level, tdpsL.decrease, nil, 1, nil, nil, 1, changeBarSpacing, -1)
+
+		elseif level == 4 and UIDROPDOWNMENU_MENU_VALUE == 'maximum' then
+
+			newBu(level, tdpsL.oneYourself, nil, nil, nil, nil, nil, changeMaxBars, 1, nil, function() if tdps.maxBars == 1 then return true end end)
+			newBu(level, tdpsL.five, nil, nil, nil, nil, nil, changeMaxBars, 5, nil, function() if tdps.maxBars == 5 then return true end end)
+			newBu(level, tdpsL.ten, nil, nil, nil, nil, nil, changeMaxBars, 10, nil, function() if tdps.maxBars == 10 then return true end end)
+			newBu(level, tdpsL.fifteen, nil, nil, nil, nil, nil, changeMaxBars, 15, nil, function() if tdps.maxBars == 15 then return true end end)
+			newBu(level, tdpsL.twenty, nil, nil, nil, nil, nil, changeMaxBars, 20, nil, function() if tdps.maxBars == 20 then return true end end)
+			newBu(level, tdpsL.unlimited, nil, nil, nil, nil, nil, changeMaxBars, 99, nil, function() if tdps.maxBars == 99 then return true end end)
+
+		end
+
+	end
+
+
+
+	local function tdpsSpellSort(x,y) if ttSpellMerge[x] > ttSpellMerge[y] then return true end end
+	local function tdpsMobSort(x,y) if ttMobMerge[x] > ttMobMerge[y] then return true end end
 
 
 
@@ -2132,8 +2376,8 @@
 		dummybar:SetHeight(tdps.barHeight)
 		dummybar:Hide()
 		dummybar:SetPoint('RIGHT', tdpsFrame, 'RIGHT', -2, 0)
-		dummybar:SetBackdrop({bgFile = 'Interface\\AddOns\\TinyDPS\\Textures\\wglass.tga', edgeFile = 'Interface\\AddOns\\TinyDPS\\Textures\\blank.tga', tile = false, tileSize = 1, edgeSize = 1, insets = { left = 0, right = 0, top = 0, bottom = 0}})
-		dummybar:SetStatusBarTexture('Interface\\AddOns\\TinyDPS\\Textures\\wglass.tga')
+		dummybar:SetBackdrop({bgFile = [[Interface\AddOns\TinyDPS\Textures\wglass.tga]], edgeFile = [[Interface\AddOns\TinyDPS\Textures\blank.tga]], tile = false, tileSize = 1, edgeSize = 1, insets = { left = 0, right = 0, top = 0, bottom = 0}})
+		dummybar:SetStatusBarTexture([[Interface\AddOns\TinyDPS\Textures\wglass.tga]])
 
 		-- bar info
 		dummybar.name, dummybar.guid, dummybar.n = split('-', tdpsPlayer[g]['name']), g, 0
@@ -2145,34 +2389,40 @@
 			GameTooltip:SetText(tdpsPlayer[g].name)
 
 			-- tooltip title
-			if tdpsSelectedFight == 2 then GameTooltip:AddLine(viewTitle[tdpsSelectedView] .. ' for Current Fight', 1, .85, 0)
-			else GameTooltip:AddLine(viewTitle[tdpsSelectedView] .. ' for ' .. tdpsFight[tdpsSelectedFight].name or 'Unknown', 1, .85, 0) end
+			if tdspF == 2 then GameTooltip:AddLine(viewTitle[tdspV] .. ' for Current Fight', 1, .85, 0)
+			else GameTooltip:AddLine(viewTitle[tdspV] .. ' for ' .. tdpsFight[tdspF].name or 'Unknown', 1, .85, 0) end
 
 			-- own amount
-			GameTooltip:AddDoubleLine('Personal', tdpsPlayer[self.guid].fight[tdpsSelectedFight][tdpsSelectedView] .. ' (' .. round(tdpsPlayer[self.guid].fight[tdpsSelectedFight][tdpsSelectedView]/(self.n)*100,0) .. '%)', 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddDoubleLine(tdpsL.personal, tdpsPlayer[self.guid].fight[tdspF][tdspV] .. ' (' .. round(tdpsPlayer[self.guid].fight[tdspF][tdspV]/(self.n)*100,0) .. '%)', 1, 1, 1, 1, 1, 1)
 
 			-- pet amount
 			local pet, petAmount = tdpsPlayer[g].pet, 0
-			for i=1,#pet do petAmount = petAmount + tdpsPet[pet[i]].fight[tdpsSelectedFight][tdpsSelectedView] end
+			for i=1,#pet do petAmount = petAmount + tdpsPet[pet[i]].fight[tdspF][tdspV] end
 			if petAmount > 0 then GameTooltip:AddDoubleLine('By Pet(s)', petAmount .. ' (' .. round(petAmount/(self.n)*100,0) .. '%)', 1, 1, 1, 1, 1, 1) end
 
 			-- spell details
 			if tdps.trackSpells then
+
 				-- merge the data of this player
-				for k,v in pairs(tdpsPlayer[g].fight[tdpsSelectedFight][tdpsSelectedView..'s']) do for kk,vv in pairs(v) do tooltipSpellMerge[k] = (tooltipSpellMerge[k] or 0) + vv tooltipMobMerge[kk] = (tooltipMobMerge[kk] or 0) + vv end end
-				for i=1,#pet do for k,v in pairs(tdpsPet[pet[i]].fight[tdpsSelectedFight][tdpsSelectedView..'s']) do for kk,vv in pairs(v) do tooltipSpellMerge[k] = (tooltipSpellMerge[k] or 0) + vv tooltipMobMerge[kk] = (tooltipMobMerge[kk] or 0) + vv end end end
+				for k,v in pairs(tdpsPlayer[g].fight[tdspF][tdspV..'s']) do for kk,vv in pairs(v) do ttSpellMerge[k] = (ttSpellMerge[k] or 0) + vv ttMobMerge[kk] = (ttMobMerge[kk] or 0) + vv end end
+				for i=1,#pet do for k,v in pairs(tdpsPet[pet[i]].fight[tdspF][tdspV..'s']) do for kk,vv in pairs(v) do ttSpellMerge[k] = (ttSpellMerge[k] or 0) + vv ttMobMerge[kk] = (ttMobMerge[kk] or 0) + vv end end end
+
 				-- display spells
-				if tdps.tooltipSpells > 0 then GameTooltip:AddLine('Top Abilities', 1, .85, 0) end
-				for k,v in pairs(tooltipSpellMerge) do t_insert(tooltipSort, {k, v}) end
-				t_sort(tooltipSort, function(x,y) return x[2] > y[2] end)
-				for i=1,tdps.tooltipSpells do if tooltipSort[i] then GameTooltip:AddDoubleLine(i .. '. ' .. tooltipSort[i][1], tooltipSort[i][2] .. ' (' .. round(tooltipSort[i][2]/(self.n)*100,0) .. '%)', 1, 1, 1, 1, 1, 1) end end
-				tooltipSort = {}
+				if tdps.tooltipSpells > 0 then GameTooltip:AddLine(tdpsL.topAbilities, 1, .85, 0) end
+				for k,v in pairs(ttSpellMerge) do t_insert(ttSort, k) end
+				t_sort(ttSort, tdpsSpellSort)
+				for i=1,tdps.tooltipSpells do if ttSort[i] then GameTooltip:AddDoubleLine(i .. '. ' .. ttSort[i], ttSpellMerge[ttSort[i]] .. ' (' .. round(ttSpellMerge[ttSort[i]]/(self.n)*100,0) .. '%)', 1, 1, 1, 1, 1, 1) end end
+				t_wipe(ttSort)
+
 				-- display targets
-				if tdps.tooltipTargets > 0 then GameTooltip:AddLine('Top Targets', 1, .85, 0) end
-				for k,v in pairs(tooltipMobMerge) do t_insert(tooltipSort, {k, v}) end
-				t_sort(tooltipSort, function(x,y) return x[2] > y[2] end)
-				for i=1,tdps.tooltipTargets do if tooltipSort[i] then GameTooltip:AddDoubleLine(i .. '. ' .. tooltipSort[i][1], tooltipSort[i][2] .. ' (' .. round(tooltipSort[i][2]/(self.n)*100,0) .. '%)', 1, 1, 1, 1, 1, 1) end end
-				tooltipSort, tooltipSpellMerge, tooltipMobMerge = {}, {}, {}
+				if tdps.tooltipTargets > 0 then GameTooltip:AddLine(tdpsL.topTargets, 1, .85, 0) end
+				for k,v in pairs(ttMobMerge) do t_insert(ttSort, k) end
+				t_sort(ttSort, tdpsMobSort)
+				for i=1,tdps.tooltipTargets do if ttSort[i] then GameTooltip:AddDoubleLine(i .. '. ' .. ttSort[i], ttMobMerge[ttSort[i]] .. ' (' .. round(ttMobMerge[ttSort[i]]/(self.n)*100,0) .. '%)', 1, 1, 1, 1, 1, 1) end end
+				t_wipe(ttSort)
+				t_wipe(ttSpellMerge)
+				t_wipe(ttMobMerge)
+
 			end
 			
 			-- display the tooltip
@@ -2184,10 +2434,10 @@
 
 		dummybar:SetScript('OnMouseDown', function(self, button)
 			if button == 'LeftButton' and IsShiftKeyDown() then GameTooltip:Hide() CloseDropDownMenus() isMovingOrSizing = true tdpsAnchor:StartMoving()
-			elseif button == 'RightButton' then tdpsShowMenu()
+			elseif button == 'RightButton' then ToggleDropDownMenu(1, nil, tdpsDropDown, 'cursor', 0, 0)
 			elseif button == 'MiddleButton' then reset()
-			elseif button == 'Button4' then changeFight(1)
-			elseif button == 'Button5' then changeFight(2) end
+			elseif button == 'Button4' then changeFight(nil, 1)
+			elseif button == 'Button5' then changeFight(nil, 2) end
 		end)
 
 		dummybar:SetScript('OnMouseUp', function(self, button)
@@ -2212,20 +2462,20 @@
 
 		-- number fontstring
 		dummybar.fontStringRight = dummybar:CreateFontString(nil, 'OVERLAY')
-		dummybar.fontStringRight:SetPoint('RIGHT', -1, 1)
+		dummybar.fontStringRight:SetPoint('RIGHT', -1, 0)
 		dummybar.fontStringRight:SetJustifyH('RIGHT')
-		dummybar.fontStringRight:SetFont(tdps.font.name, tdps.font.size, tdps.font.outline)
+		dummybar.fontStringRight:SetFont(tdpsFont.name, tdpsFont.size, tdpsFont.outline)
 		dummybar.fontStringRight:SetShadowColor(.05, .05, .05, 1)
-		dummybar.fontStringRight:SetShadowOffset(tdps.font.shadow, tdps.font.shadow * -1)
+		dummybar.fontStringRight:SetShadowOffset(tdpsFont.shadow, tdpsFont.shadow * -1)
 
 		-- name fontstring
 		dummybar.fontStringLeft = dummybar:CreateFontString(nil, 'OVERLAY')
-		dummybar.fontStringLeft:SetPoint('LEFT', 1, 1)
+		dummybar.fontStringLeft:SetPoint('LEFT', 1, 0)
 		dummybar.fontStringLeft:SetPoint('RIGHT', dummybar.fontStringRight, 'LEFT', -2, 1)
 		dummybar.fontStringLeft:SetJustifyH('LEFT')
-		dummybar.fontStringLeft:SetFont(tdps.font.name, tdps.font.size, tdps.font.outline)
+		dummybar.fontStringLeft:SetFont(tdpsFont.name, tdpsFont.size, tdpsFont.outline)
 		dummybar.fontStringLeft:SetShadowColor(.05, .05, .05, 1)
-		dummybar.fontStringLeft:SetShadowOffset(tdps.font.shadow, tdps.font.shadow * -1)
+		dummybar.fontStringLeft:SetShadowOffset(tdpsFont.shadow, tdpsFont.shadow * -1)
 
 		-- colors
 		local classR, classG, classB, classA = tdps.classColor[tdpsPlayer[g].class].r, tdps.classColor[tdpsPlayer[g].class].g, tdps.classColor[tdpsPlayer[g].class].b, tdps.classColor[tdpsPlayer[g].class].a
@@ -2291,12 +2541,12 @@
 
 		-- track absorbs or do fake healing event
 		if arg2 == 'SPELL_AURA_APPLIED' and arg8%8>0 and isAbsorb[arg9] then tdpsShield[arg3..arg9..arg6] = arg13 return
-		elseif arg2 == 'SPELL_AURA_REMOVED' and arg8%8>0 and isAbsorb[arg9] then tdpsShield[arg3..arg9..arg6] = nil return
 		elseif arg2 == 'SPELL_AURA_REFRESH' and arg8%8>0 and isAbsorb[arg9] and tdpsShield[arg3..arg9..arg6] then
-			if arg13 < tdpsShield[arg3..arg9..arg6] then tdpsCombatEvent(self, event, arg1, 'SPELL_HEAL', arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, tdpsShield[arg3..arg9..arg6] - arg13, 0, 0, 0) end
-			tdpsShield[arg3..arg9..arg6] = arg13
-			return
-		end
+			if tdpsShield[arg3..arg9..arg6] - arg13 > 0 then tdpsCombatEvent(self, event, arg1, 'SPELL_HEAL', arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, tdpsShield[arg3..arg9..arg6] - arg13, 0, 0, 0) end
+			tdpsShield[arg3..arg9..arg6] = arg13 return
+		elseif arg2 == 'SPELL_AURA_REMOVED' and arg8%8>0 and isAbsorb[arg9] and tdpsShield[arg3..arg9..arg6] then
+			if tdpsShield[arg3..arg9..arg6] - arg13 > 0 then tdpsCombatEvent(self, event, arg1, 'SPELL_HEAL', arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, tdpsShield[arg3..arg9..arg6] - arg13, 0, 0, 0) end
+			tdpsShield[arg3..arg9..arg6] = nil return end
 
 		-- return on invalid event, vehicle, friendly fire, hostile healing, evaded
 		if not isValidEvent[arg2] or sub(arg3,5,5) == '5' or (band(arg8,16) > 0 and isDamage[arg2]) or (band(arg8,16) == 0 and isHeal[arg2]) or arg12 == 'EVADE' then return end
@@ -2362,7 +2612,7 @@
 		end
 
 		-- track numbers
-		if isMissed[arg2] then
+		if isMiss[arg2] then
 			if tdpsStartNewFight then startNewFight(arg7, arg6) end
 		elseif isDamage[arg2] then
 			if tdpsStartNewFight then startNewFight(arg7, arg6) end
@@ -2406,17 +2656,17 @@
 
 
 	tdpsFrame:SetScript('OnEvent', function(self, event)
-	
+
 		local curVer = GetAddOnMetadata('TinyDPS', 'Version')
 
 		-- global version mismatch
-		if curVer ~= tdps.version and '0.88' ~= tdps.version and '0.89' ~= tdps.version then
+		if curVer ~= tdps.version and '0.88' ~= tdps.version and '0.89' ~= tdps.version and '0.90' ~= tdps.version then
 			initialiseSavedVariables()
 			echo('Global variables have been reset to version ' .. curVer)
 		end
 
 		-- character version mismatch
-		if curVer ~= tdpsVersion and '0.88' ~= tdpsVersion and '0.89' ~= tdpsVersion then
+		if curVer ~= tdpsVersion and '0.88' ~= tdpsVersion and '0.89' ~= tdpsVersion and '0.90' ~= tdpsVersion then
 			initialiseSavedVariablesPerCharacter()
 			echo('Character variables have been reset to version ' .. curVer)
 			tdpsFrame:SetHeight(tdps.barHeight + 4)
@@ -2424,7 +2674,7 @@
 
 		-- display help on version mismatch
 		if curVer ~= tdps.version or curVer ~= tdpsVersion then help() end
-		
+
 		-- save current version
 		tdps.version = curVer
 		tdpsVersion = curVer
@@ -2438,7 +2688,7 @@
 		-- set position of frame
 		tdpsFrame:ClearAllPoints()
 		tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor)
-	
+
 		-- set width
 		tdpsFrame:SetWidth(tdps.width)
 
@@ -2446,8 +2696,8 @@
 		for k in pairs(tdpsPlayer) do newBar(k) end
 
 		-- set font and colors
-		noData:SetFont(tdps.font.name, tdps.font.size, tdps.font.outline)
-		noData:SetShadowOffset(tdps.font.shadow, tdps.font.shadow * -1)
+		noData:SetFont(tdpsFont.name, tdpsFont.size, tdpsFont.outline)
+		noData:SetShadowOffset(tdpsFont.shadow, tdpsFont.shadow * -1)
 		tdpsFrame:SetBackdropBorderColor(tdps.border[1], tdps.border[2], tdps.border[3], tdps.border[4])
 		tdpsFrame:SetBackdropColor(tdps.backdrop[1], tdps.backdrop[2], tdps.backdrop[3], tdps.backdrop[4])
 
@@ -2502,10 +2752,10 @@
 
 	tdpsFrame:SetScript('OnMouseDown', function(self, button)
 		if button == 'LeftButton' and IsShiftKeyDown() then CloseDropDownMenus() GameTooltip:Hide() isMovingOrSizing = true tdpsAnchor:StartMoving()
-		elseif button == 'RightButton' then tdpsShowMenu()
+		elseif button == 'RightButton' then ToggleDropDownMenu(1, nil, tdpsDropDown, 'cursor', 0, 0)
 		elseif button == 'MiddleButton' then reset()
-		elseif button == 'Button4' then changeFight(1)
-		elseif button == 'Button5' then changeFight(2) end
+		elseif button == 'Button4' then changeFight(nil, 1)
+		elseif button == 'Button5' then changeFight(nil, 2) end
 	end)
 
 
@@ -2544,7 +2794,7 @@
 
 
 	tdpsButtonFrame:SetScript('OnMouseDown', function(self, button)
-		if button == 'RightButton' then tdpsShowMenu() end
+		if button == 'RightButton' then ToggleDropDownMenu(1, nil, tdpsDropDown, 'cursor', 0, 0) end
 	end)
 
 	tdpsButtonFrame:SetScript('OnMouseUp', function(self, button)
@@ -2613,8 +2863,3 @@
 		for i=1,#bar do bar[i]:SetWidth(tdpsFrame:GetWidth() - 4) bar[i]:SetValue(0) end
 		tdpsRefresh()
 	end)
-
-
-
-
-
