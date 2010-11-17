@@ -4,11 +4,17 @@
 
 	* written by: Sideshow, Draenor EU
 	* initial release: May 21th, 2010
-	* last updated: November 9th, 2010
+	* last updated: November 17th, 2010
 
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
+
+	Version 0.93
+	* reworked dropdownmenu
+	* reworked tooltip on minimap button
+	* deDE localization (thanks to ac3r)
+	* ruRU localization (thanks to mupymupa)
 
 	Version 0.91
 	* tweaked short number format
@@ -183,7 +189,7 @@
 
 		tdpsL.fight = '전투'
 		tdpsL.allFight = '전체     모든 전투'
-		tdpsL.currentFight = '현재 '
+		tdpsL.current = '현재 '
 		tdpsL.resetAllData = '초기화'
 		tdpsL.showDamage = '데미지 보기'
 		tdpsL.showHealing = '힐량 보기'
@@ -208,8 +214,8 @@
 		tdpsL.font = '글꼴'
 		tdpsL.layout = '표시'
 		tdpsL.outline = '외곽선'
+		tdpsL.nudge = '넛지'
 
-		tdpsL.visitor = '기본 글꼴'
 		tdpsL.dps = 'DPS'
 		tdpsL.rank = '순위'
 		tdpsL.percent = '퍼센트'
@@ -220,7 +226,7 @@
 		tdpsL.thick = '굵게'
 		tdpsL.shadow = '그림자'
 		tdpsL.mono = '단색'
-		
+
 		tdpsL.bars = '바'
 		tdpsL.height = '높이'
 		tdpsL.spacing = '간격'
@@ -239,14 +245,11 @@
 		tdpsL.dimClassColors = '직업 색상 어둡게'
 		tdpsL.resetClassColors = '직업 색상 초기화'
 		tdpsL.swapBarTextColor = '직업 색상으로 표시'
-		
-		tdpsL.history = '기록수'
-		tdpsL.disabled = '없음'
-		tdpsL.threeFights = '3 전투'
-		tdpsL.fiveFights = '5 전투'
-		tdpsL.nineFights = '9 전투'
 
-		tdpsL.toggles = '전환'
+		tdpsL.history = '      %i  전투 기록'
+		tdpsL.keepOnlyBossFights = '보스만 세분화 유지'
+
+		tdpsL.various = '전환'
 		tdpsL.hideInPvP = '전장/투기장에서 숨김'
 		tdpsL.hideWhenSolo = '솔로잉시 숨김'
 		tdpsL.hideOutOfCombat = '비전투시 숨김'
@@ -255,13 +258,9 @@
 		tdpsL.trackSpellDetails = '툴팁에 기술/대상 보기'
 		tdpsL.resetOnNewGroup = '새 그룹시 자동삭제'
 		tdpsL.refreshEverySecond = '매시간 초기화'
-		tdpsL.keepOnlyBossFights = '보스만 세분화 유지'
 
-		tdpsL.tooltips = '툴팁'
-		tdpsL.spells = ' 기술'
-		tdpsL.targets = ' 타겟'
-		tdpsL.more = '증가'
-		tdpsL.less = '감소'
+		tdpsL.spells = '      %i  툴팁에 표시되는 기술 갯수'
+		tdpsL.targets = '      %i  툴팁에 표시되는 대상 갯수'
 
 		tdpsL.close = '취소'
 		tdpsL.empty = '<없음>'
@@ -274,14 +273,229 @@
 
 		tdpsL.allClear = '모든 데이터 초기화'
 		tdpsL.personal = '자신'
+		tdpsL.byPets = '소환수'
 		tdpsL.topAbilities = '상위 기술'
 		tdpsL.topTargets = '상위 대상'
+
+		tdpsL.noTarget = '잘못된 대상 혹은 대상이 선택되지 않음'
+		tdpsL.noData = '기록할 데이터가 없음'
+
+		tdpsL.tipPrefix = {d = '데미지량 -', h = '힐량 -'}
+		tdpsL.repPrefix = {d = '데미지량 -', h = '힐량 -'}
+		tdpsL.overallData = '전체 전투'
+		tdpsL.currentFight = '현재 전투'
+		tdpsL.lastFight = '마지막 전투'
+		tdpsL.melee = '밀리'
+
+	elseif GetLocale() == 'ruRU' then
+
+		tdpsL.fight = 'Бой'
+		tdpsL.allFight = 'Общий       Все бои'
+		tdpsL.current = 'Текущий'
+		tdpsL.resetAllData = 'Сбросить статистику'
+		tdpsL.showDamage = 'Показывать урон'
+		tdpsL.showHealing = 'Показывать исцеление'	
+
+		tdpsL.report = 'Сообщить'
+		tdpsL.top3 = 'Top 3'
+		tdpsL.top5 = 'Top 5'
+		tdpsL.top10 = 'Top 10'
+		tdpsL.say = 'Сказать'
+		tdpsL.raid = 'Рейд'
+		tdpsL.party = 'Группа'
+		tdpsL.guild = 'Гильдия'
+		tdpsL.officer = 'Офицер'
+		tdpsL.whisper = 'Шепнуть'
+		tdpsL.channel = 'Канал'
+
+		tdpsL.options = 'Опции'
+		tdpsL.text = 'Текст'
+		tdpsL.size = 'Размер'
+		tdpsL.increase = 'Увеличить'
+		tdpsL.decrease = 'Уменьшить'
+		tdpsL.font = 'Шрифт'
+		tdpsL.layout = 'Отображать...'
+		tdpsL.outline = 'Контур'
+		tdpsL.nudge = 'Поднять текст'  
+
+		tdpsL.dps = 'Урон в секунду'
+		tdpsL.rank = 'Ранг'
+		tdpsL.percent = 'Проценты'
+		tdpsL.amount = 'Урон'
+		tdpsL.short = 'Сократить значения'
+		tdpsL.none = 'Нет'
+		tdpsL.thin = 'Тонкий'
+		tdpsL.thick = 'Толстый'
+		tdpsL.shadow = 'Тень'
+		tdpsL.mono = 'Одноцветный'
+		
+		tdpsL.bars = 'Полоски'
+		tdpsL.height = 'Высота'
+		tdpsL.spacing = 'Промежуток'
+		tdpsL.maximum = 'Максимум'
+		tdpsL.oneYourself = '1 (Ваш персонаж)'
+		tdpsL.five = '5'
+		tdpsL.ten = '10'
+		tdpsL.fifteen = '15'
+		tdpsL.twenty = '20'
+		tdpsL.unlimited = 'Неограничено'
+		
+		tdpsL.colors = 'Цвета'
+		tdpsL.barBackdrop = 'Цвет полос'
+		tdpsL.frameBorder = 'Цвет границ окна'
+		tdpsL.frameBackdrop = 'Цвет текстуры окна'
+		tdpsL.dimClassColors = 'Уменьшить яркость классовых цветов'
+		tdpsL.resetClassColors = 'Сбросить классовые цвета'
+		tdpsL.swapBarTextColor = 'Использовать цвета классов / 1 цвет для всех полос'
+
+		tdpsL.history = '      Боёв запоминать: %i'
+		tdpsL.keepOnlyBossFights = 'Запоминать только бои с боссами'
+
+		tdpsL.various = 'Дополнительно'
+		tdpsL.hideInPvP = 'Скрывать в PvP'
+		tdpsL.hideWhenSolo = 'Скрывать вне группы'
+		tdpsL.hideOutOfCombat = 'Показывать только в бою'
+		tdpsL.growUpwards = 'Отображать новые полосы над предыдущими'
+		tdpsL.minimapButton = 'Кнопка у миникарты'
+		tdpsL.trackSpellDetails = 'Показывать детали (атакуемые цели/исп. способности)'
+		tdpsL.resetOnNewGroup = 'Сбрасывать статистику при входе в группу'
+		tdpsL.refreshEverySecond = 'Обновлять статистику каждую секунду'
+
+		tdpsL.spells = '      Заклинаний в подсказке: %i'
+		tdpsL.targets = '      Целей в подсказке: %i'
+
+		tdpsL.close = 'Закрыть'
+		tdpsL.empty = '<Нет>'
+
+		tdpsL.helpVersion = 'Версия'
+		tdpsL.helpMove = '- Перемещение: зажмите Shift и двигайте окно'
+		tdpsL.helpResize = '- Смена размера: двигайте стрелку в правой нижней части окна'
+		tdpsL.helpCommand = '- Команда: "/tdps" скрыть окно/показать'
+		tdpsL.helpParameters = '- Сбросить статистику: /tpds reset | damage | healing'
+
+		tdpsL.allClear = 'Статистика была сброшена'
+		tdpsL.personal = 'Личный'
+		tdpsL.byPets = 'Питомец'
+		tdpsL.topAbilities = 'Наиболее используемые способности'
+		tdpsL.topTargets = 'Наиболее атакуемые цели'
+
+		tdpsL.noTarget = 'Возьмите в цель игрока своей фракции'
+		tdpsL.noData = 'Нет статистики для сообщения'
+
+		tdpsL.tipPrefix = {d = 'Урон:', h = 'Исцеление:'}
+		tdpsL.repPrefix = {d = 'Урон:', h = 'Исцеление:'}
+		tdpsL.overallData = 'Все бои'
+		tdpsL.currentFight = 'Текущий бой'
+		tdpsL.lastFight = 'Последний бой'
+		tdpsL.melee = 'Ближний бой'
+
+	elseif GetLocale() == 'deDE' then
+
+		tdpsL.fight = 'Kampf'
+		tdpsL.allFight = 'Gesamt   Alle Kämpfe'
+		tdpsL.current = 'Aktuell'
+		tdpsL.resetAllData = 'Alle Daten zurücksetzen'
+		tdpsL.showDamage = 'Schaden anzeigen'
+		tdpsL.showHealing = 'Heilung anzeigen'	
+
+		tdpsL.report = 'Verkünden'
+		tdpsL.top3 = 'Top 3'
+		tdpsL.top5 = 'Top 5'
+		tdpsL.top10 = 'Top 10'
+		tdpsL.say = 'Sagen'
+		tdpsL.raid = 'Schlachtzug'
+		tdpsL.party = 'Gruppe'
+		tdpsL.guild = 'Gilde'
+		tdpsL.officer = 'Offizier'
+		tdpsL.whisper = 'Flüstern'
+		tdpsL.channel = 'Channel'
+
+		tdpsL.options = 'Optionen'
+		tdpsL.text = 'Text'
+		tdpsL.size = 'Größe'
+		tdpsL.increase = 'Vergrößern'
+		tdpsL.decrease = 'Verkleinern'
+		tdpsL.font = 'Schriftart'
+		tdpsL.layout = 'Layout'
+		tdpsL.outline = 'Kontur'
+		tdpsL.nudge = 'Anstoßen'
+
+		tdpsL.dps = 'DPS'
+		tdpsL.rank = 'Rang'
+		tdpsL.percent = 'Prozent'
+		tdpsL.amount = 'Menge'
+		tdpsL.short = 'Kurzes Format'
+		tdpsL.none = 'Keine'
+		tdpsL.thin = 'Dünn'
+		tdpsL.thick = 'Dick'
+		tdpsL.shadow = 'Schatten'
+		tdpsL.mono = 'Monochrome'
+		
+		tdpsL.bars = 'Leisten'
+		tdpsL.height = 'Höhe'
+		tdpsL.spacing = 'Abstand'
+		tdpsL.maximum = 'Maximum'
+		tdpsL.oneYourself = '1 (Du selbst)'
+		tdpsL.five = '5'
+		tdpsL.ten = '10'
+		tdpsL.fifteen = '15'
+		tdpsL.twenty = '20'
+		tdpsL.unlimited = '? (Unbegrenzt)'
+
+		tdpsL.colors = 'Farben'
+		tdpsL.barBackdrop = 'Leisten - Hintergrund'
+		tdpsL.frameBorder = 'Fenster - Rand'
+		tdpsL.frameBackdrop = 'Fenster - Hintergrund'
+		tdpsL.dimClassColors = 'Klassenfarben verdunkeln'
+		tdpsL.resetClassColors = 'Klassenfarben zurücksetzen'
+		tdpsL.swapBarTextColor = 'Leisten/Text Farben austauschen'
+		
+		tdpsL.history = '      %i  Historische Kämpfe'
+		tdpsL.keepOnlyBossFights = 'Nur Bosskämpfe behalten'
+
+		tdpsL.various = 'Verschiedenes'
+		tdpsL.hideInPvP = 'In PvP verstecken'
+		tdpsL.hideWhenSolo = 'Wenn solo, verstecken'
+		tdpsL.hideOutOfCombat = 'Außerhalb des Kampfes verstecken'
+		tdpsL.growUpwards = 'Aufwärts auflisten'
+		tdpsL.minimapButton = 'Minimap Button'
+		tdpsL.trackSpellDetails = 'Zauber Details aufzeichnen'
+		tdpsL.resetOnNewGroup = 'Bei neuer Gruppe zurücksetzen'
+		tdpsL.refreshEverySecond = 'Jede Sekunde aktualisieren'
+
+		tdpsL.spells = '      %i  Zauber in Tooltips'
+		tdpsL.targets = '      %i  Ziele in Tooltips'
+
+		tdpsL.close = 'Abbrechen'
+		tdpsL.empty = '<Leer>'
+
+		tdpsL.helpVersion = 'Version'
+		tdpsL.helpMove = '- move: Halte Umschalt gedrückt und bewege das Fenster'
+		tdpsL.helpResize = '- resize: An der unteren rechten Ecke ziehen'
+		tdpsL.helpCommand = '- command: Tippe /tpds ein um das Fenster anzuzeigen/auszublenden'
+		tdpsL.helpParameters = '- parameters: /tpds reset | damage | healing'
+
+		tdpsL.allClear = 'Alle Daten wurden zurückgesetzt'
+		tdpsL.personal = 'Persönlich'
+		tdpsL.byPets = 'Durch Begleiter'
+		tdpsL.topAbilities = 'Top Fähigkeiten'
+		tdpsL.topTargets = 'Top Ziele'
+
+		tdpsL.noTarget = 'Ungültig oder kein Ziel ausgewählt'
+		tdpsL.noData = 'Keine Daten vorhanden zum Verkünden'
+
+		tdpsL.tipPrefix = {d = 'Schaden für', h = 'Heilung für'}
+		tdpsL.repPrefix = {d = 'Schaden gemacht für', h = 'Geheilt für'}
+		tdpsL.overallData = 'gesamte Daten'
+		tdpsL.currentFight = 'aktuellen Kampf'
+		tdpsL.lastFight = 'letzten Kampf'
+		tdpsL.melee = 'Nahkampf'
 
 	else
 
 		tdpsL.fight = 'Fight'
 		tdpsL.allFight = 'Overall     All Fights'
-		tdpsL.currentFight = 'Current'
+		tdpsL.current = 'Current'
 		tdpsL.resetAllData = 'Reset All Data'
 		tdpsL.showDamage = 'Show Damage'
 		tdpsL.showHealing = 'Show Healing'	
@@ -306,6 +520,7 @@
 		tdpsL.font = 'Font'
 		tdpsL.layout = 'Layout'
 		tdpsL.outline = 'Outline'
+		tdpsL.nudge = 'Nudge'
 
 		tdpsL.dps = 'DPS'
 		tdpsL.rank = 'Rank'
@@ -337,13 +552,10 @@
 		tdpsL.resetClassColors = 'Reset Class Colors'
 		tdpsL.swapBarTextColor = 'Swap Bar/Text Color'
 		
-		tdpsL.history = 'History'
-		tdpsL.disabled = 'Disabled'
-		tdpsL.threeFights = '3 Fights'
-		tdpsL.fiveFights = '5 Fights'
-		tdpsL.nineFights = '9 Fights'
+		tdpsL.history = '      %i  Historic Fights'
+		tdpsL.keepOnlyBossFights = 'Keep Only Boss Fights'
 
-		tdpsL.toggles = 'Toggles'
+		tdpsL.various = 'Various'
 		tdpsL.hideInPvP = 'Hide In PvP'
 		tdpsL.hideWhenSolo = 'Hide When Solo'
 		tdpsL.hideOutOfCombat = 'Hide Out Of Combat'
@@ -352,13 +564,9 @@
 		tdpsL.trackSpellDetails = 'Track Spell Details'
 		tdpsL.resetOnNewGroup = 'Reset On New Group'
 		tdpsL.refreshEverySecond = 'Refresh Every Second'
-		tdpsL.keepOnlyBossFights = 'Keep Only Boss Fights'
 
-		tdpsL.tooltips = 'Tooltips'
-		tdpsL.spells = 'Spells'
-		tdpsL.targets = 'Targets'
-		tdpsL.more = 'More'
-		tdpsL.less = 'Less'
+		tdpsL.spells = '      %i  Spells in Tooltips'
+		tdpsL.targets = '      %i  Targets in Tooltips'
 
 		tdpsL.close = 'Cancel'
 		tdpsL.empty = '<Empty>'
@@ -371,8 +579,19 @@
 
 		tdpsL.allClear = 'All data has been reset'
 		tdpsL.personal = 'Personal'
+		tdpsL.byPets = 'By Pet(s)'
 		tdpsL.topAbilities = 'Top Abilities'
 		tdpsL.topTargets = 'Top Targets'
+
+		tdpsL.noTarget = 'Invalid or no target selected'
+		tdpsL.noData = 'No data to report'
+
+		tdpsL.tipPrefix = {d = 'Damage for', h = 'Healing for'}
+		tdpsL.repPrefix = {d = 'Damage Done for', h = 'Healing Done for'}
+		tdpsL.overallData = 'Overall Data'
+		tdpsL.currentFight = 'Current Fight'
+		tdpsL.lastFight = 'Last Fight'
+		tdpsL.melee = 'Melee'
 
 	end
 
@@ -393,9 +612,8 @@
 	local tdpsShield = {}
 	local px, com, key, arg
 	local maxValue, barsWithValue
-	local scrollPosition, isMovingOrSizing = 1, false
+	local scrollPos, isMovingOrSizing = 1, false
 	local ttSpellMerge, ttMobMerge, ttSort = {}, {}, {}
-	local viewTitle = {d = 'Damage', h = 'Healing'}
 
 	local isHeal = {SPELL_PERIODIC_HEAL = true, SPELL_HEAL = true}
 	local isMiss = {SWING_MISSED = true, RANGE_MISSED = true, SPELL_MISSED = true, SPELL_PERIODIC_MISSED = true}
@@ -1497,6 +1715,7 @@
 			classColor = {}
 		}
 
+		tdpsTextOffset = 0
 		tdpsPosition = {x = 0, y = 0}
 
 		if GameFontNormal then tdpsFont = {name = GameFontNormal:GetFont(), size = 12, outline = '', shadow = 1}
@@ -1520,11 +1739,11 @@
 
 		tdpsVersion = -1
 		tdpsPet, tdpsPlayer, tdpsLink = {}, {}, {}
-		tdpsFight = {{name = 'Overall Data', d = 0, h = 0}, {name = nil, boss = nil, d = 0, h = 0}}
+		tdpsFight = {{name = tdpsL.overallData, d = 0, h = 0}, {name = nil, boss = nil, d = 0, h = 0}}
 
 		tdpsPartySize = 0
-		tdspF = 1
-		tdspV = 'd'
+		tdpsF = 1
+		tdpsV = 'd'
 		tdpsNumberOfFights = 2
 
 	end
@@ -1583,7 +1802,7 @@
 
 	-- title font string
 	tdpsFrame:CreateFontString('noData', 'OVERLAY')
-	noData:SetPoint('CENTER', tdpsFrame, 'CENTER', 0, 0)
+	noData:SetPoint('CENTER', tdpsFrame, 'CENTER')
 	noData:SetJustifyH('CENTER')
 	noData:SetFont(tdpsFont.name, tdpsFont.size)
 	noData:SetShadowColor(.1, .1, .1, 1)
@@ -1659,22 +1878,34 @@
 
 
 	-- copy global functions (faster)
-	local toNum, GetTime, select, band = tonumber, GetTime, select, bit.band
-	local floor, ceil, min, max, abs, random = math.floor, math.ceil, math.min, math.max, abs, random
+	local toNum, select, band = tonumber, select, bit.band
+	local floor, abs = math.floor, abs
 	local t_sort, t_remove, t_insert, t_wipe = table.sort, table.remove, table.insert, table.wipe
-	local pairs, ipairs, type, CreateFrame = pairs, ipairs, type, CreateFrame
+	local pairs, ipairs, type = pairs, ipairs, type
 	local GetNumRaidMembers, GetNumPartyMembers = GetNumRaidMembers, GetNumPartyMembers
-	local find, sub, split, lower, len, fmt = strfind, strsub, strsplit, strlower, strlen, string.format
+	local sub, tok, fmt = strsub, strsplit, string.format
 	local UnitName, UnitGUID, UnitClass = UnitName, UnitGUID, UnitClass
-	local UnitIsPlayer, UnitCanCooperate, UnitAffectingCombat = UnitIsPlayer, UnitCanCooperate, UnitAffectingCombat
+	local UnitIsPlayer, UnitAffectingCombat = UnitIsPlayer, UnitAffectingCombat
 
 
 
-	-- stuff
 	local function round(num, idp) return floor(num * (10^(idp or 0)) + .5) / (10^(idp or 0)) end
 	local function echo(str) print('|cfffef00fTinyDPS |cff82e2eb' .. (str or '')) end
 	local function getClass(name) return select(2,UnitClass(name)) or 'UNKNOWN' end
 	local function isPvpZone() if select(2,IsInInstance()) == 'pvp' or select(2,IsInInstance()) == 'arena' then return true end end
+
+
+
+	local function nudgeText()
+		if tdpsTextOffset == 2 then tdpsTextOffset = -2 else tdpsTextOffset = tdpsTextOffset + 1 end
+		for i=1,#bar do
+			bar[i].fontStringLeft:ClearAllPoints()
+			bar[i].fontStringRight:ClearAllPoints()
+			bar[i].fontStringRight:SetPoint('RIGHT', -1, tdpsTextOffset)
+			bar[i].fontStringLeft:SetPoint('LEFT', 1, tdpsTextOffset)
+			bar[i].fontStringLeft:SetPoint('RIGHT', bar[i].fontStringRight, 'LEFT', -2, 1)
+		end
+	end
 
 
 
@@ -1684,37 +1915,37 @@
 		if channel == 'WHISPER' then destination = UnitName('target') end
 
 		-- check whisper target
-		if channel == 'WHISPER' and (not destination or not UnitIsPlayer(destination) or not UnitCanCooperate('player', destination)) then echo('Invalid or no target selected') return end
+		if channel == 'WHISPER' and (not destination or not UnitIsPlayer(destination) or not UnitCanCooperate('player', destination)) then echo(tdpsL.noTarget) return end
 
 		-- make table for sorting
 		local report = {}
 		for k,v in pairs(tdpsPlayer) do
-			local reportPlayer = {name = split('-', tdpsPlayer[k].name), n = tdpsPlayer[k].fight[tdspF][tdspV], t = tdpsPlayer[k].fight[tdspF].t}
+			local reportPlayer = {name = tok('-', tdpsPlayer[k].name), n = tdpsPlayer[k].fight[tdpsF][tdpsV], t = tdpsPlayer[k].fight[tdpsF].t}
 			local pet = tdpsPlayer[k].pet
 			for i=1,#pet do
 				-- add pet number
-				reportPlayer.n = reportPlayer.n + tdpsPet[pet[i]].fight[tdspF][tdspV]
+				reportPlayer.n = reportPlayer.n + tdpsPet[pet[i]].fight[tdpsF][tdpsV]
 				-- check time
-				if tdpsPet[pet[i]].fight[tdspF].t > reportPlayer.t then reportPlayer.t = tdpsPet[pet[i]].fight[tdspF].t end
+				if tdpsPet[pet[i]].fight[tdpsF].t > reportPlayer.t then reportPlayer.t = tdpsPet[pet[i]].fight[tdpsF].t end
 			end
 			t_insert(report, reportPlayer)
 		end
 		t_sort(report, function(x,y) return x.n > y.n end)
 
 		-- check if there is any data
-		if not report[1] or report[1].n == 0 then echo('No data to report') return end
+		if not report[1] or report[1].n == 0 then echo(tdpsL.noData) return end
 
 		-- output report title
-		if tdspF == 2 then
-			SendChatMessage(fmt('%s Done for Last Fight', viewTitle[tdspV]), channel, nil, destination)
+		if tdpsF == 2 then
+			SendChatMessage(fmt('%s %s', tdpsL.repPrefix[tdpsV], tdpsL.lastFight), channel, nil, destination)
 		else
-			SendChatMessage(fmt('%s Done for %s', viewTitle[tdspV], tdpsFight[tdspF].name or 'Unknown'), channel, nil, destination)
+			SendChatMessage(fmt('%s %s', tdpsL.repPrefix[tdpsV], tdpsFight[tdpsF].name or '?'), channel, nil, destination)
 		end
 
 		-- output the text lines
-		for i=1,min(#report, length) do
+		for i=1,math.min(#report, length) do
 			if report[i].n > 0 then
-				SendChatMessage(fmt('%i. %s    %i    %i%%    (%i)', i, report[i].name, report[i].n, report[i].n/tdpsFight[tdspF][tdspV]*100, report[i].n/report[i].t), channel, nil, destination)
+				SendChatMessage(fmt('%i. %s    %i    %i%%    (%i)', i, report[i].name, report[i].n, report[i].n/tdpsFight[tdpsF][tdpsV]*100, report[i].n/report[i].t), channel, nil, destination)
 			end
 		end
 
@@ -1723,16 +1954,16 @@
 
 
 	local function visibilityEvent()
-		if tdpsFrame:IsVisible() then
-			if (tdps.hidePvP and isPvpZone()) or (tdps.hideSolo and max(GetNumPartyMembers(), GetNumRaidMembers()) == 0) or (tdps.hideOOC and not UnitAffectingCombat('player')) then
-				tdpsFrame:Hide()
-			end
+
+		if (tdps.hidePvP and isPvpZone()) -- hide in pvp is true and we are in pvp zone
+				or (tdps.hideSolo and math.max(GetNumPartyMembers(), GetNumRaidMembers()) == 0) -- hide when solo is true and we are alone
+				or (tdps.hideOOC and not UnitAffectingCombat('player')) then -- hide when ooc is true and we are not fighting
+			tdpsFrame:Hide()
 		else
-			if not (tdps.hidePvP and isPvpZone()) and not (tdps.hideSolo and max(GetNumPartyMembers(), GetNumRaidMembers()) == 0) then
-				if tdps.hideOOC and not UnitAffectingCombat('player') then return end
-				tdpsFrame:Show()
-			end
-		end		
+			tdpsFrame:Show()
+			tdpsRefresh()
+		end
+
 	end
 
 
@@ -1768,18 +1999,18 @@
 		[1]  = function(i, n, t) bar[i].fontStringRight:SetText('') end,
 		[2]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i', n) end,
 		[3]  = function(i, n, t) bar[i].fontStringRight:SetText(short(n)) end,
-		[4]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%%', n/tdpsFight[tdspF][tdspV]*100) end,
-		[5]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%%', n/tdpsFight[tdspF][tdspV]*100) end,
-		[6]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%% %i', n/tdpsFight[tdspF][tdspV]*100, n/t) end,
-		[7]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%s %i%%', short(n), n/tdpsFight[tdspF][tdspV]*100) end,
+		[4]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%%', n/tdpsFight[tdpsF][tdpsV]*100) end,
+		[5]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%%', n/tdpsFight[tdpsF][tdpsV]*100) end,
+		[6]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%% %i', n/tdpsFight[tdpsF][tdpsV]*100, n/t) end,
+		[7]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%s %i%%', short(n), n/tdpsFight[tdpsF][tdpsV]*100) end,
 		[8]  = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i', n/t) end,
 		[9]  = function(i, n, t) bar[i].fontStringRight:SetText(short(n/t)) end,
 		[10] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i %i', n, n/t) end,
 		[11] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%s %s', short(n), short(n/t)) end,
-		[12] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%% %i', n/tdpsFight[tdspF][tdspV]*100, n/t) end,
-		[13] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%% %s', n/tdpsFight[tdspF][tdspV]*100, short(n/t)) end,
-		[14] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i %i%% %i', n, n/tdpsFight[tdspF][tdspV]*100, n/t) end,
-		[15] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%s %i%% %s', short(n), n/tdpsFight[tdspF][tdspV]*100, short(n/t)) end
+		[12] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%% %i', n/tdpsFight[tdpsF][tdpsV]*100, n/t) end,
+		[13] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i%% %s', n/tdpsFight[tdpsF][tdpsV]*100, short(n/t)) end,
+		[14] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%i %i%% %i', n, n/tdpsFight[tdpsF][tdpsV]*100, n/t) end,
+		[15] = function(i, n, t) bar[i].fontStringRight:SetFormattedText('%s %i%% %s', short(n), n/tdpsFight[tdpsF][tdpsV]*100, short(n/t)) end
 
 	}
 
@@ -1794,8 +2025,8 @@
 		for i=1,#bar do
 			bar[i]:Hide()
 			g = bar[i].guid
-			n, t, p = tdpsPlayer[g].fight[tdspF][tdspV], tdpsPlayer[g].fight[tdspF].t, tdpsPlayer[g].pet
-			for i=1,#p do n = n + tdpsPet[p[i]].fight[tdspF][tdspV] if tdpsPet[p[i]].fight[tdspF].t > t then t = tdpsPet[p[i]].fight[tdspF].t end end
+			n, t, p = tdpsPlayer[g].fight[tdpsF][tdpsV], tdpsPlayer[g].fight[tdpsF].t, tdpsPlayer[g].pet
+			for i=1,#p do n = n + tdpsPet[p[i]].fight[tdpsF][tdpsV] if tdpsPet[p[i]].fight[tdpsF].t > t then t = tdpsPet[p[i]].fight[tdpsF].t end end
 			-- update bar values
 			if n > 0 then
 				barsWithValue = barsWithValue + 1
@@ -1822,7 +2053,8 @@
 				end
 			end
 		else
-			for i=scrollPosition,min(barsWithValue,tdps.maxBars+scrollPosition-1) do
+			local to if barsWithValue < tdps.maxBars+scrollPos-1 then to = barsWithValue else to = tdps.maxBars+scrollPos-1 end
+			for i=scrollPos,to do
 				bar[i]:SetMinMaxValues(0, maxValue)
 				bar[i]:SetValue(bar[i].n)
 				bar[i]:SetPoint('TOPLEFT', tdpsFrame, 'TOPLEFT', 2, px)
@@ -1842,23 +2074,24 @@
 
 	--local function tdpsShowStatus()
 	--	ACTION_STATUS_FADETIME = 3
-	--	if tdspF == 2 then ActionStatus_DisplayMessage(fmt('%s for Current Fight', viewTitle[tdspV]), true)
-	--	else ActionStatus_DisplayMessage(fmt('%s for %s', viewTitle[tdspV], tdpsFight[tdspF].name), true) end
+	--	if tdpsF == 2 then ActionStatus_DisplayMessage(fmt('%s for Current Fight', viewTitle[tdpsV]), true)
+	--	else ActionStatus_DisplayMessage(fmt('%s for %s', viewTitle[tdpsV], tdpsFight[tdpsF].name), true) end
 	--end
 
 
 
-	local function changeView(button, v) if tdspV == v then return end tdspV = v scrollPosition = 1 CloseDropDownMenus() tdpsAnimationGroup:Play() end
-	local function checkView(v) if tdspV == v then return true end end
-	local function changeFight(button, f) if tdspF == f then return else tdspF = f scrollPosition = 1 CloseDropDownMenus() tdpsAnimationGroup:Play() end end
-	local function checkFight(f) if tdspF == f then return true end end
+	local function changeView(button, v) if tdpsV == v then return end tdpsV = v scrollPos = 1 CloseDropDownMenus() tdpsAnimationGroup:Play() end
+	local function checkView(v) if tdpsV == v then return true end end
+	local function changeFight(button, f) if tdpsF == f then return else tdpsF = f scrollPos = 1 CloseDropDownMenus() tdpsAnimationGroup:Play() end end
+	local function checkFight(f) if tdpsF == f then return true end end
 	local function changeTextLayout(button, bit) if band(tdps.layout,bit) > 0 then tdps.layout = tdps.layout - bit else tdps.layout = tdps.layout + bit end tdpsRefresh() end
 
 
 
-	local function changeNumberOfFights(button, n)
+	local function changeNumberOfFights(button)
 	
-		tdpsNumberOfFights = n
+		if tdpsNumberOfFights == 11 then tdpsNumberOfFights = 2 else tdpsNumberOfFights = tdpsNumberOfFights + 1 end
+		if button then button:SetFormattedText(tdpsL.history, tdpsNumberOfFights - 2) end
 
 		-- make or delete entries for global fight data
 		while #tdpsFight > tdpsNumberOfFights do t_remove(tdpsFight) end
@@ -1876,7 +2109,7 @@
 
 		-- adjust the current selected fight
 		-- example: selected fight is 5; user disables fight history; we now have only 2 fights (overall and current); the new selected fight has to be 2
-		while not tdpsFight[tdspF] do tdspF = tdspF - 1 end
+		while not tdpsFight[tdpsF] do tdpsF = tdpsF - 1 end
 
 		-- clean up memory
 		collectgarbage()
@@ -1886,7 +2119,7 @@
 
 
 	local function changeBarSpacing(button, d) if tdps.spacing + d < 0 then tdps.spacing = 0 elseif tdps.spacing + d > 10 then tdps.spacing = 10 else tdps.spacing = tdps.spacing + d end tdpsRefresh() end
-	local function changeMaxBars(button, d) tdps.maxBars = d scrollPosition = 1 tdpsRefresh() end
+	local function changeMaxBars(button, d) tdps.maxBars = d scrollPos = 1 tdpsRefresh() end
 	local function changeBarHeight(button, d) if tdps.barHeight + d < 2 then tdps.barHeight = 2 elseif tdps.barHeight + d > 40 then tdps.barHeight = 40 else tdps.barHeight = tdps.barHeight + d end for i=1,#bar do bar[i]:SetHeight(tdps.barHeight) end tdpsRefresh() end
 
 
@@ -1940,11 +2173,11 @@
 
 		tdpsStartNewFight = false
 		tdpsInCombat = true
-		if tdspF ~= 1 then scrollPosition = 1 end
+		if tdpsF ~= 1 then scrollPos = 1 end
 
 		-- insert a new fight at position 2
 		if tdpsFight[2].d + tdpsFight[2].h > 0 and ((tdps.onlyBossSegments and tdpsFight[2].boss) or not tdps.onlyBossSegments) then
-			t_insert(tdpsFight, 2, {name = target, boss = isBoss[toNum(mobid:sub(7, 10), 16)], d = 0, h = 0})
+			t_insert(tdpsFight, 2, {name = target or '?', boss = isBoss[toNum(mobid:sub(7, 10), 16)], d = 0, h = 0})
 			t_remove(tdpsFight)
 			for _,v in pairs(tdpsPlayer) do
 				t_insert(v.fight, 2, {d = 0, ds = {}, h = 0, hs = {}, t = 0})
@@ -1957,7 +2190,7 @@
 
 		-- reset current fight
 		else
-			tdpsFight[2] = {name = target, boss = isBoss[toNum(mobid:sub(7, 10), 16)], d = 0, h = 0}
+			tdpsFight[2] = {name = target or '?', boss = isBoss[toNum(mobid:sub(7, 10), 16)], d = 0, h = 0}
 			for _,v in pairs(tdpsPlayer) do
 				v.fight[2] = {d = 0, ds = {}, h = 0, hs = {}, t = 0}
 			end
@@ -2047,12 +2280,12 @@
 		-- delete data
 		tdpsPlayer, tdpsPet, tdpsLink, tdpsFight, bar = {}, {}, {}, {}, {}
 		-- make new fight data
-		t_insert(tdpsFight, {name = 'Overall Data', d = 0, h = 0})
+		t_insert(tdpsFight, {name = tdpsL.overallData, d = 0, h = 0})
 		while #tdpsFight < tdpsNumberOfFights do t_insert(tdpsFight, 2, {name = nil, boss = false, d = 0, h = 0}) end
 		-- reset scroll position
-		scrollPosition = 1
+		scrollPos = 1
 		-- return to current fight if needed
-		if tdspF > 2 then tdspF = 2 end
+		if tdpsF > 2 then tdpsF = 2 end
 		-- reset the window
 		tdpsFrame:SetHeight(tdps.barHeight + 4)
 		noData:Show()
@@ -2067,9 +2300,9 @@
 
 	SLASH_TINYDPS1, SLASH_TINYDPS2 = '/tinydps', '/tdps'
 	function SlashCmdList.TINYDPS(msg, editbox)
-		if lower(msg) == 'reset' or lower(msg) == 'r' then reset()
-		elseif lower(msg) == 'damage' or lower(msg) == 'd' then changeView(nil, 'd')
-		elseif lower(msg) == 'healing' or lower(msg) == 'h' then changeView(nil, 'h')
+		if strlower(msg) == 'reset' or strlower(msg) == 'r' then reset()
+		elseif strlower(msg) == 'damage' or strlower(msg) == 'd' then changeView(nil, 'd')
+		elseif strlower(msg) == 'healing' or strlower(msg) == 'h' then changeView(nil, 'h')
 		elseif msg == '' then if tdpsFrame:IsVisible() then tdpsFrame:Hide() else tdpsRefresh() tdpsFrame:Show() end
 		else help() end
 	end
@@ -2077,8 +2310,8 @@
 
 
 	local function scroll(d)
-		if bar[1] and bar[1].n > 0 and scrollPosition - d > 0 and scrollPosition - d + tdps.maxBars <= barsWithValue + 1 and tdps.maxBars > 1 then
-			scrollPosition = scrollPosition - d
+		if bar[1] and bar[1].n > 0 and scrollPos - d > 0 and scrollPos - d + tdps.maxBars <= barsWithValue + 1 and tdps.maxBars > 1 then
+			scrollPos = scrollPos - d
 			tdpsRefresh()
 		end
 	end
@@ -2107,7 +2340,7 @@
 		elseif level == 2 and UIDROPDOWNMENU_MENU_VALUE == 'fight' then
 
 			newBu(level, tdpsL.allFight, nil, nil, nil, nil, nil, changeFight, 1, nil, checkFight(1))
-			newBu(level, tdpsL.currentFight .. '    ' .. (tdpsFight[2].name or tdpsL.empty), nil, nil, nil, nil, nil, changeFight, 2, nil, checkFight(2))
+			newBu(level, tdpsL.current .. '    ' .. (tdpsFight[2].name or tdpsL.empty), nil, nil, nil, nil, nil, changeFight, 2, nil, checkFight(2))
 			if tdpsNumberOfFights > 2 then newBu(level, '', nil, 1, nil, nil, nil, nil, nil, nil, nil, 1) end
 			for i=3,tdpsNumberOfFights do newBu(level, fmt('%s %i     %s', tdpsL.fight, i-2, (tdpsFight[i].name or tdpsL.empty)), nil, nil, nil, nil, nil, changeFight, i, nil, checkFight(i)) end
 			newBu(level, '', nil, 1, nil, nil, nil, nil, nil, nil, nil, 1)
@@ -2127,9 +2360,7 @@
 			newBu(level, tdpsL.text, nil, 1, 1, 'text', 1)
 			newBu(level, tdpsL.bars, nil, 1, 1, 'bars', 1)
 			newBu(level, tdpsL.colors, nil, 1, 1, 'colors', 1)
-			newBu(level, tdpsL.history, nil, 1, 1, 'history', 1)
-			newBu(level, tdpsL.toggles, nil, 1, 1, 'toggles', 1)
-			newBu(level, tdpsL.tooltips .. '    ', nil, 1, 1, 'tooltips', 1)
+			newBu(level, tdpsL.various, nil, 1, 1, 'various', 1)
 
 		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'report3' then
 
@@ -2139,7 +2370,7 @@
 			newBu(level, tdpsL.guild, nil, 1, nil, nil, nil, report, 'GUILD', 3)
 			newBu(level, tdpsL.officer, nil, 1, nil, nil, nil, report, 'OFFICER', 3)
 			newBu(level, tdpsL.whisper, nil, 1, nil, nil, nil, report, 'WHISPER', 3)
-			for i=1,20 do if select(2,GetChannelName(i)) then newBu(level, split(' ',select(2,GetChannelName(i))) .. '     ', nil, 1, nil, nil, nil, report, i, 3) end end			
+			for i=1,20 do if select(2,GetChannelName(i)) then newBu(level, tok(' ',select(2,GetChannelName(i))) .. '     ', nil, 1, nil, nil, nil, report, i, 3) end end			
 
 		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'report5' then
 
@@ -2149,7 +2380,7 @@
 			newBu(level, tdpsL.guild, nil, 1, nil, nil, nil, report, 'GUILD', 5)
 			newBu(level, tdpsL.officer, nil, 1, nil, nil, nil, report, 'OFFICER', 5)
 			newBu(level, tdpsL.whisper, nil, 1, nil, nil, nil, report, 'WHISPER', 5)
-			for i=1,20 do if select(2,GetChannelName(i)) then newBu(level, split(' ',select(2,GetChannelName(i))) .. '     ', nil, 1, nil, nil, nil, report, i, 5) end end	
+			for i=1,20 do if select(2,GetChannelName(i)) then newBu(level, tok(' ',select(2,GetChannelName(i))) .. '     ', nil, 1, nil, nil, nil, report, i, 5) end end	
 
 		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'report10' then
 
@@ -2159,7 +2390,7 @@
 			newBu(level, tdpsL.guild, nil, 1, nil, nil, nil, report, 'GUILD', 10)
 			newBu(level, tdpsL.officer, nil, 1, nil, nil, nil, report, 'OFFICER', 10)
 			newBu(level, tdpsL.whisper, nil, 1, nil, nil, nil, report, 'WHISPER', 10)
-			for i=1,20 do if select(2,GetChannelName(i)) then newBu(level, split(' ',select(2,GetChannelName(i))) .. '     ', nil, 1, nil, nil, nil, report, i, 10) end end	
+			for i=1,20 do if select(2,GetChannelName(i)) then newBu(level, tok(' ',select(2,GetChannelName(i))) .. '     ', nil, 1, nil, nil, nil, report, i, 10) end end	
 
 		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'text' then
 
@@ -2167,6 +2398,7 @@
 			newBu(level, tdpsL.font, nil, 1, 1, 'font', 1)
 			newBu(level, tdpsL.layout, nil, 1, 1, 'layout', 1)
 			newBu(level, tdpsL.outline, nil, 1, 1, 'outline', 1)
+			newBu(level, fmt(tdpsL.nudge, tdpsTextOffset), nil, 1, nil, nil, 1, nudgeText)
 
 		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'bars' then
 
@@ -2177,8 +2409,7 @@
 		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'colors' then
 
 			local st if tdps.swapColor then st = tdpsL.text else st = tdpsL.bars end
-			newBu(level, st, nil, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1, 
-				function()
+			newBu(level, st, nil, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1, function()
 					ColorPickerOkayButton:Hide()
 					ColorPickerCancelButton:SetText('Close')
 					local red, green, blue = ColorPickerFrame:GetColorRGB()
@@ -2193,8 +2424,7 @@
 					changeBarColor() end,
 				tdps.bar[1], tdps.bar[2], tdps.bar[3], 1 - tdps.bar[4], 1)
 				
-			newBu(level, tdpsL.barBackdrop, nil, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1, 
-				function()
+			newBu(level, tdpsL.barBackdrop, nil, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1, function()
 					ColorPickerOkayButton:Hide()
 					ColorPickerCancelButton:SetText('Close')
 					local red, green, blue = ColorPickerFrame:GetColorRGB()
@@ -2209,8 +2439,7 @@
 					changeBarBackdropColor() end,
 					tdps.barbackdrop[1], tdps.barbackdrop[2], tdps.barbackdrop[3], 1 - tdps.barbackdrop[4], 1)
 				
-			newBu(level, tdpsL.frameBorder, nil, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1, 
-				function()
+			newBu(level, tdpsL.frameBorder, nil, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1, function()
 					ColorPickerOkayButton:Hide()
 					ColorPickerCancelButton:SetText('Close')
 					local red, green, blue = ColorPickerFrame:GetColorRGB()
@@ -2225,8 +2454,7 @@
 					tdps.border[1], tdps.border[2], tdps.border[3], tdps.border[4] = red, green, blue, alpha end,
 					tdps.border[1], tdps.border[2], tdps.border[3], 1 - tdps.border[4], 1)
 				
-			newBu(level, tdpsL.frameBackdrop, nil, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1, 
-				function()
+			newBu(level, tdpsL.frameBackdrop, nil, 1, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1, function()
 					ColorPickerOkayButton:Hide()
 					ColorPickerCancelButton:SetText('Close')
 					local red, green, blue = ColorPickerFrame:GetColorRGB()
@@ -2245,14 +2473,7 @@
 			newBu(level, tdpsL.resetClassColors, nil, 1, nil, nil, 1, function() tdps.classColor = RAID_CLASS_COLORS for k,v in pairs(tdps.classColor) do v.a = 1 end tdps.classColor['UNKNOWN'] = {r = .63, g = .58, b = .24, a = 1} changeBarColor() end)
 			newBu(level, tdpsL.swapBarTextColor .. '     ', nil, 1, nil, nil, 1, function() tdps.swapColor = not tdps.swapColor if tdps.swapColor then DropDownList3Button1:SetText(tdpsL.text) else DropDownList3Button1:SetText(tdpsL.bars) end changeBarColor() end)
 
-		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'history' then
-
-			newBu(level, tdpsL.disabled, nil, nil, nil, nil, nil, changeNumberOfFights, 2, nil, function() if tdpsNumberOfFights == 2 then return true end end)
-			newBu(level, tdpsL.threeFights, nil, nil, nil, nil, nil, changeNumberOfFights, 5, nil, function() if tdpsNumberOfFights == 5 then return true end end)
-			newBu(level, tdpsL.fiveFights, nil, nil, nil, nil, nil, changeNumberOfFights, 7, nil, function() if tdpsNumberOfFights == 7 then return true end end)
-			newBu(level, tdpsL.nineFights, nil, nil, nil, nil, nil, changeNumberOfFights, 11, nil, function() if tdpsNumberOfFights == 11 then return true end end)
-
-		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'toggles' then
+		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'various' then
 
 			newBu(level, tdpsL.hideInPvP, nil, nil, nil, nil, 1, function() tdps.hidePvP = not tdps.hidePvP visibilityEvent() end, nil, nil, tdps.hidePvP, nil, 1)
 			newBu(level, tdpsL.hideWhenSolo, nil, nil, nil, nil, 1, function() tdps.hideSolo = not tdps.hideSolo visibilityEvent() end, nil, nil, tdps.hideSolo, nil, 1)
@@ -2260,25 +2481,16 @@
 			newBu(level, '', nil, 1, nil, nil, nil, nil, nil, nil, nil, 1)
 			newBu(level, tdpsL.growUpwards, nil, nil, nil, nil, 1, function() if tdps.anchor == 'TOPLEFT' then tdps.anchor = 'BOTTOMLEFT' else tdps.anchor = 'TOPLEFT' end tdpsFrame:ClearAllPoints() tdpsFrame:SetPoint(tdps.anchor, tdpsAnchor, tdps.anchor) end, nil, nil, function() if tdps.anchor == 'BOTTOMLEFT' then return true end end, nil, 1)
 			newBu(level, tdpsL.minimapButton, nil, nil, nil, nil, 1, toggleMinimapButton, nil, nil, tdps.showMinimapButton, nil, 1)
-			newBu(level, tdpsL.trackSpellDetails, nil, nil, nil, nil, 1, function() tdps.trackSpells = not tdps.trackSpells if not tdps.trackSpells then deleteSpellData() end end, nil, nil, tdps.trackSpells, nil, 1)
 			newBu(level, tdpsL.resetOnNewGroup, nil, nil, nil, nil, 1, function() tdps.autoReset = not tdps.autoReset end, nil, nil, tdps.autoReset, nil, 1)
 			newBu(level, tdpsL.refreshEverySecond, nil, nil, nil, nil, 1, function() if tdps.speed == 2 then tdps.speed = 1 else tdps.speed = 2 end end, nil, nil, function() if tdps.speed == 1 then return true end end, nil, 1)
+			newBu(level, '', nil, 1, nil, nil, nil, nil, nil, nil, nil, 1)
+			newBu(level, tdpsL.trackSpellDetails, nil, nil, nil, nil, 1, function() tdps.trackSpells = not tdps.trackSpells if not tdps.trackSpells then deleteSpellData() end end, nil, nil, tdps.trackSpells, nil, 1)
+			newBu(level, fmt(tdpsL.spells, tdps.tooltipSpells), nil, 1, nil, nil, 1, function() if tdps.tooltipSpells == 10 then tdps.tooltipSpells = 0 else tdps.tooltipSpells = tdps.tooltipSpells + 1 end DropDownList3Button11:SetFormattedText(tdpsL.spells, tdps.tooltipSpells) end)
+			newBu(level, fmt(tdpsL.targets, tdps.tooltipTargets), nil, 1, nil, nil, 1, function() if tdps.tooltipTargets == 10 then tdps.tooltipTargets = 0 else tdps.tooltipTargets = tdps.tooltipTargets + 1 end DropDownList3Button12:SetFormattedText(tdpsL.targets, tdps.tooltipTargets) end)
+			newBu(level, '', nil, 1, nil, nil, nil, nil, nil, nil, nil, 1)
 			newBu(level, tdpsL.keepOnlyBossFights, nil, nil, nil, nil, 1, function() tdps.onlyBossSegments = not tdps.onlyBossSegments end, nil, nil, tdps.onlyBossSegments, nil, 1)
+			newBu(level, fmt(tdpsL.history, tdpsNumberOfFights - 2), nil, 1, nil, nil, 1, changeNumberOfFights)
 
-		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'tooltips' then
-
-			newBu(level, tdps.tooltipSpells .. ' ' .. tdpsL.spells, nil, 1, 1, 'spells', 1)
-			newBu(level, tdps.tooltipTargets .. ' ' .. tdpsL.targets, nil, 1, 1, 'targets', 1)
-
-		elseif level == 4 and UIDROPDOWNMENU_MENU_VALUE == 'spells' then
-
-			newBu(level, tdpsL.more, nil, 1, nil, nil, 1, function() tdps.tooltipSpells = min(10, tdps.tooltipSpells + 1) DropDownList3Button1:SetText(tdps.tooltipSpells .. ' ' .. tdpsL.spells) end)
-			newBu(level, tdpsL.less, nil, 1, nil, nil, 1, function() tdps.tooltipSpells = max(0, tdps.tooltipSpells - 1) DropDownList3Button1:SetText(tdps.tooltipSpells .. ' ' .. tdpsL.spells) end)
-
-		elseif level == 4 and UIDROPDOWNMENU_MENU_VALUE == 'targets' then			
-								
-			newBu(level, tdpsL.more, nil, 1, nil, nil, 1, function() tdps.tooltipTargets = min(10, tdps.tooltipTargets + 1) DropDownList3Button2:SetText(tdps.tooltipTargets .. ' ' .. tdpsL.targets) end)
-			newBu(level, tdpsL.less, nil, 1, nil, nil, 1, function() tdps.tooltipTargets = max(0, tdps.tooltipTargets - 1) DropDownList3Button2:SetText(tdps.tooltipTargets .. ' ' .. tdpsL.targets) end)
 
 		elseif level == 4 and UIDROPDOWNMENU_MENU_VALUE == 'size' then
 
@@ -2301,22 +2513,19 @@
 				newBu(level, '聊天', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\bHEI01B.TTF]], function() if tdpsFont.name == [[Fonts\bHEI01B.TTF]] then return true end end, nil, nil)
 				newBu(level, '傷害數字', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\bKAI00M.TTF]], function() if tdpsFont.name == [[Fonts\bKAI00M.TTF]] then return true end end, nil, nil)
 				newBu(level, '提示訊息', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\bHEI00M.TTF]], function() if tdpsFont.name == [[Fonts\bHEI00M.TTF]] then return true end end, nil, nil)
-			elseif GetLocale() == "ruRU" then
-				newBu(level, 'Skurri', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\SKURRI.TTF]], function() if tdpsFont.name == [[Fonts\SKURRI.TTF]] then return true end end, nil, nil)
-				newBu(level, 'Visitor', nil, nil, nil, nil, nil, changeFont, 'font', [[Interface\AddOns\TinyDPS\Fonts\Visitor.ttf]], function() if find(tdpsFont.name, 'isitor') then return true end end, nil, nil)
-				newBu(level, 'Morpheus', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\MORPHEUS.TTF]], function() if tdpsFont.name == [[Fonts\MORPHEUS.TTF]] then return true end end, nil, nil)
-				newBu(level, 'Nimrod MT', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\NIM_____.TTF]], function() if tdpsFont.name == [[Fonts\NIM_____.TTF]] then return true end end, nil, nil)
-				newBu(level, 'Arial Narrow', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\ARIALN.TTF]], function() if tdpsFont.name == [[Fonts\ARIALN.TTF]] then return true end end, nil, nil)
-				newBu(level, 'Friz Quadrata TT', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\FRIZQT__.TTF]], function() if tdpsFont.name == [[Fonts\FRIZQT__.TTF]] then return true end end, nil, nil)
 			else
 				newBu(level, 'Skurri', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\SKURRI.TTF]], function() if tdpsFont.name == [[Fonts\SKURRI.TTF]] then return true end end, nil, nil)
-				newBu(level, 'Visitor', nil, nil, nil, nil, nil, changeFont, 'font', [[Interface\AddOns\TinyDPS\Fonts\Visitor.ttf]], function() if find(tdpsFont.name, 'isitor') then return true end end, nil, nil)
+				newBu(level, 'Visitor', nil, nil, nil, nil, nil, changeFont, 'font', [[Interface\AddOns\TinyDPS\Fonts\visitor.ttf]], function() if tdpsFont.name == [[Interface\AddOns\TinyDPS\Fonts\visitor.ttf]] then return true end end, nil, nil)
 				newBu(level, 'Morpheus', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\MORPHEUS.TTF]], function() if tdpsFont.name == [[Fonts\MORPHEUS.TTF]] then return true end end, nil, nil)
 				newBu(level, 'Arial Narrow', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\ARIALN.TTF]], function() if tdpsFont.name == [[Fonts\ARIALN.TTF]] then return true end end, nil, nil)				
 				newBu(level, 'Friz Quadrata TT', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\FRIZQT__.TTF]], function() if tdpsFont.name == [[Fonts\FRIZQT__.TTF]] then return true end end, nil, nil)
 			end
+			
+			if GetLocale() == "ruRU" then
+				newBu(level, 'Nimrod MT', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\NIM_____.TTF]], function() if tdpsFont.name == [[Fonts\NIM_____.TTF]] then return true end end, nil, nil)
+			end
 
-			--newBu(level, 'Custom', nil, nil, nil, nil, nil, changeFont, 'font', [[Interface\AddOns\TinyDPS\Fonts\custom.TTF]], function() if tdpsFont.name == [[Interface\AddOns\TinyDPS\Fonts\custom.TTF]] then return true end end, nil, nil)
+			--newBu(level, 'Custom', nil, nil, nil, nil, nil, changeFont, 'font', [[Interface\AddOns\TinyDPS\Fonts\custom.ttf]], function() if tdpsFont.name == [[Interface\AddOns\TinyDPS\Fonts\custom.ttf]] then return true end end, nil, nil)
 
 		elseif level == 4 and UIDROPDOWNMENU_MENU_VALUE == 'layout' then
 
@@ -2380,7 +2589,7 @@
 		dummybar:SetStatusBarTexture([[Interface\AddOns\TinyDPS\Textures\wglass.tga]])
 
 		-- bar info
-		dummybar.name, dummybar.guid, dummybar.n = split('-', tdpsPlayer[g]['name']), g, 0
+		dummybar.name, dummybar.guid, dummybar.n = tok('-', tdpsPlayer[g]['name']), g, 0
 
 		-- scripts
 		dummybar:SetScript('OnEnter', function(self)
@@ -2389,23 +2598,23 @@
 			GameTooltip:SetText(tdpsPlayer[g].name)
 
 			-- tooltip title
-			if tdspF == 2 then GameTooltip:AddLine(viewTitle[tdspV] .. ' for Current Fight', 1, .85, 0)
-			else GameTooltip:AddLine(viewTitle[tdspV] .. ' for ' .. tdpsFight[tdspF].name or 'Unknown', 1, .85, 0) end
+			if tdpsF == 2 then GameTooltip:AddLine(fmt('%s %s', tdpsL.tipPrefix[tdpsV], tdpsL.currentFight), 1, .85, 0)
+			else GameTooltip:AddLine(fmt('%s %s', tdpsL.tipPrefix[tdpsV], tdpsFight[tdpsF].name or '?'), 1, .85, 0) end
 
 			-- own amount
-			GameTooltip:AddDoubleLine(tdpsL.personal, tdpsPlayer[self.guid].fight[tdspF][tdspV] .. ' (' .. round(tdpsPlayer[self.guid].fight[tdspF][tdspV]/(self.n)*100,0) .. '%)', 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddDoubleLine(tdpsL.personal, tdpsPlayer[self.guid].fight[tdpsF][tdpsV] .. ' (' .. round(tdpsPlayer[self.guid].fight[tdpsF][tdpsV]/(self.n)*100,0) .. '%)', 1, 1, 1, 1, 1, 1)
 
 			-- pet amount
 			local pet, petAmount = tdpsPlayer[g].pet, 0
-			for i=1,#pet do petAmount = petAmount + tdpsPet[pet[i]].fight[tdspF][tdspV] end
-			if petAmount > 0 then GameTooltip:AddDoubleLine('By Pet(s)', petAmount .. ' (' .. round(petAmount/(self.n)*100,0) .. '%)', 1, 1, 1, 1, 1, 1) end
+			for i=1,#pet do petAmount = petAmount + tdpsPet[pet[i]].fight[tdpsF][tdpsV] end
+			if petAmount > 0 then GameTooltip:AddDoubleLine(tdpsL.byPets, petAmount .. ' (' .. round(petAmount/(self.n)*100,0) .. '%)', 1, 1, 1, 1, 1, 1) end
 
 			-- spell details
 			if tdps.trackSpells then
 
 				-- merge the data of this player
-				for k,v in pairs(tdpsPlayer[g].fight[tdspF][tdspV..'s']) do for kk,vv in pairs(v) do ttSpellMerge[k] = (ttSpellMerge[k] or 0) + vv ttMobMerge[kk] = (ttMobMerge[kk] or 0) + vv end end
-				for i=1,#pet do for k,v in pairs(tdpsPet[pet[i]].fight[tdspF][tdspV..'s']) do for kk,vv in pairs(v) do ttSpellMerge[k] = (ttSpellMerge[k] or 0) + vv ttMobMerge[kk] = (ttMobMerge[kk] or 0) + vv end end end
+				for k,v in pairs(tdpsPlayer[g].fight[tdpsF][tdpsV..'s']) do for kk,vv in pairs(v) do ttSpellMerge[k] = (ttSpellMerge[k] or 0) + vv ttMobMerge[kk] = (ttMobMerge[kk] or 0) + vv end end
+				for i=1,#pet do for k,v in pairs(tdpsPet[pet[i]].fight[tdpsF][tdpsV..'s']) do for kk,vv in pairs(v) do ttSpellMerge[k] = (ttSpellMerge[k] or 0) + vv ttMobMerge[kk] = (ttMobMerge[kk] or 0) + vv end end end
 
 				-- display spells
 				if tdps.tooltipSpells > 0 then GameTooltip:AddLine(tdpsL.topAbilities, 1, .85, 0) end
@@ -2462,7 +2671,7 @@
 
 		-- number fontstring
 		dummybar.fontStringRight = dummybar:CreateFontString(nil, 'OVERLAY')
-		dummybar.fontStringRight:SetPoint('RIGHT', -1, 0)
+		dummybar.fontStringRight:SetPoint('RIGHT', -1, tdpsTextOffset)
 		dummybar.fontStringRight:SetJustifyH('RIGHT')
 		dummybar.fontStringRight:SetFont(tdpsFont.name, tdpsFont.size, tdpsFont.outline)
 		dummybar.fontStringRight:SetShadowColor(.05, .05, .05, 1)
@@ -2470,7 +2679,7 @@
 
 		-- name fontstring
 		dummybar.fontStringLeft = dummybar:CreateFontString(nil, 'OVERLAY')
-		dummybar.fontStringLeft:SetPoint('LEFT', 1, 0)
+		dummybar.fontStringLeft:SetPoint('LEFT', 1, tdpsTextOffset)
 		dummybar.fontStringLeft:SetPoint('RIGHT', dummybar.fontStringRight, 'LEFT', -2, 1)
 		dummybar.fontStringLeft:SetJustifyH('LEFT')
 		dummybar.fontStringLeft:SetFont(tdpsFont.name, tdpsFont.size, tdpsFont.outline)
@@ -2513,11 +2722,11 @@
 
 	local function trackSpell(amount, target, spell, dh)
 		if tdps.trackSpells then
-			local t = dh .. 's'
-			if not com.fight[1][t][spell] then com.fight[1][t][spell] = {} end -- make the spell
-			if not com.fight[2][t][spell] then com.fight[2][t][spell] = {} end
-			com.fight[1][t][spell][target] = (com.fight[1][t][spell][target] or 0) + amount -- record the amount
-			com.fight[2][t][spell][target] = (com.fight[2][t][spell][target] or 0) + amount
+			dh = dh .. 's'
+			if not com.fight[1][dh][spell] then com.fight[1][dh][spell] = {} end -- make the spell
+			if not com.fight[2][dh][spell] then com.fight[2][dh][spell] = {} end
+			com.fight[1][dh][spell][target] = (com.fight[1][dh][spell][target] or 0) + amount -- record the amount
+			com.fight[2][dh][spell][target] = (com.fight[2][dh][spell][target] or 0) + amount
 		end
 	end
 
@@ -2567,7 +2776,7 @@
 				if not found then t_insert(tdpsPlayer[arg3].pet, arg4 .. ': ' .. arg7) end
 			elseif tdpsLink[arg3] then -- the summoner is also a pet. Example: totem summons greater fire elemental.
 				 -- ownername of owner
-				local oo = split(':', tdpsLink[arg3])
+				local oo = tok(':', tdpsLink[arg3])
 				-- make pointer
 				tdpsLink[arg6] = oo .. ': ' ..arg7
 				-- make pet
@@ -2616,7 +2825,7 @@
 			if tdpsStartNewFight then startNewFight(arg7, arg6) end
 		elseif isDamage[arg2] then
 			if tdpsStartNewFight then startNewFight(arg7, arg6) end
-			if arg2 == 'SWING_DAMAGE' then arg = arg9 trackSpell(arg, arg7, 'Melee', 'd') else arg = arg12 trackSpell(arg, arg7, arg10, 'd') end
+			if arg2 == 'SWING_DAMAGE' then arg = arg9 trackSpell(arg, arg7, tdpsL.melee, 'd') else arg = arg12 trackSpell(arg, arg7, arg10, 'd') end
 			tdpsFight[1].d, tdpsFight[2].d = tdpsFight[1].d + arg, tdpsFight[2].d + arg
 			com.fight[1].d, com.fight[2].d = com.fight[1].d + arg, com.fight[2].d + arg
 		elseif isHeal[arg2] then
@@ -2660,13 +2869,13 @@
 		local curVer = GetAddOnMetadata('TinyDPS', 'Version')
 
 		-- global version mismatch
-		if curVer ~= tdps.version and '0.88' ~= tdps.version and '0.89' ~= tdps.version and '0.90' ~= tdps.version then
+		if curVer ~= tdps.version then -- and '0.9?' ~= tdps.version
 			initialiseSavedVariables()
 			echo('Global variables have been reset to version ' .. curVer)
 		end
 
 		-- character version mismatch
-		if curVer ~= tdpsVersion and '0.88' ~= tdpsVersion and '0.89' ~= tdpsVersion and '0.90' ~= tdpsVersion then
+		if curVer ~= tdpsVersion then
 			initialiseSavedVariablesPerCharacter()
 			echo('Character variables have been reset to version ' .. curVer)
 			tdpsFrame:SetHeight(tdps.barHeight + 4)
@@ -2726,8 +2935,8 @@
 	tdpsAnchor:SetScript('OnEvent', function(self, event, ...)
 		visibilityEvent()
 		if event == 'PARTY_MEMBERS_CHANGED' then
-			if tdps.autoReset and tdpsPartySize == 0 and max(GetNumPartyMembers(), GetNumRaidMembers()) > 0 then reset() end
-			tdpsPartySize = max(GetNumPartyMembers(), GetNumRaidMembers())
+			if tdps.autoReset and tdpsPartySize == 0 and math.max(GetNumPartyMembers(), GetNumRaidMembers()) > 0 then reset() end
+			tdpsPartySize = math.max(GetNumPartyMembers(), GetNumRaidMembers())
 		end
 	end)
 
@@ -2797,6 +3006,8 @@
 		if button == 'RightButton' then ToggleDropDownMenu(1, nil, tdpsDropDown, 'cursor', 0, 0) end
 	end)
 
+
+
 	tdpsButtonFrame:SetScript('OnMouseUp', function(self, button)
 		if button == 'LeftButton' then
 			if tdpsFrame:IsVisible() then tdpsFrame:Hide()
@@ -2821,19 +3032,54 @@
 		end)
 	end)
 
+
+
 	tdpsButtonFrame:SetScript('OnDragStop', function(self, button) tdpsButtonFrame:SetScript('OnUpdate', nil) end)
 
 
 
 	tdpsButtonFrame:SetScript('OnEnter', function(self)
+
 		GameTooltip:SetOwner(tdpsButtonFrame)
 		GameTooltip:SetText('TinyDPS')
-		if tdpsPlayer[UnitGUID('player')] then
-			GameTooltip:AddDoubleLine('Current:', fmt('%i %i', tdpsPlayer[UnitGUID('player')].fight[2].d, tdpsPlayer[UnitGUID('player')].fight[2].d / tdpsPlayer[UnitGUID('player')].fight[2].t), 1, 1, 1, 1, 1, 1, 1)
-			GameTooltip:AddDoubleLine('Overall:', fmt('%i %i', tdpsPlayer[UnitGUID('player')].fight[1].d, tdpsPlayer[UnitGUID('player')].fight[1].d / tdpsPlayer[UnitGUID('player')].fight[1].t), 1, 1, 1, 1, 1, 1, 1)
+
+		if tdpsF == 2 then
+			GameTooltip:AddLine(fmt('%s %s', tdpsL.tipPrefix[tdpsV], tdpsL.currentFight), 1, .85, 0)
+		else
+			GameTooltip:AddLine(fmt('%s %s', tdpsL.tipPrefix[tdpsV], tdpsFight[tdpsF].name), 1, .85, 0)
 		end
+
+		-- personal amount
+		local ownAmount, ownTime, pet = 0, 0
+		if tdpsPlayer[UnitGUID('player')] then
+			pet, ownAmount, ownTime = tdpsPlayer[UnitGUID('player')].pet, tdpsPlayer[UnitGUID('player')].fight[tdpsF][tdpsV], tdpsPlayer[UnitGUID('player')].fight[tdpsF].t
+			for i=1,#pet do
+				ownAmount = ownAmount + tdpsPet[pet[i]].fight[tdpsF][tdpsV]
+				if tdpsPet[pet[i]].fight[tdpsF].t > ownTime then ownTime = tdpsPet[pet[i]].fight[tdpsF].t end
+			end
+			if ownAmount > 0 then GameTooltip:AddDoubleLine(UnitName('player'), fmt('%i (%i)', ownAmount, ownAmount / ownTime), 1, 1, 1, 1, 1, 1) end
+		end
+
+		-- raid amount
+		local partyAmount, partyTime = 0, 0
+		for k,v in pairs(tdpsPlayer) do
+			partyAmount = partyAmount + v.fight[tdpsF][tdpsV]
+			if v.fight[tdpsF].t > partyTime then partyTime = v.fight[tdpsF].t end
+		end
+		for k,v in pairs(tdpsPet) do
+			partyAmount = partyAmount + v.fight[tdpsF][tdpsV]
+			if v.fight[tdpsF].t > partyTime then partyTime = v.fight[tdpsF].t end
+		end
+
+		if partyAmount > ownAmount then
+			GameTooltip:AddDoubleLine(tdpsL.raid, fmt('%i (%i)', partyAmount, partyAmount / partyTime), 1, 1, 1, 1, 1, 1)
+		end
+
 		GameTooltip:Show()
+
 	end)
+
+
 
 	tdpsButtonFrame:SetScript('OnLeave', function(self) GameTooltip:Hide() end)
 
@@ -2850,6 +3096,9 @@
 
 	tdpsResizeFrame:SetScript('OnEnter', function() tdpsResizeTexture:SetDesaturated(0) tdpsResizeTexture:SetAlpha(1) end)
 	tdpsResizeFrame:SetScript('OnLeave', function() tdpsResizeTexture:SetDesaturated(1) tdpsResizeTexture:SetAlpha(.2) end)
+
+
+
 	tdpsResizeFrame:SetScript('OnMouseDown', function() isMovingOrSizing = true tdpsFrame:SetMinResize(60, tdpsFrame:GetHeight()) tdpsFrame:SetMaxResize(400, tdpsFrame:GetHeight()) tdpsFrame:StartSizing() end)
 
 

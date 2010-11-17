@@ -1,3 +1,8 @@
 
-	- Drop your font into this folder
-	- Open 'AddOns\TinyDPS\TinyDPS.lua' and edit line 2319: remove the '--' and edit the three 'custom' strings)
+	- drop your font into this folder, rename it to custom.ttf
+
+	- open AddOns\TinyDPS\TinyDPS.lua
+
+	- goto line number 2528, remove the two dashes at the start
+
+	- save and quit. (Re)start Warcraft
