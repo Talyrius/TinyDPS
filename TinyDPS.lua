@@ -4,11 +4,15 @@
 
 	* written by: Sideshow, Draenor EU
 	* initial release: May 21th, 2010
-	* last updated: November 17th, 2010
+	* last updated: November 19th, 2010
 
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
+
+	Version 0.931
+	* simplified color handling
+	* support for CUSTOM_CLASS_COLORS
 
 	Version 0.93
 	* reworked dropdownmenu
@@ -614,6 +618,7 @@
 	local maxValue, barsWithValue
 	local scrollPos, isMovingOrSizing = 1, false
 	local ttSpellMerge, ttMobMerge, ttSort = {}, {}, {}
+	local cColor
 
 	local isHeal = {SPELL_PERIODIC_HEAL = true, SPELL_HEAL = true}
 	local isMiss = {SWING_MISSED = true, RANGE_MISSED = true, SPELL_MISSED = true, SPELL_PERIODIC_MISSED = true}
@@ -1712,7 +1717,6 @@
 			showMinimapButton = false,
 			maxBars = 10, spacing = 2, barHeight = 15,
 			bar = {.9, .9, .9, 1}, barbackdrop = {1, 1, 1, .05}, border = {0, 0, 0, .8}, backdrop = {0, 0, 0, .8},
-			classColor = {}
 		}
 
 		tdpsTextOffset = 0
@@ -1721,15 +1725,7 @@
 		if GameFontNormal then tdpsFont = {name = GameFontNormal:GetFont(), size = 12, outline = '', shadow = 1}
 		else tdpsFont = {name = [[Interface\AddOns\TinyDPS\Fonts\Visitor.ttf]], size = 13, outline = 'Outlinemonochrome', shadow = 0} end
 
-		for k,v in pairs(RAID_CLASS_COLORS) do -- copy global class colors
-			tdps.classColor[k] = {}
-			tdps.classColor[k].r = RAID_CLASS_COLORS[k].r
-			tdps.classColor[k].g = RAID_CLASS_COLORS[k].g
-			tdps.classColor[k].b = RAID_CLASS_COLORS[k].b
-		end
-
-		for k,v in pairs(tdps.classColor) do v.a = .8 end -- set all class colors to 80% opacity
-		tdps.classColor['UNKNOWN'] = {r = .63, g = .58, b = .24, a = .8}
+		tdpsColorAlpha = .8
 
 	end
 
@@ -2146,15 +2142,15 @@
 	local function changeBarColor()
 		if tdps.swapColor then
 			for i=1,#bar do
-				bar[i]:SetStatusBarColor(tdps.classColor[tdpsPlayer[bar[i].guid].class].r, tdps.classColor[tdpsPlayer[bar[i].guid].class].g, tdps.classColor[tdpsPlayer[bar[i].guid].class].b, tdps.classColor[tdpsPlayer[bar[i].guid].class].a)
+				bar[i]:SetStatusBarColor(cColor[tdpsPlayer[bar[i].guid].class].r, cColor[tdpsPlayer[bar[i].guid].class].g, cColor[tdpsPlayer[bar[i].guid].class].b, tdpsColorAlpha)
 				bar[i].fontStringLeft:SetTextColor(tdps.bar[1], tdps.bar[2], tdps.bar[3], tdps.bar[4])
 				bar[i].fontStringRight:SetTextColor(tdps.bar[1], tdps.bar[2], tdps.bar[3], tdps.bar[4])
 			end
 		else
 			for i=1,#bar do
 				bar[i]:SetStatusBarColor(tdps.bar[1], tdps.bar[2], tdps.bar[3], tdps.bar[4])
-				bar[i].fontStringLeft:SetTextColor(tdps.classColor[tdpsPlayer[bar[i].guid].class].r, tdps.classColor[tdpsPlayer[bar[i].guid].class].g, tdps.classColor[tdpsPlayer[bar[i].guid].class].b, tdps.classColor[tdpsPlayer[bar[i].guid].class].a)
-				bar[i].fontStringRight:SetTextColor(tdps.classColor[tdpsPlayer[bar[i].guid].class].r, tdps.classColor[tdpsPlayer[bar[i].guid].class].g, tdps.classColor[tdpsPlayer[bar[i].guid].class].b, tdps.classColor[tdpsPlayer[bar[i].guid].class].a)
+				bar[i].fontStringLeft:SetTextColor(cColor[tdpsPlayer[bar[i].guid].class].r, cColor[tdpsPlayer[bar[i].guid].class].g, cColor[tdpsPlayer[bar[i].guid].class].b, tdpsColorAlpha)
+				bar[i].fontStringRight:SetTextColor(cColor[tdpsPlayer[bar[i].guid].class].r, cColor[tdpsPlayer[bar[i].guid].class].g, cColor[tdpsPlayer[bar[i].guid].class].b, tdpsColorAlpha)
 			end
 		end
 	end
@@ -2469,8 +2465,8 @@
 					tdps.backdrop[1], tdps.backdrop[2], tdps.backdrop[3], tdps.backdrop[4] = red, green, blue, alpha end,
 					tdps.backdrop[1], tdps.backdrop[2], tdps.backdrop[3], 1 - tdps.backdrop[4], 1)
 
-			newBu(level, tdpsL.dimClassColors, nil, 1, nil, nil, 1, function() for _,v in pairs(tdps.classColor) do if v.a-.1 < 0 then v.a = 0 else v.a = v.a-.1 end end changeBarColor() end)
-			newBu(level, tdpsL.resetClassColors, nil, 1, nil, nil, 1, function() tdps.classColor = RAID_CLASS_COLORS for k,v in pairs(tdps.classColor) do v.a = 1 end tdps.classColor['UNKNOWN'] = {r = .63, g = .58, b = .24, a = 1} changeBarColor() end)
+			newBu(level, tdpsL.dimClassColors, nil, 1, nil, nil, 1, function() if tdpsColorAlpha - .1 < 0 then tdpsColorAlpha = 0 else tdpsColorAlpha = tdpsColorAlpha - .1 end changeBarColor() end)
+			newBu(level, tdpsL.resetClassColors, nil, 1, nil, nil, 1, function() tdpsColorAlpha = 1 changeBarColor() end)
 			newBu(level, tdpsL.swapBarTextColor .. '     ', nil, 1, nil, nil, 1, function() tdps.swapColor = not tdps.swapColor if tdps.swapColor then DropDownList3Button1:SetText(tdpsL.text) else DropDownList3Button1:SetText(tdpsL.bars) end changeBarColor() end)
 
 		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'various' then
@@ -2687,7 +2683,7 @@
 		dummybar.fontStringLeft:SetShadowOffset(tdpsFont.shadow, tdpsFont.shadow * -1)
 
 		-- colors
-		local classR, classG, classB, classA = tdps.classColor[tdpsPlayer[g].class].r, tdps.classColor[tdpsPlayer[g].class].g, tdps.classColor[tdpsPlayer[g].class].b, tdps.classColor[tdpsPlayer[g].class].a
+		local classR, classG, classB, classA = cColor[tdpsPlayer[g].class].r, cColor[tdpsPlayer[g].class].g, cColor[tdpsPlayer[g].class].b, tdpsColorAlpha
 		if tdps.swapColor then
 			dummybar:SetStatusBarColor(classR, classG, classB, classA)
 			dummybar.fontStringRight:SetTextColor(tdps.bar[1], tdps.bar[2], tdps.bar[3], tdps.bar[4])
@@ -2869,13 +2865,13 @@
 		local curVer = GetAddOnMetadata('TinyDPS', 'Version')
 
 		-- global version mismatch
-		if curVer ~= tdps.version then -- and '0.9?' ~= tdps.version
+		if curVer ~= tdps.version and '0.93' ~= tdps.version then
 			initialiseSavedVariables()
 			echo('Global variables have been reset to version ' .. curVer)
 		end
 
 		-- character version mismatch
-		if curVer ~= tdpsVersion then
+		if curVer ~= tdpsVersion and '0.93' ~= tdpsVersion then
 			initialiseSavedVariablesPerCharacter()
 			echo('Character variables have been reset to version ' .. curVer)
 			tdpsFrame:SetHeight(tdps.barHeight + 4)
@@ -2900,6 +2896,9 @@
 
 		-- set width
 		tdpsFrame:SetWidth(tdps.width)
+
+		-- check for custom class colors
+		if CUSTOM_CLASS_COLORS then cColor = CUSTOM_CLASS_COLORS else cColor = RAID_CLASS_COLORS end
 
 		-- make bars if any
 		for k in pairs(tdpsPlayer) do newBar(k) end

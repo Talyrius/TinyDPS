@@ -3,6 +3,6 @@
 
 	- open AddOns\TinyDPS\TinyDPS.lua
 
-	- goto line number 2528, remove the two dashes at the start
+	- goto line number 2524, remove the two dashes at the start
 
 	- save and quit. (Re)start Warcraft
