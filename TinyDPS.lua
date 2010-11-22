@@ -4,11 +4,14 @@
 
 	* written by: Sideshow, Draenor EU
 	* initial release: May 21th, 2010
-	* last updated: November 19th, 2010
+	* last updated: November 22th, 2010
 
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
+
+	Version 0.932
+	* wintergrasp battles will now hide tinydps if needed
 
 	Version 0.931
 	* simplified color handling
@@ -1720,7 +1723,6 @@
 		}
 
 		tdpsTextOffset = 0
-		tdpsPosition = {x = 0, y = 0}
 
 		if GameFontNormal then tdpsFont = {name = GameFontNormal:GetFont(), size = 12, outline = '', shadow = 1}
 		else tdpsFont = {name = [[Interface\AddOns\TinyDPS\Fonts\Visitor.ttf]], size = 13, outline = 'Outlinemonochrome', shadow = 0} end
@@ -1728,6 +1730,10 @@
 		tdpsColorAlpha = .8
 
 	end
+
+
+
+	tdpsPosition = {x = 0, y = 0}
 
 
 
@@ -1888,7 +1894,16 @@
 	local function round(num, idp) return floor(num * (10^(idp or 0)) + .5) / (10^(idp or 0)) end
 	local function echo(str) print('|cfffef00fTinyDPS |cff82e2eb' .. (str or '')) end
 	local function getClass(name) return select(2,UnitClass(name)) or 'UNKNOWN' end
-	local function isPvpZone() if select(2,IsInInstance()) == 'pvp' or select(2,IsInInstance()) == 'arena' then return true end end
+
+
+
+	local function isPvpZone()
+		if select(2,IsInInstance()) == 'pvp' -- battlegrounds
+		or select(2,IsInInstance()) == 'arena' -- arenas
+		or GetCurrentMapAreaID() == 708 -- Tol Barad (Cataclysm)
+		or GetCurrentMapAreaID() == 709 -- Tol Barad (Cataclysm)
+		or GetCurrentMapAreaID() == 501 and not GetWintergraspWaitTime() -- Wintergrasp (only when a battle is going on)
+	then return true end end
 
 
 
@@ -2865,13 +2880,13 @@
 		local curVer = GetAddOnMetadata('TinyDPS', 'Version')
 
 		-- global version mismatch
-		if curVer ~= tdps.version and '0.93' ~= tdps.version then
+		if curVer ~= tdps.version and '0.93' ~= tdps.version and '0.931' ~= tdps.version then
 			initialiseSavedVariables()
 			echo('Global variables have been reset to version ' .. curVer)
 		end
 
 		-- character version mismatch
-		if curVer ~= tdpsVersion and '0.93' ~= tdpsVersion then
+		if curVer ~= tdpsVersion and '0.93' ~= tdpsVersion and '0.931' ~= tdpsVersion then
 			initialiseSavedVariablesPerCharacter()
 			echo('Character variables have been reset to version ' .. curVer)
 			tdpsFrame:SetHeight(tdps.barHeight + 4)
@@ -2928,6 +2943,7 @@
 	tdpsAnchor:RegisterEvent('PLAYER_REGEN_DISABLED')
 	tdpsAnchor:RegisterEvent('PARTY_MEMBERS_CHANGED')
 	tdpsAnchor:RegisterEvent('PLAYER_ENTERING_WORLD')
+	tdpsAnchor:RegisterEvent('ZONE_CHANGED_NEW_AREA')
 
 
 
