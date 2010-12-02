@@ -4,11 +4,17 @@
 
 	* written by: Sideshow, Draenor EU
 	* initial release: May 21th, 2010
-	* last updated: November 22th, 2010
+	* last updated: December 2nd, 2010
 
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
+
+	Version 0.933
+	* changes to report and bar menu
+	* small fix concerning bar width
+	* adding a custom font is now easier
+	* default custom font is from TukUI
 
 	Version 0.932
 	* wintergrasp battles will now hide tinydps if needed
@@ -211,6 +217,7 @@
 		tdpsL.guild = '길드'
 		tdpsL.officer = '지휘관'
 		tdpsL.whisper = '귓속말'
+		tdpsL.whisper2 = '귓속말 <Name>'
 		tdpsL.channel = '채널'
 
 		tdpsL.options = '설정'
@@ -273,10 +280,11 @@
 		tdpsL.empty = '<없음>'
 
 		tdpsL.helpVersion = '버젼'
-		tdpsL.helpMove = '- 이동: 쉬프트를 누른채로 마우스 드래그'
-		tdpsL.helpResize = '- 사이즈조절: 우측하단 모서리를 드래그'
-		tdpsL.helpCommand = '- 명령: /tdps 입력시 프레임 숨김/보기'
-		tdpsL.helpParameters = '- 추가옵션: /tpds reset | damage | healing'
+		tdpsL.helpMove = '이동: 쉬프트를 누른채로 마우스 드래그'
+		tdpsL.helpResize = '사이즈조절: 우측하단 모서리를 드래그'
+		tdpsL.helpToggle = '명령: /tdps 입력시 프레임 숨김/보기'
+		tdpsL.helpParameters1 = '/tdps help | reset | damage | healing | whisper <name>'
+		tdpsL.helpParameters2 = '/tdps visiblebars <number> | reportlength <number>'
 
 		tdpsL.allClear = '모든 데이터 초기화'
 		tdpsL.personal = '자신'
@@ -313,6 +321,7 @@
 		tdpsL.guild = 'Гильдия'
 		tdpsL.officer = 'Офицер'
 		tdpsL.whisper = 'Шепнуть'
+		tdpsL.whisper2 = 'Шепнуть <Name>'
 		tdpsL.channel = 'Канал'
 
 		tdpsL.options = 'Опции'
@@ -375,10 +384,11 @@
 		tdpsL.empty = '<Нет>'
 
 		tdpsL.helpVersion = 'Версия'
-		tdpsL.helpMove = '- Перемещение: зажмите Shift и двигайте окно'
-		tdpsL.helpResize = '- Смена размера: двигайте стрелку в правой нижней части окна'
-		tdpsL.helpCommand = '- Команда: "/tdps" скрыть окно/показать'
-		tdpsL.helpParameters = '- Сбросить статистику: /tpds reset | damage | healing'
+		tdpsL.helpMove = 'Перемещение: зажмите Shift и двигайте окно'
+		tdpsL.helpResize = 'Смена размера: двигайте стрелку в правой нижней части окна'
+		tdpsL.helpToggle = 'Команда: "/tdps" скрыть окно/показать'
+		tdpsL.helpParameters1 = '/tdps help | reset | damage | healing | whisper <name>'
+		tdpsL.helpParameters2 = '/tdps visiblebars <number> | reportlength <number>'
 
 		tdpsL.allClear = 'Статистика была сброшена'
 		tdpsL.personal = 'Личный'
@@ -415,6 +425,7 @@
 		tdpsL.guild = 'Gilde'
 		tdpsL.officer = 'Offizier'
 		tdpsL.whisper = 'Flüstern'
+		tdpsL.whisper2 = 'Flüstern <Name>'
 		tdpsL.channel = 'Channel'
 
 		tdpsL.options = 'Optionen'
@@ -477,10 +488,11 @@
 		tdpsL.empty = '<Leer>'
 
 		tdpsL.helpVersion = 'Version'
-		tdpsL.helpMove = '- move: Halte Umschalt gedrückt und bewege das Fenster'
-		tdpsL.helpResize = '- resize: An der unteren rechten Ecke ziehen'
-		tdpsL.helpCommand = '- command: Tippe /tpds ein um das Fenster anzuzeigen/auszublenden'
-		tdpsL.helpParameters = '- parameters: /tpds reset | damage | healing'
+		tdpsL.helpMove = 'move: Halte Umschalt gedrückt und bewege das Fenster'
+		tdpsL.helpResize = 'resize: An der unteren rechten Ecke ziehen'
+		tdpsL.helpToggle = 'command: Tippe /tpds ein um das Fenster anzuzeigen/auszublenden'
+		tdpsL.helpParameters1 = '/tdps help | reset | damage | healing | whisper <name>'
+		tdpsL.helpParameters2 = '/tdps visiblebars <number> | reportlength <number>'
 
 		tdpsL.allClear = 'Alle Daten wurden zurückgesetzt'
 		tdpsL.personal = 'Persönlich'
@@ -516,7 +528,8 @@
 		tdpsL.party = 'Party'
 		tdpsL.guild = 'Guild'
 		tdpsL.officer = 'Officer'
-		tdpsL.whisper = 'Whisper'
+		tdpsL.whisper = 'Whisper Target'
+		tdpsL.whisper2 = 'Whisper <Name>'
 		tdpsL.channel = 'Channel'
 
 		tdpsL.options = 'Options'
@@ -543,7 +556,7 @@
 		tdpsL.bars = 'Bars'
 		tdpsL.height = 'Height'
 		tdpsL.spacing = 'Spacing'
-		tdpsL.maximum = 'Maximum'
+		tdpsL.maximum = 'Visible bars'
 		tdpsL.oneYourself = '1 (Yourself)'
 		tdpsL.five = '5'
 		tdpsL.ten = '10'
@@ -579,10 +592,11 @@
 		tdpsL.empty = '<Empty>'
 
 		tdpsL.helpVersion = 'Version'
-		tdpsL.helpMove = '- move: hold shift and drag the frame'
-		tdpsL.helpResize = '- resize: drag the bottom right corner'
-		tdpsL.helpCommand = '- command: type /tdps to hide or show'
-		tdpsL.helpParameters = '- parameters: /tpds reset | damage | healing'
+		tdpsL.helpMove = 'move: hold shift and drag the frame'
+		tdpsL.helpResize = 'resize: drag the bottom right corner'
+		tdpsL.helpToggle = 'toggle: type /tdps to hide or show'
+		tdpsL.helpParameters1 = '/tdps help | reset | damage | healing | whisper <name>'
+		tdpsL.helpParameters2 = '/tdps visiblebars <number> | reportlength <number>'
 
 		tdpsL.allClear = 'All data has been reset'
 		tdpsL.personal = 'Personal'
@@ -1718,11 +1732,13 @@
 			showRank = true,
 			onlyBossSegments = false,
 			showMinimapButton = false,
-			maxBars = 10, spacing = 2, barHeight = 15,
+			spacing = 2, barHeight = 15,
 			bar = {.9, .9, .9, 1}, barbackdrop = {1, 1, 1, .05}, border = {0, 0, 0, .8}, backdrop = {0, 0, 0, .8},
 		}
 
 		tdpsTextOffset = 0
+		tdpsVisibleBars = 10
+		tdpsReportLength = 5
 
 		if GameFontNormal then tdpsFont = {name = GameFontNormal:GetFont(), size = 12, outline = '', shadow = 1}
 		else tdpsFont = {name = [[Interface\AddOns\TinyDPS\Fonts\Visitor.ttf]], size = 13, outline = 'Outlinemonochrome', shadow = 0} end
@@ -1920,13 +1936,16 @@
 
 
 
-	local function report(button, channel, length)
+	local function report(button, channel, playername)
 
 		if type(channel) == 'number' then destination = channel channel = 'CHANNEL' end
-		if channel == 'WHISPER' then destination = UnitName('target') end
 
-		-- check whisper target
-		if channel == 'WHISPER' and (not destination or not UnitIsPlayer(destination) or not UnitCanCooperate('player', destination)) then echo(tdpsL.noTarget) return end
+		if channel == 'WHISPER' then
+			if not playername then
+				destination = UnitName('target')
+				if not UnitIsPlayer(destination) or not UnitCanCooperate('player', destination) then echo(tdpsL.noTarget) return end
+			else destination = playername end
+		end
 
 		-- make table for sorting
 		local report = {}
@@ -1954,7 +1973,7 @@
 		end
 
 		-- output the text lines
-		for i=1,math.min(#report, length) do
+		for i=1,math.min(#report, tdpsReportLength) do
 			if report[i].n > 0 then
 				SendChatMessage(fmt('%i. %s    %i    %i%%    (%i)', i, report[i].name, report[i].n, report[i].n/tdpsFight[tdpsF][tdpsV]*100, report[i].n/report[i].t), channel, nil, destination)
 			end
@@ -2052,7 +2071,7 @@
 
 		-- layout the bars
 		px = -2
-		if tdps.maxBars == 1 then
+		if tdpsVisibleBars == 1 then
 			for i=1,#bar do
 				if bar[i].name == UnitName('player') and bar[i].n > 0 then
 					bar[i]:SetMinMaxValues(0, maxValue)
@@ -2064,8 +2083,9 @@
 				end
 			end
 		else
-			local to if barsWithValue < tdps.maxBars+scrollPos-1 then to = barsWithValue else to = tdps.maxBars+scrollPos-1 end
+			local to if barsWithValue < tdpsVisibleBars+scrollPos-1 then to = barsWithValue else to = tdpsVisibleBars+scrollPos-1 end
 			for i=scrollPos,to do
+				bar[i]:SetWidth(tdpsFrame:GetWidth() - 4)
 				bar[i]:SetMinMaxValues(0, maxValue)
 				bar[i]:SetValue(bar[i].n)
 				bar[i]:SetPoint('TOPLEFT', tdpsFrame, 'TOPLEFT', 2, px)
@@ -2129,8 +2149,7 @@
 
 
 
-	local function changeBarSpacing(button, d) if tdps.spacing + d < 0 then tdps.spacing = 0 elseif tdps.spacing + d > 10 then tdps.spacing = 10 else tdps.spacing = tdps.spacing + d end tdpsRefresh() end
-	local function changeMaxBars(button, d) tdps.maxBars = d scrollPos = 1 tdpsRefresh() end
+	local function changeBarSpacing(button) if tdps.spacing + 1 > 8 then tdps.spacing = 0 else tdps.spacing = tdps.spacing + 1 end button:SetText(tdpsL.spacing .. ': ' .. tdps.spacing) tdpsRefresh() end
 	local function changeBarHeight(button, d) if tdps.barHeight + d < 2 then tdps.barHeight = 2 elseif tdps.barHeight + d > 40 then tdps.barHeight = 40 else tdps.barHeight = tdps.barHeight + d end for i=1,#bar do bar[i]:SetHeight(tdps.barHeight) end tdpsRefresh() end
 
 
@@ -2275,12 +2294,19 @@
 
 
 
-	local function help()
+	local function ver()
 		echo(tdpsL.helpVersion .. ' ' .. GetAddOnMetadata('TinyDPS', 'Version') .. ' by Sideshow (Draenor EU)')
-		echo(tdpsL.helpMove)
-		echo(tdpsL.helpResize)
-		echo(tdpsL.helpCommand)
-		echo(tdpsL.helpParameters)
+	end
+	local function slashhelp()
+		echo(tdpsL.helpParameters1)
+		echo(tdpsL.helpParameters2)
+	end
+	local function help()
+		ver()
+		echo('- ' .. tdpsL.helpMove)
+		echo('- ' .. tdpsL.helpResize)
+		echo('- ' .. tdpsL.helpToggle)
+		slashhelp()
 	end
 
 
@@ -2311,17 +2337,22 @@
 
 	SLASH_TINYDPS1, SLASH_TINYDPS2 = '/tinydps', '/tdps'
 	function SlashCmdList.TINYDPS(msg, editbox)
-		if strlower(msg) == 'reset' or strlower(msg) == 'r' then reset()
-		elseif strlower(msg) == 'damage' or strlower(msg) == 'd' then changeView(nil, 'd')
-		elseif strlower(msg) == 'healing' or strlower(msg) == 'h' then changeView(nil, 'h')
+		msg = strlower(msg)
+		if msg == 'reset' or msg == 'r' then reset()
+		elseif msg == 'damage' or msg == 'd' then changeView(nil, 'd')
+		elseif msg == 'healing' or msg == 'h' then changeView(nil, 'h')
+		elseif tok(' ',msg) == 'reportlength' and tonumber(select(2,tok(' ',msg))) then tdpsReportLength = min(40, max(1, tonumber(select(2,tok(' ',msg)))))
+		elseif tok(' ',msg) == 'visiblebars' and tonumber(select(2,tok(' ',msg))) then tdpsVisibleBars = min(40, max(1, tonumber(select(2,tok(' ',msg))))) scrollPos = 1 tdpsRefresh()
+		elseif tok(' ',msg) == 'whisper' and select(2,tok(' ',msg)) then report(nil, 'WHISPER', select(2,tok(' ',msg)))
+		elseif msg == 'help' or msg == '?' then help()
 		elseif msg == '' then if tdpsFrame:IsVisible() then tdpsFrame:Hide() else tdpsRefresh() tdpsFrame:Show() end
-		else help() end
+		else slashhelp() end
 	end
 
 
 
 	local function scroll(d)
-		if bar[1] and bar[1].n > 0 and scrollPos - d > 0 and scrollPos - d + tdps.maxBars <= barsWithValue + 1 and tdps.maxBars > 1 then
+		if bar[1] and bar[1].n > 0 and scrollPos - d > 0 and scrollPos - d + tdpsVisibleBars <= barsWithValue + 1 and tdpsVisibleBars > 1 then
 			scrollPos = scrollPos - d
 			tdpsRefresh()
 		end
@@ -2329,7 +2360,7 @@
 
 
 
-	local function newBu(...) -- text, title, notCheckable, hasArrow, value, keepShownOnClick, func, arg1, arg2, checked, disabled, isNotRadio, hasColorSwatch, swatchFunc, hasOpacity, opacityFunc, r, g, b, opacity, notClickable
+	local function newBu(...) -- level, text, title, notCheckable, hasArrow, value, keepShownOnClick, func, arg1, arg2, checked, disabled, isNotRadio, hasColorSwatch, swatchFunc, hasOpacity, opacityFunc, r, g, b, opacity, notClickable
 		level, bu.text, bu.isTitle, bu.notCheckable, bu.hasArrow, bu.value, bu.keepShownOnClick, bu.func, bu.arg1, bu.arg2, bu.checked, bu.disabled, bu.isNotRadio, bu.hasColorSwatch, bu.swatchFunc, bu.hasOpacity, bu.opacityFunc, bu.r, bu.g, bu.b, bu.opacity, bu.notClickable = ...
 		UIDropDownMenu_AddButton(bu, level)
 		t_wipe(bu)
@@ -2362,9 +2393,16 @@
 
 		elseif level == 2 and UIDROPDOWNMENU_MENU_VALUE == 'report' then
 
-			newBu(level, tdpsL.top3, nil, 1, 1, 'report3', 1)
-			newBu(level, tdpsL.top5, nil, 1, 1, 'report5', 1)
-			newBu(level, tdpsL.top10 .. '  ', nil, 1, 1, 'report10', 1)
+			newBu(level, tdpsL.say, nil, 1, nil, nil, nil, report, 'SAY')
+			newBu(level, tdpsL.raid, nil, 1, nil, nil, nil, report, 'RAID')
+			newBu(level, tdpsL.party, nil, 1, nil, nil, nil, report, 'PARTY')
+			newBu(level, tdpsL.guild, nil, 1, nil, nil, nil, report, 'GUILD')
+			newBu(level, tdpsL.officer, nil, 1, nil, nil, nil, report, 'OFFICER')
+			newBu(level, tdpsL.whisper, nil, 1, nil, nil, nil, report, 'WHISPER')
+			newBu(level, tdpsL.whisper2, nil, 1, nil, nil, nil, function() ChatEdit_ActivateChat(DEFAULT_CHAT_FRAME.editBox) DEFAULT_CHAT_FRAME.editBox:SetText('/tdps whisper ') end)
+			for i=1,20 do if select(2,GetChannelName(i)) then newBu(level, select(2,GetChannelName(i)) .. '     ', nil, 1, nil, nil, nil, report, i) end end
+			newBu(level, '', nil, 1, nil, nil, nil, nil, nil, nil, nil, 1)
+			newBu(level, 'Report Length: ' .. tdpsReportLength, nil, 1, nil, nil, nil, function() ChatEdit_ActivateChat(DEFAULT_CHAT_FRAME.editBox) DEFAULT_CHAT_FRAME.editBox:SetText('/tdps reportlength ' .. tdpsReportLength) end)
 
 		elseif level == 2 and UIDROPDOWNMENU_MENU_VALUE == 'options' then
 
@@ -2372,36 +2410,6 @@
 			newBu(level, tdpsL.bars, nil, 1, 1, 'bars', 1)
 			newBu(level, tdpsL.colors, nil, 1, 1, 'colors', 1)
 			newBu(level, tdpsL.various, nil, 1, 1, 'various', 1)
-
-		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'report3' then
-
-			newBu(level, tdpsL.say, nil, 1, nil, nil, nil, report, 'SAY', 3)
-			newBu(level, tdpsL.raid, nil, 1, nil, nil, nil, report, 'RAID', 3)
-			newBu(level, tdpsL.party, nil, 1, nil, nil, nil, report, 'PARTY', 3)
-			newBu(level, tdpsL.guild, nil, 1, nil, nil, nil, report, 'GUILD', 3)
-			newBu(level, tdpsL.officer, nil, 1, nil, nil, nil, report, 'OFFICER', 3)
-			newBu(level, tdpsL.whisper, nil, 1, nil, nil, nil, report, 'WHISPER', 3)
-			for i=1,20 do if select(2,GetChannelName(i)) then newBu(level, tok(' ',select(2,GetChannelName(i))) .. '     ', nil, 1, nil, nil, nil, report, i, 3) end end			
-
-		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'report5' then
-
-			newBu(level, tdpsL.say, nil, 1, nil, nil, nil, report, 'SAY', 5)
-			newBu(level, tdpsL.raid, nil, 1, nil, nil, nil, report, 'RAID', 5)
-			newBu(level, tdpsL.party, nil, 1, nil, nil, nil, report, 'PARTY', 5)
-			newBu(level, tdpsL.guild, nil, 1, nil, nil, nil, report, 'GUILD', 5)
-			newBu(level, tdpsL.officer, nil, 1, nil, nil, nil, report, 'OFFICER', 5)
-			newBu(level, tdpsL.whisper, nil, 1, nil, nil, nil, report, 'WHISPER', 5)
-			for i=1,20 do if select(2,GetChannelName(i)) then newBu(level, tok(' ',select(2,GetChannelName(i))) .. '     ', nil, 1, nil, nil, nil, report, i, 5) end end	
-
-		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'report10' then
-
-			newBu(level, tdpsL.say, nil, 1, nil, nil, nil, report, 'SAY', 10)
-			newBu(level, tdpsL.raid, nil, 1, nil, nil, nil, report, 'RAID', 10)
-			newBu(level, tdpsL.party, nil, 1, nil, nil, nil, report, 'PARTY', 10)
-			newBu(level, tdpsL.guild, nil, 1, nil, nil, nil, report, 'GUILD', 10)
-			newBu(level, tdpsL.officer, nil, 1, nil, nil, nil, report, 'OFFICER', 10)
-			newBu(level, tdpsL.whisper, nil, 1, nil, nil, nil, report, 'WHISPER', 10)
-			for i=1,20 do if select(2,GetChannelName(i)) then newBu(level, tok(' ',select(2,GetChannelName(i))) .. '     ', nil, 1, nil, nil, nil, report, i, 10) end end	
 
 		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'text' then
 
@@ -2414,8 +2422,8 @@
 		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'bars' then
 
 			newBu(level, tdpsL.height, nil, 1, 1, 'height', 1)
-			newBu(level, tdpsL.spacing, nil, 1, 1, 'spacing', 1)
-			newBu(level, tdpsL.maximum, nil, 1, 1, 'maximum', 1)
+			newBu(level, tdpsL.spacing .. ': ' .. tdps.spacing, nil, 1, nil, nil, 1, changeBarSpacing)
+			newBu(level, tdpsL.maximum .. ': ' .. tdpsVisibleBars, nil, 1, nil, nil, nil, function() ChatEdit_ActivateChat(DEFAULT_CHAT_FRAME.editBox) DEFAULT_CHAT_FRAME.editBox:SetText('/tdps visiblebars ' .. tdpsVisibleBars) end)
 
 		elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == 'colors' then
 
@@ -2536,7 +2544,7 @@
 				newBu(level, 'Nimrod MT', nil, nil, nil, nil, nil, changeFont, 'font', [[Fonts\NIM_____.TTF]], function() if tdpsFont.name == [[Fonts\NIM_____.TTF]] then return true end end, nil, nil)
 			end
 
-			--newBu(level, 'Custom', nil, nil, nil, nil, nil, changeFont, 'font', [[Interface\AddOns\TinyDPS\Fonts\custom.ttf]], function() if tdpsFont.name == [[Interface\AddOns\TinyDPS\Fonts\custom.ttf]] then return true end end, nil, nil)
+			newBu(level, 'Custom', nil, nil, nil, nil, nil, changeFont, 'font', [[Interface\AddOns\TinyDPS\Fonts\custom.ttf]], function() if tdpsFont.name == [[Interface\AddOns\TinyDPS\Fonts\custom.ttf]] then return true end end, nil, nil)
 
 		elseif level == 4 and UIDROPDOWNMENU_MENU_VALUE == 'layout' then
 
@@ -2564,15 +2572,6 @@
 			newBu(level, tdpsL.increase, nil, 1, nil, nil, 1, changeBarSpacing, 1)
 			newBu(level, tdpsL.decrease, nil, 1, nil, nil, 1, changeBarSpacing, -1)
 
-		elseif level == 4 and UIDROPDOWNMENU_MENU_VALUE == 'maximum' then
-
-			newBu(level, tdpsL.oneYourself, nil, nil, nil, nil, nil, changeMaxBars, 1, nil, function() if tdps.maxBars == 1 then return true end end)
-			newBu(level, tdpsL.five, nil, nil, nil, nil, nil, changeMaxBars, 5, nil, function() if tdps.maxBars == 5 then return true end end)
-			newBu(level, tdpsL.ten, nil, nil, nil, nil, nil, changeMaxBars, 10, nil, function() if tdps.maxBars == 10 then return true end end)
-			newBu(level, tdpsL.fifteen, nil, nil, nil, nil, nil, changeMaxBars, 15, nil, function() if tdps.maxBars == 15 then return true end end)
-			newBu(level, tdpsL.twenty, nil, nil, nil, nil, nil, changeMaxBars, 20, nil, function() if tdps.maxBars == 20 then return true end end)
-			newBu(level, tdpsL.unlimited, nil, nil, nil, nil, nil, changeMaxBars, 99, nil, function() if tdps.maxBars == 99 then return true end end)
-
 		end
 
 	end
@@ -2595,7 +2594,7 @@
 		dummybar:SetWidth(tdpsFrame:GetWidth() - 4)
 		dummybar:SetHeight(tdps.barHeight)
 		dummybar:Hide()
-		dummybar:SetPoint('RIGHT', tdpsFrame, 'RIGHT', -2, 0)
+		--dummybar:SetPoint('RIGHT', tdpsFrame, 'RIGHT', -2, 0)
 		dummybar:SetBackdrop({bgFile = [[Interface\AddOns\TinyDPS\Textures\wglass.tga]], edgeFile = [[Interface\AddOns\TinyDPS\Textures\blank.tga]], tile = false, tileSize = 1, edgeSize = 1, insets = { left = 0, right = 0, top = 0, bottom = 0}})
 		dummybar:SetStatusBarTexture([[Interface\AddOns\TinyDPS\Textures\wglass.tga]])
 
@@ -2878,22 +2877,21 @@
 	tdpsFrame:SetScript('OnEvent', function(self, event)
 
 		local curVer = GetAddOnMetadata('TinyDPS', 'Version')
+		
+		ver()
 
 		-- global version mismatch
-		if curVer ~= tdps.version and '0.93' ~= tdps.version and '0.931' ~= tdps.version then
+		if curVer ~= tdps.version and '0.93' ~= tdps.version and '0.931' ~= tdps.version and '0.932' ~= tdps.version then
 			initialiseSavedVariables()
 			echo('Global variables have been reset to version ' .. curVer)
 		end
 
 		-- character version mismatch
-		if curVer ~= tdpsVersion and '0.93' ~= tdpsVersion and '0.931' ~= tdpsVersion then
+		if curVer ~= tdpsVersion and '0.93' ~= tdpsVersion and '0.931' ~= tdpsVersion and '0.932' ~= tdpsVersion then
 			initialiseSavedVariablesPerCharacter()
 			echo('Character variables have been reset to version ' .. curVer)
 			tdpsFrame:SetHeight(tdps.barHeight + 4)
 		end
-
-		-- display help on version mismatch
-		if curVer ~= tdps.version or curVer ~= tdpsVersion then help() end
 
 		-- save current version
 		tdps.version = curVer
