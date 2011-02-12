@@ -4,12 +4,15 @@
 
 	* written by: Sideshow, Draenor EU
 	* initial release: May 21th, 2010
-	* last updated: January 7th, 2011
+	* last updated: February 12th, 2011
 
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 
+	Version 0.936
+	* corrected issue with auto hide in pvp
+	
 	Version 0.935
 	* updated bossIds (author: elsia)
 	* resize grip has now zero opacity until hovered
@@ -2216,12 +2219,12 @@
 
 
 	local function isPvpZone()
-		if select(2,IsInInstance()) == 'pvp' -- battlegrounds
-		or select(2,IsInInstance()) == 'arena' -- arenas
-		or GetCurrentMapAreaID() == 708 -- Tol Barad (Cataclysm)
-		or GetCurrentMapAreaID() == 709 -- Tol Barad (Cataclysm)
-		or GetCurrentMapAreaID() == 501 and not GetWintergraspWaitTime() -- Wintergrasp (only when a battle is going on)
-	then return true end end
+		if select(2,IsInInstance()) == "pvp"
+			or select(2,IsInInstance()) == "arena"
+			or GetCurrentMapAreaID() == 501 and select(3,GetWorldPVPAreaInfo(1)) -- Wintergrasp (only when a battle is going on)
+			or GetCurrentMapAreaID() == 708 and select(3,GetWorldPVPAreaInfo(2)) -- Tol Barad (only when a battle is going on)
+		then return true end
+	end
 
 
 
@@ -3183,13 +3186,13 @@
 		ver()
 
 		-- global version mismatch
-		if curVer ~= tdps.version and '0.93' ~= tdps.version and '0.931' ~= tdps.version and '0.932' ~= tdps.version and '0.933' ~= tdps.version and '0.934' ~= tdps.version then
+		if curVer ~= tdps.version and '0.935' ~= tdps.version then
 			initialiseSavedVariables()
 			echo('Global variables have been reset to version ' .. curVer)
 		end
 
 		-- character version mismatch
-		if curVer ~= tdpsVersion and '0.93' ~= tdpsVersion and '0.931' ~= tdpsVersion and '0.932' ~= tdpsVersion and '0.933' ~= tdpsVersion and '0.934' ~= tdpsVersion then
+		if curVer ~= tdpsVersion and '0.935' ~= tdpsVersion then
 			initialiseSavedVariablesPerCharacter()
 			echo('Character variables have been reset to version ' .. curVer)
 			tdpsFrame:SetHeight(tdps.barHeight + 4)
@@ -3244,6 +3247,7 @@
 	tdpsAnchor:RegisterEvent('PARTY_MEMBERS_CHANGED')
 	tdpsAnchor:RegisterEvent('PLAYER_ENTERING_WORLD')
 	tdpsAnchor:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+	tdpsAnchor:RegisterEvent('UPDATE_WORLD_STATES')
 
 
 
