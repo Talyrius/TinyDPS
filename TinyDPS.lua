@@ -4,11 +4,14 @@
 
 	* written by: Sideshow, Draenor EU
 	* initial release: May 21th, 2010
-	* last updated: February 12th, 2011
+	* last updated: April 27th, 2011
 
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
+
+	Version 0.937
+	* fixes for WoW 4.1
 
 	Version 0.936
 	* corrected issue with auto hide in pvp
@@ -3058,76 +3061,76 @@
 
 	local function tdpsCombatEvent(self, event, ...)
 
-		local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 = ...
+		local arg1, arg2, arg4, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14 = ...
 
 		-- return on outsider
-		if arg5%8 == 0 then return end
+		if arg6%8 == 0 then return end
 
 		-- track absorbs or do fake healing event
-		if arg2 == 'SPELL_AURA_APPLIED' and arg8%8>0 and isAbsorb[arg9] then tdpsShield[arg3..arg9..arg6] = arg13 return
-		elseif arg2 == 'SPELL_AURA_REFRESH' and arg8%8>0 and isAbsorb[arg9] and tdpsShield[arg3..arg9..arg6] then
-			if tdpsShield[arg3..arg9..arg6] - arg13 > 0 then tdpsCombatEvent(self, event, arg1, 'SPELL_HEAL', arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, tdpsShield[arg3..arg9..arg6] - arg13, 0, 0, 0) end
-			tdpsShield[arg3..arg9..arg6] = arg13 return
-		elseif arg2 == 'SPELL_AURA_REMOVED' and arg8%8>0 and isAbsorb[arg9] and tdpsShield[arg3..arg9..arg6] then
-			if tdpsShield[arg3..arg9..arg6] - arg13 > 0 then tdpsCombatEvent(self, event, arg1, 'SPELL_HEAL', arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, tdpsShield[arg3..arg9..arg6] - arg13, 0, 0, 0) end
-			tdpsShield[arg3..arg9..arg6] = nil return end
+		if arg2 == 'SPELL_AURA_APPLIED' and arg9%8>0 and isAbsorb[arg10] then tdpsShield[arg4..arg10..arg7] = arg14 return
+		elseif arg2 == 'SPELL_AURA_REFRESH' and arg9%8>0 and isAbsorb[arg10] and tdpsShield[arg4..arg10..arg7] then
+			if tdpsShield[arg4..arg10..arg7] - arg14 > 0 then tdpsCombatEvent(self, event, arg1, 'SPELL_HEAL', arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, tdpsShield[arg4..arg10..arg7] - arg14, 0, 0, 0) end
+			tdpsShield[arg4..arg10..arg7] = arg14 return
+		elseif arg2 == 'SPELL_AURA_REMOVED' and arg9%8>0 and isAbsorb[arg10] and tdpsShield[arg4..arg10..arg7] then
+			if tdpsShield[arg4..arg10..arg7] - arg14 > 0 then tdpsCombatEvent(self, event, arg1, 'SPELL_HEAL', arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, tdpsShield[arg4..arg10..arg7] - arg14, 0, 0, 0) end
+			tdpsShield[arg4..arg10..arg7] = nil return end
 
 		-- return on invalid event, vehicle, friendly fire, hostile healing, evaded
-		if not isValidEvent[arg2] or sub(arg3,5,5) == '5' or (band(arg8,16) > 0 and isDamage[arg2]) or (band(arg8,16) == 0 and isHeal[arg2]) or arg12 == 'EVADE' then return end
+		if not isValidEvent[arg2] or sub(arg4,5,5) == '5' or (band(arg9,16) > 0 and isDamage[arg2]) or (band(arg9,16) == 0 and isHeal[arg2]) or arg13 == 'EVADE' then return end
 
 		-- create summoned pets
 		if arg2 == 'SPELL_SUMMON' then
-			if UnitIsPlayer(arg4) and not isExcludedPet[toNum(arg6:sub(7, 10), 16)] then -- add pet when player summons
+			if UnitIsPlayer(arg5) and not isExcludedPet[toNum(arg7:sub(7, 10), 16)] then -- add pet when player summons
 				-- make owner if necessary
-				if not tdpsPlayer[arg3] then
-					makeCombatant(arg3, arg4, {arg4 .. ': ' .. arg7}, getClass(arg4))
+				if not tdpsPlayer[arg4] then
+					makeCombatant(arg4, arg5, {arg5 .. ': ' .. arg8}, getClass(arg5))
 				end
 				-- make pointer
-				tdpsLink[arg6] = arg4 .. ': ' .. arg7
+				tdpsLink[arg7] = arg5 .. ': ' .. arg8
 				-- make pet if it does not exist yet
-				if not tdpsPet[arg4 .. ': ' .. arg7] then makeCombatant(arg4 .. ': ' .. arg7, arg7, arg6, 'PET') end
+				if not tdpsPet[arg5 .. ': ' .. arg8] then makeCombatant(arg5 .. ': ' .. arg8, arg8, arg7, 'PET') end
 				-- add pet to owner if it's not there yet
-				local found = nil for i=1,#tdpsPlayer[arg3].pet do if tdpsPlayer[arg3].pet[i] == arg4 .. ': ' .. arg7 then found = true break end end
-				if not found then t_insert(tdpsPlayer[arg3].pet, arg4 .. ': ' .. arg7) end
-			elseif tdpsLink[arg3] then -- the summoner is also a pet. Example: totem summons greater fire elemental.
+				local found = nil for i=1,#tdpsPlayer[arg4].pet do if tdpsPlayer[arg4].pet[i] == arg5 .. ': ' .. arg8 then found = true break end end
+				if not found then t_insert(tdpsPlayer[arg4].pet, arg5 .. ': ' .. arg8) end
+			elseif tdpsLink[arg4] then -- the summoner is also a pet. Example: totem summons greater fire elemental.
 				 -- ownername of owner
-				local oo = tok(':', tdpsLink[arg3])
+				local oo = tok(':', tdpsLink[arg4])
 				-- make pointer
-				tdpsLink[arg6] = oo .. ': ' ..arg7
+				tdpsLink[arg7] = oo .. ': ' ..arg8
 				-- make pet
-				makeCombatant(oo .. ': ' .. arg7, arg7, arg6, 'PET')
+				makeCombatant(oo .. ': ' .. arg8, arg8, arg7, 'PET')
 				-- add pet to owner if it's not there yet
 				local found = nil
-				for i=1,#tdpsPlayer[UnitGUID(oo)].pet do if tdpsPlayer[UnitGUID(oo)].pet[i] == oo..': '..arg7 then found = true break end end
-				if not found then t_insert(tdpsPlayer[UnitGUID(oo)].pet, oo .. ': ' .. arg7) end
+				for i=1,#tdpsPlayer[UnitGUID(oo)].pet do if tdpsPlayer[UnitGUID(oo)].pet[i] == oo..': '..arg8 then found = true break end end
+				if not found then t_insert(tdpsPlayer[UnitGUID(oo)].pet, oo .. ': ' .. arg8) end
 			end
 			return
 		end
 
 		-- select or create combatant
-		if tdpsPlayer[arg3] then com = tdpsPlayer[arg3]
-		elseif tdpsPet[tdpsLink[arg3]] then com = tdpsPet[tdpsLink[arg3]]
-		elseif UnitIsPlayer(arg4) then
-			makeCombatant(arg3, arg4, {}, getClass(arg4))
+		if tdpsPlayer[arg4] then com = tdpsPlayer[arg4]
+		elseif tdpsPet[tdpsLink[arg4]] then com = tdpsPet[tdpsLink[arg4]]
+		elseif UnitIsPlayer(arg5) then
+			makeCombatant(arg4, arg5, {}, getClass(arg5))
 			tdpsCombatEvent(self, event, ...)
 			return
-		elseif isPartyPet(arg3) then
+		elseif isPartyPet(arg4) then
 			-- get owner
-			local oGuid, oName = getPetOwnerGUID(arg3), getPetOwnerName(arg3)
+			local oGuid, oName = getPetOwnerGUID(arg4), getPetOwnerName(arg4)
 			-- make owner if it does not exist yet
 			if not tdpsPlayer[oGuid] then
-				makeCombatant(oGuid, oName, {oName .. ': ' .. arg4}, getClass(oName))
+				makeCombatant(oGuid, oName, {oName .. ': ' .. arg5}, getClass(oName))
 			end
 			-- make pointer
-			tdpsLink[arg3] = oName .. ': ' .. arg4
+			tdpsLink[arg4] = oName .. ': ' .. arg5
 			-- make pet if it does not exist yet
-			if not tdpsPet[oName .. ': ' .. arg4] then
-				makeCombatant(oName .. ': ' .. arg4, arg4, arg3, 'PET')
+			if not tdpsPet[oName .. ': ' .. arg5] then
+				makeCombatant(oName .. ': ' .. arg5, arg5, arg4, 'PET')
 			end
 			-- add pet to owner if it's not there yet
 			local found = nil
-			for i=1,#tdpsPlayer[oGuid].pet do if tdpsPlayer[oGuid].pet[i] == oName .. ': ' .. arg4 then found = true break end end
-			if not found then t_insert(tdpsPlayer[oGuid].pet, oName .. ': ' .. arg4) end
+			for i=1,#tdpsPlayer[oGuid].pet do if tdpsPlayer[oGuid].pet[i] == oName .. ': ' .. arg5 then found = true break end end
+			if not found then t_insert(tdpsPlayer[oGuid].pet, oName .. ': ' .. arg5) end
 			-- event
 			tdpsCombatEvent(self, event, ...)
 			return
@@ -3137,16 +3140,16 @@
 
 		-- track numbers
 		if isMiss[arg2] then
-			if tdpsStartNewFight then startNewFight(arg7, arg6) end
+			if tdpsStartNewFight then startNewFight(arg8, arg7) end
 		elseif isDamage[arg2] then
-			if tdpsStartNewFight then startNewFight(arg7, arg6) end
-			if arg2 == 'SWING_DAMAGE' then arg = arg9 trackSpell(arg, arg7, tdpsL.melee, 'd') else arg = arg12 trackSpell(arg, arg7, arg10, 'd') end
+			if tdpsStartNewFight then startNewFight(arg8, arg7) end
+			if arg2 == 'SWING_DAMAGE' then arg = arg10 trackSpell(arg, arg8, tdpsL.melee, 'd') else arg = arg13 trackSpell(arg, arg8, arg11, 'd') end
 			tdpsFight[1].d, tdpsFight[2].d = tdpsFight[1].d + arg, tdpsFight[2].d + arg
 			com.fight[1].d, com.fight[2].d = com.fight[1].d + arg, com.fight[2].d + arg
 		elseif isHeal[arg2] then
-			arg = arg12 - arg13 -- effective healing
+			arg = arg13 - arg14 -- effective healing
 			if arg < 1 or not tdpsInCombat then return end -- stop on complete overheal or out of combat. Note that heals will never start a new fight.
-			trackSpell(arg, arg7, arg10, 'h')
+			trackSpell(arg, arg8, arg11, 'h')
 			tdpsFight[1].h, tdpsFight[2].h = tdpsFight[1].h + arg, tdpsFight[2].h + arg
 			com.fight[1].h, com.fight[2].h = com.fight[1].h + arg, com.fight[2].h + arg
 		end
@@ -3186,13 +3189,13 @@
 		ver()
 
 		-- global version mismatch
-		if curVer ~= tdps.version and '0.935' ~= tdps.version then
+		if curVer ~= tdps.version and '0.935' ~= tdps.version and '0.936' ~= tdps.version then
 			initialiseSavedVariables()
 			echo('Global variables have been reset to version ' .. curVer)
 		end
 
 		-- character version mismatch
-		if curVer ~= tdpsVersion and '0.935' ~= tdpsVersion then
+		if curVer ~= tdpsVersion and '0.935' ~= tdpsVersion and '0.936' ~= tdpsVersion then
 			initialiseSavedVariablesPerCharacter()
 			echo('Character variables have been reset to version ' .. curVer)
 			tdpsFrame:SetHeight(tdps.barHeight + 4)
