@@ -3,9 +3,9 @@
 	TinyDPS - Lightweight Damage Meter
 
 	* written by: Sideshow, Draenor EU
-	* maintained by: ForeverTheGM
+	* maintained by: Talyrius
 	* initial release: May 21th, 2010
-	* last updated: November 29th, 2011
+	* last updated: July 7th, 2012
 
 ---------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------
@@ -215,6 +215,8 @@
 
 
 
+	-- temporary
+	local isMoP = select(4, GetBuildInfo()) >= 50000
 
 
 
@@ -2285,7 +2287,12 @@
 	local floor, abs = math.floor, abs
 	local t_sort, t_remove, t_insert, t_wipe = table.sort, table.remove, table.insert, table.wipe
 	local pairs, ipairs, type = pairs, ipairs, type
-	local GetNumRaidMembers, GetNumPartyMembers = GetNumRaidMembers, GetNumPartyMembers
+	local GetNumGroupMembers, GetNumSubgroupMembers
+	if isMoP then
+		GetNumGroupMembers, GetNumSubgroupMembers = _G.GetNumGroupMembers, _G.GetNumSubgroupMembers
+	else
+		GetNumGroupMembers, GetNumSubgroupMembers = GetNumRaidMembers, GetNumPartyMembers
+	end
 	local sub, tok, fmt = strsub, strsplit, string.format
 	local UnitName, UnitGUID, UnitClass = UnitName, UnitGUID, UnitClass
 	local UnitIsPlayer, UnitAffectingCombat = UnitIsPlayer, UnitAffectingCombat
@@ -2372,7 +2379,7 @@
 	local function visibilityEvent()
 
 		if (tdps.hidePvP and isPvpZone()) -- hide in pvp is true and we are in pvp zone
-				or (tdps.hideSolo and math.max(GetNumPartyMembers(), GetNumRaidMembers()) == 0) -- hide when solo is true and we are alone
+				or (tdps.hideSolo and math.max(GetNumSubgroupMembers(), GetNumGroupMembers()) == 0) -- hide when solo is true and we are alone
 				or (tdps.hideOOC and not UnitAffectingCombat('player')) -- hide when ooc is true and we are not fighting
 				or (tdps.hideIC and UnitAffectingCombat('player')) then -- hide when in combat is true and we are fighting
 			tdpsFrame:Hide()
@@ -2623,10 +2630,10 @@
 	local function checkCombat()
 		if tdpsStartNewFight then return end
 		if UnitAffectingCombat('player') or UnitAffectingCombat('pet') then tdpsInCombat = true return end
-		for i=1,GetNumRaidMembers() do
+		for i=1,GetNumGroupMembers() do
 			if UnitAffectingCombat(fmt('raid%i', i)) or UnitAffectingCombat(fmt('raidpet%i', i)) then tdpsInCombat = true return end
 		end
-		for i=1,GetNumPartyMembers() do
+		for i=1,GetNumSubgroupMembers() do
 			if UnitAffectingCombat(fmt('party%i', i)) or UnitAffectingCombat(fmt('partypet%i', i)) then tdpsInCombat = true return end
 		end
 		tdpsInCombat = false
@@ -2638,10 +2645,10 @@
 		local n, s
 		if petguid == UnitGUID('pet') then n, s = UnitName('player') if s then return n..'-'..s else return n end
 		else
-			for i=1,GetNumRaidMembers() do
+			for i=1,GetNumGroupMembers() do
 				if petguid == UnitGUID(fmt('raidpet%i', i)) then n, s = UnitName(fmt('raid%i', i)) if s then return n..'-'..s else return n end end
 			end
-			for i=1,GetNumPartyMembers() do
+			for i=1,GetNumSubgroupMembers() do
 				if petguid == UnitGUID(fmt('partypet%i', i)) then n, s = UnitName(fmt('party%i', i)) if s then return n..'-'..s else return n end end
 			end
 		end
@@ -2649,10 +2656,10 @@
 	local function getPetOwnerGUID(petguid)
 		if petguid == UnitGUID('pet') then return UnitGUID('player')
 		else
-			for i=1,GetNumRaidMembers() do
+			for i=1,GetNumGroupMembers() do
 				if petguid == UnitGUID(fmt('raidpet%i', i)) then return UnitGUID(fmt('raid%i', i)) end
 			end
-			for i=1,GetNumPartyMembers() do
+			for i=1,GetNumSubgroupMembers() do
 				if petguid == UnitGUID(fmt('partypet%i', i)) then return UnitGUID(fmt('party%i', i)) end
 			end
 		end
@@ -2663,10 +2670,10 @@
 	local function isPartyPet(petguid)
 		if petguid == UnitGUID('pet') then return true
 		else
-			for i=1,GetNumRaidMembers() do
+			for i=1,GetNumGroupMembers() do
 				if petguid == UnitGUID(fmt('raidpet%i', i)) then return true end
 			end
-			for i=1,GetNumPartyMembers() do
+			for i=1,GetNumSubgroupMembers() do
 				if petguid == UnitGUID(fmt('partypet%i', i)) then return true end
 			end
 		end
@@ -3291,13 +3298,13 @@
 		--ver()
 
 		-- global version mismatch
-		if curVer ~= tdps.version and '0.935' ~= tdps.version and '0.936' ~= tdps.version and '0.937' ~= tdps.version and '0.938' ~= tdps.version then
+		if curVer ~= tdps.version and tonumber(tdps.version) < 0.935 then
 			initialiseSavedVariables()
 			echo('Global variables have been reset to version ' .. curVer)
 		end
 
 		-- character version mismatch
-		if curVer ~= tdpsVersion and '0.935' ~= tdpsVersion and '0.936' ~= tdpsVersion and '0.937' ~= tdpsVersion and '0.938' ~= tdpsVersion then
+		if curVer ~= tdpsVersion and tonumber(tdpsVersion) < 0.935 then
 			initialiseSavedVariablesPerCharacter()
 			echo('Character variables have been reset to version ' .. curVer)
 			tdpsFrame:SetHeight(tdps.barHeight + 4)
@@ -3350,7 +3357,13 @@
 	-- all events that can show or hide the main window
 	tdpsAnchor:RegisterEvent('PLAYER_REGEN_ENABLED')
 	tdpsAnchor:RegisterEvent('PLAYER_REGEN_DISABLED')
-	tdpsAnchor:RegisterEvent('PARTY_MEMBERS_CHANGED')
+	local groupEvent
+	if isMoP then
+		groupEvent = "GROUP_ROSTER_UPDATE"
+	else
+		groupEvent = "PARTY_MEMBERS_CHANGED"
+	end
+	tdpsAnchor:RegisterEvent(groupEvent)
 	tdpsAnchor:RegisterEvent('PLAYER_ENTERING_WORLD')
 	tdpsAnchor:RegisterEvent('ZONE_CHANGED_NEW_AREA')
 	tdpsAnchor:RegisterEvent('UPDATE_WORLD_STATES')
@@ -3359,9 +3372,9 @@
 
 	tdpsAnchor:SetScript('OnEvent', function(self, event, ...)
 		visibilityEvent()
-		if event == 'PARTY_MEMBERS_CHANGED' then
-			if tdps.autoReset and tdpsPartySize == 0 and math.max(GetNumPartyMembers(), GetNumRaidMembers()) > 0 then reset() end
-			tdpsPartySize = math.max(GetNumPartyMembers(), GetNumRaidMembers())
+		if event == groupEvent then
+			if tdps.autoReset and tdpsPartySize == 0 and math.max(GetNumSubgroupMembers(), GetNumGroupMembers()) > 0 then reset() end
+			tdpsPartySize = math.max(GetNumSubgroupMembers(), GetNumGroupMembers())
 		end
 	end)
 

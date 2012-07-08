@@ -4,5 +4,5 @@
 ## Author: Sideshow @ Draenor EU
 ## SavedVariables: tdps, tdpsPosition, tdpsFont, tdpsNumberOfFights, tdpsF, tdpsV, tdpsTextOffset, tdpsColorAlpha, tdpsVisibleBars, tdpsReportLength
 ## SavedVariablesPerCharacter: tdpsVersion, tdpsPlayer, tdpsLink, tdpsPet, tdpsFight, tdpsPartySize, tdpsCombat, tdpsNewFight
-## Version: 0.94
+## Version: 0.941
 TinyDPS.lua
