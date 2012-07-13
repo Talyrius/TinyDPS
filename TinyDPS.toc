@@ -1,10 +1,13 @@
 ﻿## Interface: 40300
+
 ## Title: TinyDPS
-## Notes: Lightweight Damage Meter
-## Author: Sideshow @ Draenor EU
+## Notes: A lightweight damage and healing meter.
+## Author: Talyrius
+## Version: 0.942
+
 ## SavedVariables: tdps, tdpsPosition, tdpsFont, tdpsNumberOfFights, tdpsF, tdpsV, tdpsTextOffset, tdpsColorAlpha, tdpsVisibleBars, tdpsReportLength
 ## SavedVariablesPerCharacter: tdpsVersion, tdpsPlayer, tdpsLink, tdpsPet, tdpsFight, tdpsPartySize, tdpsCombat, tdpsNewFight
-## Version: 0.942
+
 ## OptionalDeps: LibStub, LibBossIDs-1.0
 
 #@no-lib-strip@
