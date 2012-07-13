@@ -1,4 +1,5 @@
 ﻿## Interface: 40300
+## X-Compatible-With: 50001
 
 ## Title: TinyDPS
 ## Notes: A lightweight damage and healing meter.
