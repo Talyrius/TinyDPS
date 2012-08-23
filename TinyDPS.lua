@@ -752,19 +752,18 @@ tdpsDropDown.displayMode = "MENU"
 ------------------------------------------------------------------------------------------------------------------------
 
 -- make local copy of global functions (faster)
-local _G = _G
-local tonumber, select, band = _G.tonumber, _G.select, _G.bit.band
-local floor, abs = _G.floor, _G.abs
-local sort, tremove, tinsert, wipe = _G.sort, _G.tremove, _G.tinsert, _G.wipe
-local pairs, ipairs, type = _G.pairs, _G.ipairs, _G.type
-local strsub, strsplit, format = _G.strsub, _G.strsplit, _G.format
-local UnitName, UnitGUID, UnitClass = _G.UnitName, _G.UnitGUID, _G.UnitClass
-local UnitIsPlayer, UnitAffectingCombat = _G.UnitIsPlayer, _G.UnitAffectingCombat
+local tonumber, select, band = tonumber, select, bit.band
+local floor, abs = floor, abs
+local sort, tremove, tinsert, wipe = sort, tremove, tinsert, wipe
+local pairs, ipairs, type = pairs, ipairs, type
+local strsub, strsplit, format = strsub, strsplit, format
+local UnitName, UnitGUID, UnitClass = UnitName, UnitGUID, UnitClass
+local UnitIsPlayer, UnitAffectingCombat = UnitIsPlayer, UnitAffectingCombat
 local GetNumGroupMembers, GetNumSubgroupMembers
 if isMoP then
-  GetNumGroupMembers, GetNumSubgroupMembers = _G.GetNumGroupMembers, _G.GetNumSubgroupMembers
+  GetNumGroupMembers, GetNumSubgroupMembers = GetNumGroupMembers, GetNumSubgroupMembers
 else
-  GetNumGroupMembers, GetNumSubgroupMembers = _G.GetNumRaidMembers, _G.GetNumPartyMembers
+  GetNumGroupMembers, GetNumSubgroupMembers = GetNumRaidMembers, GetNumPartyMembers
 end
 
 -- some random functions
