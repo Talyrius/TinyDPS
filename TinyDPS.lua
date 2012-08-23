@@ -812,7 +812,7 @@ local function report(button, channel, playername)
 
   if channel == "WHISPER" then
     if not playername then
-      destination = UnitName("target")
+      destination = GetUnitName("target", true):gsub(" ", "")
       if not UnitIsPlayer(destination) or not UnitCanCooperate("player", destination) then
         echo(tdpsL.noTarget)
         return
