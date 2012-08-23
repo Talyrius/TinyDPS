@@ -6,3 +6,6 @@ externals:
     tag: latest
   Libs/LibBossIDs-1.0:
     url: svn://svn.wowace.com/wow/libbossids-1-0/mainline/trunk
+
+move-folders:
+    README.md: README.txt
