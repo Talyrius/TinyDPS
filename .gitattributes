@@ -1,0 +1,16 @@
+# Default
+* text=auto
+*.md text
+
+# World of Warcraft UI
+*.lua text
+*.xml text
+*.toc text
+*.blp binary
+*.tga binary
+*.ttf binary
+*.ogg binary
+*.mp3 binary
+
+# CurseForge/WowAce Packager
+.*meta text whitespace=blank-at-eol,tab-in-indent
