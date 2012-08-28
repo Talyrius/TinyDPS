@@ -460,7 +460,6 @@ local scrollPos, isMovingOrSizing = 1, false
 local ttSpellMerge, ttMobMerge, ttSort = {}, {}, {}
 local cColor
 
-local isMoP = select(4, GetBuildInfo()) >= 50000
 local isBoss = LibStub("LibBossIDs-1.0").BossIDs
 local isHeal = {
   SPELL_HEAL = true,
@@ -759,12 +758,7 @@ local pairs, ipairs, type = pairs, ipairs, type
 local strsub, strsplit, format = strsub, strsplit, format
 local UnitName, UnitGUID, UnitClass = UnitName, UnitGUID, UnitClass
 local UnitIsPlayer, UnitAffectingCombat = UnitIsPlayer, UnitAffectingCombat
-local GetNumGroupMembers, GetNumSubgroupMembers
-if isMoP then
-  GetNumGroupMembers, GetNumSubgroupMembers = GetNumGroupMembers, GetNumSubgroupMembers
-else
-  GetNumGroupMembers, GetNumSubgroupMembers = GetNumRaidMembers, GetNumPartyMembers
-end
+local GetNumGroupMembers, GetNumSubgroupMembers = GetNumGroupMembers, GetNumSubgroupMembers
 
 -- some random functions
 local function round(num, idp)
@@ -2393,7 +2387,7 @@ end)
 -- all events that can show or hide the main window
 tdpsAnchor:RegisterEvent("PLAYER_REGEN_ENABLED")
 tdpsAnchor:RegisterEvent("PLAYER_REGEN_DISABLED")
-tdpsAnchor:RegisterEvent(isMoP and "GROUP_ROSTER_UPDATE" or "PARTY_MEMBERS_CHANGED")
+tdpsAnchor:RegisterEvent("GROUP_ROSTER_UPDATE")
 tdpsAnchor:RegisterEvent("PLAYER_ENTERING_WORLD")
 tdpsAnchor:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 tdpsAnchor:RegisterEvent("UPDATE_WORLD_STATES")
