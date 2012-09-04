@@ -1,4 +1,4 @@
-#### TinyDPS is a lightweight damage and healing meter. ####
+### TinyDPS is a lightweight damage and healing meter. ###
   Looking for an addon to measure damage and healing without adversely affecting your gameplay experience? TinyDPS should suit your needs. By excluding unnecessary features (graphs, pie charts, extensive data collection, etc.) and offering a minimalistic interface, TinyDPS attempts to maintain a balance between information and performance.
 
 ## Usage ##
@@ -11,7 +11,7 @@
     `help` or `?`, `reset` or `r`, `damage` or `d`, `healing` or `h`, `visiblebars <number>`, `whisper <name>`, `reportlength <number>`
 
 ## Known Issues and Limitations ##
-  * New spells and abilities introduced in patch 5.0 may not all be tracked correctly yet. Submit a bug report if you encounter such an issue.
+  * New spells and abilities introduced in patch 5.0 may not all be tracked correctly yet. Submit a bug report if you encounter such an omission.
 
 #### Intended behavior: ####
   * Vehicle/mounted combat data is ignored.
