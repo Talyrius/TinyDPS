@@ -504,60 +504,71 @@ local isValidEvent = {
 }
 
 local isAbsorb = {
-  -- Priest
-  [17] = true, -- Power Word: Shield
-  [47753] = true, -- Divine Aegis
-  --[62618] = true, -- Power Word: Barrier (not trackable)
-
-  -- Paladin
-  [86273] = true, -- Illuminated Healing
-  [88063] = true, -- Guarded by the Light
-
   -- Death Knight
-  [51271] = true, -- Unbreakable Armor
-  --[77535] = true, -- Blood Shield (not trackable)
+  [ 48707] = true, -- Anti-Magic Shell
+  [ 50461] = true, -- Anti-Magic Zone
+  [ 77535] = true, -- Blood Shield
+
+  -- Druid
+  [110570] = true, -- Symbiosis: Anti-Magic Shell
 
   -- Mage
-  [11426] = true, -- Ice Barrier
-  [6143] = true, -- Frost Ward
-  [1463] = true, -- Mana shield
-  [543] = true, -- Fire Ward
+  [  1463] = true, -- Incanter's Ward
+  [ 11426] = true, -- Ice Barrier
+
+  -- Monk
+  [116849] = true, -- Life Cocoon
+  [123402] = true, -- Guard
+
+  -- Paladin
+  [ 65148] = true, -- Sacred Shield
+  [ 86273] = true, -- Illuminated Healing
+
+  -- Priest
+  [    17] = true, -- Power Word: Shield
+  [ 47753] = true, -- Divine Aegis
+  [ 47788] = true, -- Guardian Spirit
+  [114908] = true, -- Spirit Shell
+
+  -- Shaman
+  [114893] = true, -- Stone Bulwark Totem
 
   -- Warlock
-  [7812] = true, -- Sacrifice
-  [6229] = true, -- Shadow Ward
+  [  6229] = true, -- Twilight Ward
+  [  7812] = true, -- Sacrifice
+  [ 91711] = true, -- Nether Ward
+  [110913] = true, -- Dark Bargain
 
-  -- Miscellaneous
-  [64411] = true, -- Blessing of the Ancient (Val'anyr Hammer of Ancient Kings)
-  [64413] = true, -- Protection of Ancient Kings (Val'anyr Hammer of Ancient Kings)
+  -- Warrior
+  [112048] = true, -- Shield Barrier
+
+  -- Items
+  [ 64411] = true, -- Blessing of the Ancient (Val'anyr Hammer of Ancient Kings)
+  [ 64413] = true, -- Protection of Ancient Kings (Val'anyr Hammer of Ancient Kings)
+  [105801] = true, -- Delayed Judgment (Paladin T13 Protection 2P Bonus)
+  [105909] = true, -- Shield of Fury (Warrior T13 Protection 2P Bonus)
+
+  -- Enchants
+  [116631] = true, -- Colossus
 }
 
 local isExcludedPet = {
   -- Totems
-  [15447] = true, -- Wrath of Air Totem
-  [6112] = true, -- Windfury Totem
-  [5924] = true, -- Cleansing Totem
-  [2630] = true, -- Earthbind Totem
-  [5913] = true, -- Tremor Totem
-  [5925] = true, -- Grounding Totem
+  [ 2630] = true, -- Earthbind Totem
+  [ 5913] = true, -- Tremor Totem
   [10467] = true, -- Mana Tide Totem
-  [3573] = true, -- Mana Spring Totem
-  [5874] = true, -- Strength of Earth Totem
-  [5873] = true, -- Stoneskin Totem
-  [17539] = true, -- Totem of Wrath
-  [3579] = true, -- Stoneclaw Totem
-  [5950] = true, -- Flametongue Totem
+  [53006] = true, -- Spirit Link Totem
+  [59717] = true, -- Windwalk Totem
+  [60561] = true, -- Earthgrab Totem
+  [61245] = true, -- Capacitor Totem
+  [62002] = true, -- Stormlash Totem
 
   -- Miscellaneous
   [29742] = true, -- Snake Wrap
-  [38163] = true, -- Swarming Shadows
   [36619] = true, -- Bone Spike
+  [38163] = true, -- Swarming Shadows
   [38711] = true, -- Bone Spike
   [38712] = true, -- Bone Spike
-  [2671] = true, -- Mechanical Squirrel
-  [10598] = true, -- Smolderweb Hatchling
-  [10259] = true, -- Worg Pup
-  [28306] = true, -- Anti-Magic Zone
 }
 
 local function initialiseSavedVariables()
