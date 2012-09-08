@@ -191,7 +191,7 @@ elseif GetLocale() == "ruRU" then
   tdpsL.various = "Дополнительно"
   tdpsL.hideInPvP = "Скрывать в PvP"
   tdpsL.hideWhenSolo = "Скрывать вне группы"
-  tdpsL.hideInCombat = "Hide In Combat (needs translatation)"
+  tdpsL.hideInCombat = "Скрыть в бою"
   tdpsL.hideOutOfCombat = "Показывать только в бою"
   tdpsL.growUpwards = "Отображать новые полосы над предыдущими"
   tdpsL.minimapButton = "Кнопка у миникарты"
@@ -208,7 +208,7 @@ elseif GetLocale() == "ruRU" then
   tdpsL.helpVersion = "Версия"
   tdpsL.helpMove = "Перемещение: зажмите Shift и двигайте окно"
   tdpsL.helpResize = "Смена размера: двигайте стрелку в правой нижней части окна"
-  tdpsL.helpToggle = "Команда: " / tdps" скрыть окно/показать"
+  tdpsL.helpToggle = "Команда: '/tdps' скрыть окно/показать"
   tdpsL.helpParameters1 = "/tdps help | reset | damage | healing | whisper <name>"
   tdpsL.helpParameters2 = "/tdps visiblebars <number> | reportlength <number>"
 
@@ -317,7 +317,7 @@ elseif GetLocale() == "deDE" then
   tdpsL.helpVersion = "Version"
   tdpsL.helpMove = "move: Halte Umschalt gedrückt und bewege das Fenster"
   tdpsL.helpResize = "resize: An der unteren rechten Ecke ziehen"
-  tdpsL.helpToggle = "command: Tippe /tpds ein um das Fenster anzuzeigen/auszublenden"
+  tdpsL.helpToggle = "command: Tippe /tdps ein um das Fenster anzuzeigen/auszublenden"
   tdpsL.helpParameters1 = "/tdps help | reset | damage | healing | whisper <name>"
   tdpsL.helpParameters2 = "/tdps visiblebars <number> | reportlength <number>"
 
