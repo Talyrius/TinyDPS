@@ -776,7 +776,7 @@ local pairs, ipairs, type = pairs, ipairs, type
 local strsub, strsplit, format = strsub, strsplit, format
 local UnitName, UnitGUID, UnitClass = UnitName, UnitGUID, UnitClass
 local UnitIsPlayer, UnitAffectingCombat = UnitIsPlayer, UnitAffectingCombat
-local GetNumGroupMembers, GetNumSubgroupMembers = GetNumGroupMembers, GetNumSubgroupMembers
+local IsInRaid, IsInGroup, GetNumGroupMembers = IsInRaid, IsInGroup, GetNumGroupMembers
 
 -- some random functions
 local function round(num, idp)
@@ -881,7 +881,7 @@ end
 
 local function visibilityEvent()
   if (tdps.hidePvP and isPvpZone())
-  or (tdps.hideSolo and math.max(GetNumSubgroupMembers(), GetNumGroupMembers()) == 0)
+  or (tdps.hideSolo and not IsInGroup())
   or (tdps.hideOOC and not UnitAffectingCombat("player"))
   or (tdps.hideIC and UnitAffectingCombat("player")) then
     tdpsFrame:Hide()
@@ -1315,15 +1315,16 @@ local function checkCombat()
     return
   end
   for i = 1, GetNumGroupMembers() do
-    if UnitAffectingCombat(format("raid%i", i)) or UnitAffectingCombat(format("raidpet%i", i)) then
-      tdpsInCombat = true
-      return
-    end
-  end
-  for i = 1, GetNumSubgroupMembers() do
-    if UnitAffectingCombat(format("party%i", i)) or UnitAffectingCombat(format("partypet%i", i)) then
-      tdpsInCombat = true
-      return
+    if IsInRaid() then
+      if UnitAffectingCombat(format("raid%i", i)) or UnitAffectingCombat(format("raidpet%i", i)) then
+        tdpsInCombat = true
+        return
+      end
+    else
+      if UnitAffectingCombat(format("party%i", i)) or UnitAffectingCombat(format("partypet%i", i)) then
+        tdpsInCombat = true
+        return
+      end
     end
   end
   tdpsInCombat = false
@@ -1340,22 +1341,23 @@ local function getPetOwnerName(petguid)
     end
   else
     for i = 1, GetNumGroupMembers() do
-      if petguid == UnitGUID(format("raidpet%i", i)) then
-        n, s = UnitName(format("raid%i", i))
-        if s then
-          return n .. "-" .. s
-        else
-          return n
+      if IsInRaid() then
+        if petguid == UnitGUID(format("raidpet%i", i)) then
+          n, s = UnitName(format("raid%i", i))
+          if s then
+            return n .. "-" .. s
+          else
+            return n
+          end
         end
-      end
-    end
-    for i = 1, GetNumSubgroupMembers() do
-      if petguid == UnitGUID(format("partypet%i", i)) then
-        n, s = UnitName(format("party%i", i))
-        if s then
-          return n .. "-" .. s
-        else
-          return n
+      else
+        if petguid == UnitGUID(format("partypet%i", i)) then
+          n, s = UnitName(format("party%i", i))
+          if s then
+            return n .. "-" .. s
+          else
+            return n
+          end
         end
       end
     end
@@ -1367,13 +1369,14 @@ local function getPetOwnerGUID(petguid)
     return UnitGUID("player")
   else
     for i = 1, GetNumGroupMembers() do
-      if petguid == UnitGUID(format("raidpet%i", i)) then
-        return UnitGUID(format("raid%i", i))
-      end
-    end
-    for i = 1, GetNumSubgroupMembers() do
-      if petguid == UnitGUID(format("partypet%i", i)) then
-        return UnitGUID(format("party%i", i))
+      if IsInRaid() then
+        if petguid == UnitGUID(format("raidpet%i", i)) then
+          return UnitGUID(format("raid%i", i))
+        end
+      else
+        if petguid == UnitGUID(format("partypet%i", i)) then
+          return UnitGUID(format("party%i", i))
+        end
       end
     end
   end
@@ -1384,13 +1387,14 @@ local function isPartyPet(petguid)
     return true
   else
     for i = 1, GetNumGroupMembers() do
-      if petguid == UnitGUID(format("raidpet%i", i)) then
-        return true
-      end
-    end
-    for i = 1, GetNumSubgroupMembers() do
-      if petguid == UnitGUID(format("partypet%i", i)) then
-        return true
+      if IsInRaid() then
+        if petguid == UnitGUID(format("raidpet%i", i)) then
+          return true
+        end
+      else
+        if petguid == UnitGUID(format("partypet%i", i)) then
+          return true
+        end
       end
     end
   end
@@ -2412,11 +2416,11 @@ tdpsAnchor:RegisterEvent("UPDATE_WORLD_STATES")
 
 tdpsAnchor:SetScript("OnEvent", function(self, event, ...)
   visibilityEvent()
-  if event == groupEvent then
-    if tdps.autoReset and tdpsPartySize == 0 and math.max(GetNumSubgroupMembers(), GetNumGroupMembers()) > 0 then
+  if event == "GROUP_ROSTER_UPDATE" then
+    if tdps.autoReset and tdpsPartySize == 0 and IsInGroup() then
       reset()
     end
-    tdpsPartySize = math.max(GetNumSubgroupMembers(), GetNumGroupMembers())
+    tdpsPartySize = GetNumGroupMembers()
   end
 end)
 
