@@ -776,7 +776,9 @@ local pairs, ipairs, type = pairs, ipairs, type
 local strsub, strsplit, format = strsub, strsplit, format
 local UnitName, UnitGUID, UnitClass = UnitName, UnitGUID, UnitClass
 local UnitIsPlayer, UnitAffectingCombat = UnitIsPlayer, UnitAffectingCombat
-local IsInRaid, IsInGroup, GetNumGroupMembers = IsInRaid, IsInGroup, GetNumGroupMembers
+local IsInInstance, IsInRaid, IsInGroup = IsInInstance, IsInRaid, IsInGroup
+local GetNumGroupMembers, GetWorldPVPAreaInfo = GetNumGroupMembers, GetWorldPVPAreaInfo
+local GetCurrentMapAreaID, SetMapByID, SetMapToCurrentZone = GetCurrentMapAreaID, SetMapByID, SetMapToCurrentZone
 
 -- some random functions
 local function round(num, idp)
@@ -791,12 +793,27 @@ local function getClass(name)
   return select(2, UnitClass(name)) or "UNKNOWN"
 end
 
-local function isPvpZone()
-  if select(2, IsInInstance()) == "pvp"
-  or select(2, IsInInstance()) == "arena"
-  or GetCurrentMapAreaID() == 501 and select(3, GetWorldPVPAreaInfo(1)) -- Wintergrasp (only during a battle)
-  or GetCurrentMapAreaID() == 708 and select(3, GetWorldPVPAreaInfo(2)) -- Tol Barad (only during a battle)
-  then
+-- this is how GetCurrentMapAreaID() should work
+local function getCurrentMapAreaID()
+	local mapAreaID
+	if WorldFrame:IsVisible() then
+		local currentMapAreaID = GetCurrentMapAreaID()
+		SetMapToCurrentZone()
+		mapAreaID = GetCurrentMapAreaID()
+		SetMapByID(currentMapAreaID)
+	else
+		mapAreaID = GetCurrentMapAreaID()
+	end
+	return mapAreaID
+end
+
+local function isPvPZone()
+  local mapAreaID = getCurrentMapAreaID()
+  local _, instanceType = IsInInstance()
+  local _, _, isActiveWintergrasp = GetWorldPVPAreaInfo(1)
+  local _, _, isActiveTolBarad = GetWorldPVPAreaInfo(2)
+  if instanceType == "pvp" or instanceType == "arena" or (mapAreaID == 501 and isActiveWintergrasp) or (mapAreaID == 708
+  and isActiveTolBarad) then
     return true
   end
 end
@@ -880,7 +897,7 @@ local function report(button, channel, playername)
 end
 
 local function visibilityEvent()
-  if (tdps.hidePvP and isPvpZone())
+  if (tdps.hidePvP and isPvPZone())
   or (tdps.hideSolo and not IsInGroup())
   or (tdps.hideOOC and not UnitAffectingCombat("player"))
   or (tdps.hideIC and UnitAffectingCombat("player")) then
