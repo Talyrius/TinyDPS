@@ -795,16 +795,14 @@ end
 
 -- this is how GetCurrentMapAreaID() should work
 local function getCurrentMapAreaID()
-	local mapAreaID
-	if WorldFrame:IsVisible() then
-		local currentMapAreaID = GetCurrentMapAreaID()
-		SetMapToCurrentZone()
-		mapAreaID = GetCurrentMapAreaID()
-		SetMapByID(currentMapAreaID)
-	else
-		mapAreaID = GetCurrentMapAreaID()
-	end
-	return mapAreaID
+  if WorldMapFrame:IsShown() then
+    local viewing = GetCurrentMapAreaID()
+    SetMapToCurrentZone()
+    local current = GetCurrentMapAreaID()
+    SetMapByID(viewing)
+    return current
+  end
+  return GetCurrentMapAreaID()
 end
 
 local function isPvPZone()
