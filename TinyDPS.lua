@@ -28,6 +28,7 @@ if GetLocale() == "koKR" then
   tdpsL.top5 = "상위 5"
   tdpsL.top10 = "상위 10"
   tdpsL.say = "일반"
+  tdpsL.instance = "인스턴스"
   tdpsL.raid = "공격대"
   tdpsL.party = "파티"
   tdpsL.guild = "길드"
@@ -137,6 +138,7 @@ elseif GetLocale() == "ruRU" then
   tdpsL.top5 = "Top 5"
   tdpsL.top10 = "Top 10"
   tdpsL.say = "Сказать"
+  tdpsL.instance = "Подземелье"
   tdpsL.raid = "Рейд"
   tdpsL.party = "Группа"
   tdpsL.guild = "Гильдия"
@@ -246,6 +248,7 @@ elseif GetLocale() == "deDE" then
   tdpsL.top5 = "Top 5"
   tdpsL.top10 = "Top 10"
   tdpsL.say = "Sagen"
+  tdpsL.instance = "Instanz"
   tdpsL.raid = "Schlachtzug"
   tdpsL.party = "Gruppe"
   tdpsL.guild = "Gilde"
@@ -355,6 +358,7 @@ else
   tdpsL.top5 = "Top 5"
   tdpsL.top10 = "Top 10"
   tdpsL.say = "Say"
+  tdpsL.instance = "Instance"
   tdpsL.raid = "Raid"
   tdpsL.party = "Party"
   tdpsL.guild = "Guild"
@@ -1565,6 +1569,7 @@ tdpsDropDown.initialize = function(self, level)
     newBu(level, "     " .. tdpsL.resetAllData, nil, 1, nil, nil, nil, reset)
   elseif level == 2 and UIDROPDOWNMENU_MENU_VALUE == "report" then
     newBu(level, tdpsL.say, nil, 1, nil, nil, nil, report, "SAY")
+    newBu(level, tdpsL.instance, nil, 1, nil, nil, nil, report, "INSTANCE_CHAT")
     newBu(level, tdpsL.raid, nil, 1, nil, nil, nil, report, "RAID")
     newBu(level, tdpsL.party, nil, 1, nil, nil, nil, report, "PARTY")
     newBu(level, tdpsL.guild, nil, 1, nil, nil, nil, report, "GUILD")
