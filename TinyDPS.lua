@@ -364,12 +364,12 @@ elseif GetLocale() == "frFR" then
   tdpsL.guild = "Guilde"
   tdpsL.officer = "Officer"
   tdpsL.whisper = "Chuchoter à la cible"
-  tdpsL.whisper2 = "Chuchoter <Name>"
+  tdpsL.whisper2 = "Chuchoter <Nom>"
   tdpsL.channel = "Canal"
 
   tdpsL.options = "Options"
   tdpsL.text = "Texte"
-  tdpsL.size = "taille"
+  tdpsL.size = "Taille"
   tdpsL.increase = "Agrandir"
   tdpsL.decrease = "Réduire"
   tdpsL.font = "Fonte"
@@ -379,25 +379,25 @@ elseif GetLocale() == "frFR" then
 
   tdpsL.dps = "DPS"
   tdpsL.rank = "Classement"
-  tdpsL.percent = "Pour cent"
+  tdpsL.percent = "Pourcentage"
   tdpsL.amount = "Quantité"
   tdpsL.short = "Format court"
   tdpsL.none = "Aucun"
   tdpsL.thin = "Mince"
-  tdpsL.thick = "épais"
+  tdpsL.thick = "Épais"
   tdpsL.shadow = "Ombre"
   tdpsL.mono = "Monochrome"
 
   tdpsL.bars = "Bars"
   tdpsL.height = "Hauteur"
   tdpsL.spacing = "Espacement"
-  tdpsL.maximum = "barres visibles"
-  tdpsL.oneYourself = "1 (vous-même)"
+  tdpsL.maximum = "Barres visibles"
+  tdpsL.oneYourself = "1 (Vous-même)"
   tdpsL.five = "5"
   tdpsL.ten = "10"
   tdpsL.fifteen = "15"
   tdpsL.twenty = "20"
-  tdpsL.unlimited = "? (illimité)"
+  tdpsL.unlimited = "? (Illimité)"
 
   tdpsL.colors = "Couleurs"
   tdpsL.barBackdrop = "Bar fond"
@@ -405,12 +405,12 @@ elseif GetLocale() == "frFR" then
   tdpsL.frameBackdrop = "Fond de la fenêtre"
   tdpsL.dimClassColors = "Couleurs sombres de classe"
   tdpsL.resetClassColors = "Réinitialiser les couleurs de classe"
-  tdpsL.swapBarTextColor = "échanger bar/Couleur du texte"
+  tdpsL.swapBarTextColor = "Changer la bar/Couleur du texte"
 
   tdpsL.history = "      %i  Combats historiques"
-  tdpsL.keepOnlyBossFights = "Garde seulement les combats de boss"
+  tdpsL.keepOnlyBossFights = "Garde seulement les combats des boss"
 
-  tdpsL.various = "divers"
+  tdpsL.various = "Divers"
   tdpsL.hideAlways = "Toujours cacher"
   tdpsL.hideInPvP = "Cacher en PvP"
   tdpsL.hideWhenSolo = "Cacher en mode solo"
@@ -419,41 +419,41 @@ elseif GetLocale() == "frFR" then
   tdpsL.growUpwards = "Direction vers le haut"
   tdpsL.minimapButton = "Bouton sur la Minicarte"
   tdpsL.trackSpellDetails = "Suivre les détails des sorts"
-  tdpsL.resetOnNewGroup = "Réinitialiser Le nouveau groupe"
+  tdpsL.resetOnNewGroup = "Réinitialiser le nouveau groupe"
   tdpsL.refreshEverySecond = "Rafraîchir Chaque Seconde"
 
-  tdpsL.spells = "      %i  Sorts dans les info-bulles"
-  tdpsL.targets = "      %i  Objectifs dans les info-bulles"
+  tdpsL.spells = "      %i  Sorts dans les infobulles"
+  tdpsL.targets = "      %i  Objectifs dans les infobulles"
 
   tdpsL.close = "Annuler"
-  tdpsL.empty = "<vide>"
+  tdpsL.empty = "<Vide>"
 
   tdpsL.helpVersion = "Version"
-  tdpsL.helpMove = "Déplacer: maintenez la touche Maj et faites glisser le cadre"
-  tdpsL.helpResize = "Redimensionner: faites glisser le coin inférieur droit"
-  tdpsL.helpToggle = "Commande: taper /tdps pour masquer ou afficher"
-  tdpsL.helpParameters1 = "/tdps help | reset | damage | healing | whisper <name>"
-  tdpsL.helpParameters2 = "/tdps visiblebars <number> | reportlength <number>"
+  tdpsL.helpMove = "Pour déplacer: Maintenez la touche Maj et faites glisser le cadre"
+  tdpsL.helpResize = "Redimensionner: Faites glisser le coin inférieur droit"
+  tdpsL.helpToggle = "Commande: Taper '/tdps' pour masquer ou afficher"
+  tdpsL.helpParameters1 = "/tdps help | reset | damage | healing | whisper <nom>"
+  tdpsL.helpParameters2 = "/tdps visiblebars <nombre> | reportlength <nombre>"
 
-  tdpsL.allClear = "Toutes les données ont été réinitialisés"
+  tdpsL.allClear = "Toutes les données ont été réinitialisées"
   tdpsL.personal = "Personnel"
   tdpsL.byPets = "Par Pet(s)"
-  tdpsL.topAbilities = "Compétences de haut niveau"
-  tdpsL.topTargets = "Cibles principales"
+  tdpsL.topAbilities = "Capacités utilisées le plus en combat"
+  tdpsL.topTargets = "Tes cibles principales"
 
   tdpsL.noTarget = "Cible non valide ou non sélectionné"
-  tdpsL.noData = "Aucune donnée à signaler"
+  tdpsL.noData = "Aucune donnée à afficher pour le moment"
 
   tdpsL.tipPrefix = {
-    d = "dommage pour",
-    h = "Soins pour",
+    d = "Donnée des dommages pour",
+    h = "Données des soins pour",
   }
   tdpsL.repPrefix = {
     d = "Dommages causés par",
     h = "Soins causés par",
   }
   tdpsL.overallData = "Les données globales"
-  tdpsL.currentFight = "Combat actuel"
+  tdpsL.currentFight = "Le combat actuel"
   tdpsL.lastFight = "Le dernier combat"
   tdpsL.melee = "Mêlée"
 else
