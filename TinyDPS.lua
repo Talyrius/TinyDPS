@@ -2305,6 +2305,10 @@ local function tdpsCombatEvent(self, event, ...)
   if arg6 % 8 == 0 then
     return
   end
+  -- give units a name if they don't have one to prevent errors
+  if not arg9 then
+    arg9 = NONE
+  end
 
   -- track absorbs
   if arg2 == "SPELL_AURA_APPLIED" and arg10 % 8 > 0 and isAbsorb[arg12] then
