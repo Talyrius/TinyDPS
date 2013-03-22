@@ -1383,7 +1383,7 @@ local function startNewFight(target, mobid)
   tdps.onlyBossSegments) then
     tinsert(tdpsFight, 2, {
       name = target or "?",
-      boss = isBoss[tonumber(mobid:sub(7, 10), 16)],
+      boss = isBoss[tonumber(mobid:sub(6, 10), 16)],
       d = 0,
       h = 0,
     })
@@ -1413,7 +1413,7 @@ local function startNewFight(target, mobid)
   else
     tdpsFight[2] = {
       name = target or "?",
-      boss = isBoss[tonumber(mobid:sub(7, 10), 16)],
+      boss = isBoss[tonumber(mobid:sub(6, 10), 16)],
       d = 0,
       h = 0,
     }
@@ -2342,7 +2342,7 @@ local function tdpsCombatEvent(self, event, ...)
 
   -- create summoned pets
   if arg2 == "SPELL_SUMMON" then
-    if UnitIsPlayer(arg5) and not isExcludedPet[tonumber(arg8:sub(7, 10), 16)] then -- add pet when player summons
+    if UnitIsPlayer(arg5) and not isExcludedPet[tonumber(arg8:sub(6, 10), 16)] then -- add pet when player summons
       -- make owner if necessary
       if not tdpsPlayer[arg4] then
         makeCombatant(arg4, arg5, {arg5 .. ": " .. arg9}, getClass(arg5))
