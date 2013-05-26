@@ -456,6 +456,117 @@ elseif GetLocale() == "frFR" then
   tdpsL.currentFight = "Le combat actuel"
   tdpsL.lastFight = "Le dernier combat"
   tdpsL.melee = "Mêlée"
+elseif GetLocale() == "itIT" then
+  tdpsL.fight = "Scontro"
+  tdpsL.allFight = "Totale di tutti gli scontri (Overall Data)"
+  tdpsL.current = "Corrente"
+  tdpsL.resetAllData = "Riazzera tutti i dati"
+  tdpsL.showDamage = "Mostra i danni"
+  tdpsL.showHealing = "Mostra le cure"
+
+  tdpsL.report = "Riporta"
+  tdpsL.top3 = "Migliori 3"
+  tdpsL.top5 = "Migliori 5"
+  tdpsL.top10 = "Migliori 10"
+  tdpsL.say = "Dici"
+  tdpsL.instance = "Istance"
+  tdpsL.raid = "Incursione"
+  tdpsL.party = "Gruppo"
+  tdpsL.guild = "Gilda"
+  tdpsL.officer = "Ufficiali"
+  tdpsL.whisper = "Sussurro al bersaglio"
+  tdpsL.whisper2 = "Sussurro a <Nome>"
+  tdpsL.channel = "Canale"
+
+  tdpsL.options = "Opzioni"
+  tdpsL.text = "Testo"
+  tdpsL.size = "Dimensioni"
+  tdpsL.increase = "Ingrandisci"
+  tdpsL.decrease = "Rimpicciolisci"
+  tdpsL.font = "Carattere"
+  tdpsL.layout = "Disposizione"
+  tdpsL.outline = "Contorno"
+  tdpsL.nudge = "Avvio"
+
+  tdpsL.dps = "DPS"
+  tdpsL.rank = "Rango"
+  tdpsL.percent = "Percentuale"
+  tdpsL.amount = "Ammontare"
+  tdpsL.short = "Formato abbreviato"
+  tdpsL.none = "Nessuno"
+  tdpsL.thin = "Leggero"
+  tdpsL.thick = "Pesante"
+  tdpsL.shadow = "Ombreggiato"
+  tdpsL.mono = "Monocromatico"
+
+  tdpsL.bars = "Barre"
+  tdpsL.height = "Altezza"
+  tdpsL.spacing = "Spaziatura"
+  tdpsL.maximum = "Barre visibili"
+  tdpsL.oneYourself = "1 (Te stesso)"
+  tdpsL.five = "5"
+  tdpsL.ten = "10"
+  tdpsL.fifteen = "15"
+  tdpsL.twenty = "20"
+  tdpsL.unlimited = "? (Illimitate)"
+
+  tdpsL.colors = "Colori"
+  tdpsL.barBackdrop = "Sfondo delle barre"
+  tdpsL.frameBorder = "Bordo del riquadro"
+  tdpsL.frameBackdrop = "Sfondo del riquadro"
+  tdpsL.dimClassColors = "Scurisci i colori delle classi"
+  tdpsL.resetClassColors = "Ripristina i colori delle classi"
+  tdpsL.swapBarTextColor = "Scambia il colore tra barra e testo"
+
+  tdpsL.history = "      %i Storico degli scontri"
+  tdpsL.keepOnlyBossFights = "Conserva solo gli scontri contro un boss"
+
+  tdpsL.various = "Varie"
+  tdpsL.hideAlways = "Nascondi sempre"
+  tdpsL.hideInPvP = "Nascondi in PvP"
+  tdpsL.hideWhenSolo = "Nascondi in solitaria"
+  tdpsL.hideInCombat = "Nascondi in combattimento"
+  tdpsL.hideOutOfCombat = "Nascondi fuori dal combattimento"
+  tdpsL.growUpwards = "Sviluppa verso l'alto"
+  tdpsL.minimapButton = "Pulsante della minimappa"
+  tdpsL.trackSpellDetails = "Traccia i dettagli degli incantesimi"
+  tdpsL.resetOnNewGroup = "Riazzera con un nuovo gruppo"
+  tdpsL.refreshEverySecond = "Aggiorna ogni secondo"
+
+  tdpsL.spells = "      %i Incantesimi nei suggerimenti"
+  tdpsL.targets = "      %i Bersagli nei suggerimenti"
+
+  tdpsL.close = "Cancella"
+  tdpsL.empty = "<Vuoto>"
+
+  tdpsL.helpVersion = "Versione"
+  tdpsL.helpMove = "muovi: tieni premuto shift e trascina il riquadro"
+  tdpsL.helpResize = "ridimensiona: trascina l'angolo destro in basso"
+  tdpsL.helpToggle = "visibilità: digita /tdps per nascondere o visualizzare"
+  tdpsL.helpParameters1 = "/tdps help | reset | damage | healing | whisper <nome>"
+  tdpsL.helpParameters2 = "/tdps visiblebars <numero> | reportlength <numero>"
+
+  tdpsL.allClear = "Tutti i dati sono stati azzerati"
+  tdpsL.personal = "Personale"
+  tdpsL.byPets = "Famigli"
+  tdpsL.topAbilities = "Abilità migliori"
+  tdpsL.topTargets = "Bersagli migliori"
+
+  tdpsL.noTarget = "Bersaglio invalido o non selezionato"
+  tdpsL.noData = "Nessun dato da riportare"
+
+  tdpsL.tipPrefix = {
+    d = "Danno per",
+    h = "Cura per",
+  }
+  tdpsL.repPrefix = {
+    d = "Danno fatto per",
+    h = "Cura fatta per",
+  }
+  tdpsL.overallData = "dati complessivi"
+  tdpsL.currentFight = "scontro corrente"
+  tdpsL.lastFight = "ultimo scontro"
+  tdpsL.melee = "mischia"
 else
   tdpsL.fight = "Fight"
   tdpsL.allFight = "Overall     All Fights"
