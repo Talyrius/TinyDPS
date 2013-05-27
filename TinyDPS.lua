@@ -1918,12 +1918,18 @@ tdpsDropDown.initialize = function(self, level)
       tdps.hideSolo = not tdps.hideSolo
       visibilityEvent()
     end, nil, nil, tdps.hideSolo, nil, 1)
-    newBu(level, tdpsL.hideInCombat, nil, nil, nil, nil, 1, function()
+    newBu(level, tdpsL.hideInCombat, nil, nil, nil, nil, 1, function(self)
       tdps.hideIC = not tdps.hideIC
+      if tdps.hideIC and tdps.hideOOC then
+        _G[gsub(self:GetName(), "%d$", strmatch(self:GetName(), "%d$") + 1)]:Click()
+      end
       visibilityEvent()
     end, nil, nil, tdps.hideIC, nil, 1)
-    newBu(level, tdpsL.hideOutOfCombat, nil, nil, nil, nil, 1, function()
+    newBu(level, tdpsL.hideOutOfCombat, nil, nil, nil, nil, 1, function(self)
       tdps.hideOOC = not tdps.hideOOC
+      if tdps.hideOOC and tdps.hideIC then
+        _G[gsub(self:GetName(), "%d$", strmatch(self:GetName(), "%d$") - 1)]:Click()
+      end
       visibilityEvent()
     end, nil, nil, tdps.hideOOC, nil, 1)
     newBu(level, "", nil, 1, nil, nil, nil, nil, nil, nil, nil, 1)
