@@ -1919,7 +1919,7 @@ tdpsDropDown.initialize = function(self, level)
       visibilityEvent()
     end, nil, nil, tdps.hideSolo, nil, 1)
     newBu(level, tdpsL.hideInCombat, nil, nil, nil, nil, 1, function()
-      tdps.hideIC = not tdps.hideOOC
+      tdps.hideIC = not tdps.hideIC
       visibilityEvent()
     end, nil, nil, tdps.hideIC, nil, 1)
     newBu(level, tdpsL.hideOutOfCombat, nil, nil, nil, nil, 1, function()
