@@ -1059,21 +1059,22 @@ local function nudgeText()
   end
 end
 
-local function report(button, channel, playername)
+local function report(button, channel, playerName)
   if type(channel) == "number" then
     destination = channel
     channel = "CHANNEL"
   end
 
   if channel == "WHISPER" then
-    if not playername then
-      destination = GetUnitName("target", true):gsub(" ", "")
-      if not UnitIsPlayer(destination) or not UnitCanCooperate("player", destination) then
+    if not playerName then
+      if UnitIsPlayer("target") and UnitCanCooperate("player", "target") then
+        destination = GetUnitName("target", true)
+      else
         echo(tdpsL.noTarget)
         return
       end
     else
-      destination = playername
+      destination = playerName
     end
   end
 
