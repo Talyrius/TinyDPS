@@ -1,4 +1,4 @@
-Copyright © 2010-2013 Sideshow, Talyrius <talyrius@gmail.com>.
+﻿Copyright © 2010-2014 Sideshow, Talyrius <talyrius@gmail.com>.
 
 All rights reserved.
 
