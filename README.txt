@@ -11,7 +11,7 @@
     `help` or `?`, `reset` or `r`, `damage` or `d`, `healing` or `h`, `visiblebars <number>`, `whisper <name>`, `reportlength <number>`
 
 ## Known Issues and Limitations ##
-  * New spells and abilities introduced in patch 5.0 may not all be tracked correctly yet. Submit a bug report if you encounter such an omission.
+  * New spells and abilities may not be tracked correctly yet. Submit a bug report if you encounter such an omission.
 
 #### Intended behavior: ####
   * Vehicle/mounted combat data is ignored.

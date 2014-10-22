@@ -997,7 +997,7 @@ tdpsDropDown.displayMode = "MENU"
 ------------------------------------------------------------------------------------------------------------------------
 
 -- make local copy of global functions (faster)
-local tonumber, select, band = tonumber, select, bit.band
+local tonumber, band = tonumber, bit.band
 local floor, abs = floor, abs
 local sort, tremove, tinsert, wipe = sort, tremove, tinsert, wipe
 local pairs, ipairs, type = pairs, ipairs, type
@@ -1014,11 +1014,12 @@ local function round(num, idp)
 end
 
 local function echo(str)
-  print("|cfffef00fTinyDPS |cff82e2eb" .. (str or ""))
+  print("|cfffef00fTinyDPS |cff82e2eb"..(str or ""))
 end
 
 local function getClass(name)
-  return select(2, UnitClass(name)) or "UNKNOWN"
+  local _, class = UnitClass(name)
+  return class or "UNKNOWN"
 end
 
 -- this is how GetCurrentMapAreaID() should work
@@ -1215,7 +1216,8 @@ local textLayout = {
 
 function tdpsRefresh()
   maxValue, barsWithValue = 0, 0
-  local n, t, h, p, g -- amount, time, height, pet, text, guid
+  -- amount, time, height, pet, text, guid
+  local n, t, h, p, g
 
   -- update all bar values
   for i = 1, #bar do
@@ -1409,7 +1411,7 @@ local function changeBarSpacing(button)
   else
     tdps.spacing = tdps.spacing + 1
   end
-  button:SetText(tdpsL.spacing .. ": " .. tdps.spacing)
+  button:SetText(tdpsL.spacing..": "..tdps.spacing)
   tdpsRefresh()
 end
 
@@ -1483,7 +1485,8 @@ local function changeBarBackdropColor()
   end
 end
 
-local function startNewFight(target, mobid)
+local function startNewFight(target, GUID)
+  local _, _, _, _, _, id = strsplit("-", GUID)
   tdpsStartNewFight = false
   tdpsInCombat = true
   if tdpsF ~= 1 then
@@ -1495,7 +1498,7 @@ local function startNewFight(target, mobid)
   tdps.onlyBossSegments) then
     tinsert(tdpsFight, 2, {
       name = target or "?",
-      boss = isBoss[tonumber(mobid:sub(6, 10), 16)],
+      boss = isBoss[tonumber(id)],
       d = 0,
       h = 0,
     })
@@ -1520,12 +1523,11 @@ local function startNewFight(target, mobid)
       })
       tremove(v.fight)
     end
-
-    -- reset current fight
+  -- reset current fight
   else
     tdpsFight[2] = {
       name = target or "?",
-      boss = isBoss[tonumber(mobid:sub(6, 10), 16)],
+      boss = isBoss[tonumber(id)],
       d = 0,
       h = 0,
     }
@@ -1574,31 +1576,31 @@ local function checkCombat()
   tdpsInCombat = false
 end
 
-local function getPetOwnerName(petguid)
+local function getPetOwnerName(petGUID)
   local n, s
-  if petguid == UnitGUID("pet") then
+  if petGUID == UnitGUID("pet") then
     n, s = UnitName("player")
     if s then
-      return n .. "-" .. s
+      return n.."-"..s
     else
       return n
     end
   else
     for i = 1, GetNumGroupMembers() do
       if IsInRaid() then
-        if petguid == UnitGUID(format("raidpet%i", i)) then
+        if petGUID == UnitGUID(format("raidpet%i", i)) then
           n, s = UnitName(format("raid%i", i))
           if s then
-            return n .. "-" .. s
+            return n.."-"..s
           else
             return n
           end
         end
       else
-        if petguid == UnitGUID(format("partypet%i", i)) then
+        if petGUID == UnitGUID(format("partypet%i", i)) then
           n, s = UnitName(format("party%i", i))
           if s then
-            return n .. "-" .. s
+            return n.."-"..s
           else
             return n
           end
@@ -1608,17 +1610,17 @@ local function getPetOwnerName(petguid)
   end
 end
 
-local function getPetOwnerGUID(petguid)
-  if petguid == UnitGUID("pet") then
+local function getPetOwnerGUID(petGUID)
+  if petGUID == UnitGUID("pet") then
     return UnitGUID("player")
   else
     for i = 1, GetNumGroupMembers() do
       if IsInRaid() then
-        if petguid == UnitGUID(format("raidpet%i", i)) then
+        if petGUID == UnitGUID(format("raidpet%i", i)) then
           return UnitGUID(format("raid%i", i))
         end
       else
-        if petguid == UnitGUID(format("partypet%i", i)) then
+        if petGUID == UnitGUID(format("partypet%i", i)) then
           return UnitGUID(format("party%i", i))
         end
       end
@@ -1626,17 +1628,17 @@ local function getPetOwnerGUID(petguid)
   end
 end
 
-local function isPartyPet(petguid)
-  if petguid == UnitGUID("pet") then
+local function isPartyPet(petGUID)
+  if petGUID == UnitGUID("pet") then
     return true
   else
     for i = 1, GetNumGroupMembers() do
       if IsInRaid() then
-        if petguid == UnitGUID(format("raidpet%i", i)) then
+        if petGUID == UnitGUID(format("raidpet%i", i)) then
           return true
         end
       else
-        if petguid == UnitGUID(format("partypet%i", i)) then
+        if petGUID == UnitGUID(format("partypet%i", i)) then
           return true
         end
       end
@@ -1655,7 +1657,7 @@ local function toggleMinimapButton()
 end
 
 local function ver()
-  echo(tdpsL.helpVersion .. " " .. GetAddOnMetadata("TinyDPS", "Version") .. " by Sideshow (formerly) and Talyrius")
+  echo(tdpsL.helpVersion.." "..GetAddOnMetadata("TinyDPS", "Version").." by Sideshow (formerly) and Talyrius")
 end
 
 local function slashhelp()
@@ -1665,9 +1667,9 @@ end
 
 local function help()
   ver()
-  echo("- " .. tdpsL.helpMove)
-  echo("- " .. tdpsL.helpResize)
-  echo("- " .. tdpsL.helpToggle)
+  echo("- "..tdpsL.helpMove)
+  echo("- "..tdpsL.helpResize)
+  echo("- "..tdpsL.helpToggle)
   slashhelp()
 end
 
@@ -1725,22 +1727,22 @@ end
 
 SLASH_TINYDPS1, SLASH_TINYDPS2 = "/tinydps", "/tdps"
 function SlashCmdList.TINYDPS(msg, editbox)
-  msg = strlower(msg)
-  if msg == "reset" or msg == "r" then
+  local cmd, arg = strsplit(" ", strlower(msg))
+  if cmd == "reset" or cmd == "r" then
     reset()
-  elseif msg == "damage" or msg == "d" then
+  elseif cmd == "damage" or cmd == "d" then
     changeView(nil, "d")
-  elseif msg == "healing" or msg == "h" then
+  elseif cmd == "healing" or cmd == "h" then
     changeView(nil, "h")
-  elseif strsplit(" ", msg) == "reportlength" and tonumber(select(2, strsplit(" ", msg))) then
-    tdpsReportLength = min(40, max(1, tonumber(select(2, strsplit(" ", msg)))))
-  elseif strsplit(" ", msg) == "visiblebars" and tonumber(select(2, strsplit(" ", msg))) then
-    tdpsVisibleBars = min(40, max(1, tonumber(select(2, strsplit(" ", msg))))) scrollPos = 1 tdpsRefresh()
-  elseif strsplit(" ", msg) == "whisper" and select(2, strsplit(" ", msg)) then
-    report(nil, "WHISPER", select(2, strsplit(" ", msg)))
-  elseif msg == "help" or msg == "?" then
+  elseif cmd == "reportlength" and tonumber(arg) then
+    tdpsReportLength = min(40, max(1, tonumber(arg)))
+  elseif cmd == "visiblebars" and tonumber(arg) then
+    tdpsVisibleBars = min(40, max(1, tonumber(arg))) scrollPos = 1 tdpsRefresh()
+  elseif cmd == "whisper" and arg then
+    report(nil, "WHISPER", arg)
+  elseif cmd == "help" or cmd == "?" then
     help()
-  elseif msg == "" then
+  elseif cmd == "" then
     toggle()
   else
     slashhelp()
@@ -1776,7 +1778,7 @@ tdpsDropDown.initialize = function(self, level)
     newBu(level, tdpsL.close, nil, 1)
   elseif level == 2 and UIDROPDOWNMENU_MENU_VALUE == "fight" then
     newBu(level, tdpsL.allFight, nil, nil, nil, nil, nil, changeFight, 1, nil, checkFight(1))
-    newBu(level, tdpsL.current .. "    " .. (tdpsFight[2].name or tdpsL.empty), nil, nil, nil, nil, nil, changeFight, 2,
+    newBu(level, tdpsL.current.."    "..(tdpsFight[2].name or tdpsL.empty), nil, nil, nil, nil, nil, changeFight, 2,
     nil, checkFight(2))
     if tdpsNumberOfFights > 2 then
       newBu(level, "", nil, 1, nil, nil, nil, nil, nil, nil, nil, 1)
@@ -1789,7 +1791,7 @@ tdpsDropDown.initialize = function(self, level)
     newBu(level, tdpsL.showDamage, nil, nil, nil, nil, nil, changeView, "d", nil, checkView("d"))
     newBu(level, tdpsL.showHealing, nil, nil, nil, nil, nil, changeView, "h", nil, checkView("h"))
     newBu(level, "", nil, 1, nil, nil, nil, nil, nil, nil, nil, 1)
-    newBu(level, "     " .. tdpsL.resetAllData, nil, 1, nil, nil, nil, reset)
+    newBu(level, "     "..tdpsL.resetAllData, nil, 1, nil, nil, nil, reset)
   elseif level == 2 and UIDROPDOWNMENU_MENU_VALUE == "report" then
     newBu(level, tdpsL.say, nil, 1, nil, nil, nil, report, "SAY")
     newBu(level, tdpsL.instance, nil, 1, nil, nil, nil, report, "INSTANCE_CHAT")
@@ -1803,14 +1805,15 @@ tdpsDropDown.initialize = function(self, level)
       DEFAULT_CHAT_FRAME.editBox:SetText("/tdps whisper ")
     end)
     for i = 1, 20 do
-      if select(2, GetChannelName(i)) then
-        newBu(level, select(2, GetChannelName(i)) .. "     ", nil, 1, nil, nil, nil, report, i)
+      local _, name = GetChannelName(i)
+      if name then
+        newBu(level, name.."     ", nil, 1, nil, nil, nil, report, i)
       end
     end
     newBu(level, "", nil, 1, nil, nil, nil, nil, nil, nil, nil, 1)
-    newBu(level, "Report Length: " .. tdpsReportLength, nil, 1, nil, nil, nil, function()
+    newBu(level, "Report Length: "..tdpsReportLength, nil, 1, nil, nil, nil, function()
       ChatEdit_ActivateChat(DEFAULT_CHAT_FRAME.editBox)
-      DEFAULT_CHAT_FRAME.editBox:SetText("/tdps reportlength " .. tdpsReportLength)
+      DEFAULT_CHAT_FRAME.editBox:SetText("/tdps reportlength "..tdpsReportLength)
     end)
   elseif level == 2 and UIDROPDOWNMENU_MENU_VALUE == "options" then
     newBu(level, tdpsL.text, nil, 1, 1, "text", 1)
@@ -1825,10 +1828,10 @@ tdpsDropDown.initialize = function(self, level)
     newBu(level, format(tdpsL.nudge, tdpsTextOffset), nil, 1, nil, nil, 1, nudgeText)
   elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == "bars" then
     newBu(level, tdpsL.height, nil, 1, 1, "height", 1)
-    newBu(level, tdpsL.spacing .. ": " .. tdps.spacing, nil, 1, nil, nil, 1, changeBarSpacing)
-    newBu(level, tdpsL.maximum .. ": " .. tdpsVisibleBars, nil, 1, nil, nil, nil, function()
+    newBu(level, tdpsL.spacing..": "..tdps.spacing, nil, 1, nil, nil, 1, changeBarSpacing)
+    newBu(level, tdpsL.maximum..": "..tdpsVisibleBars, nil, 1, nil, nil, nil, function()
       ChatEdit_ActivateChat(DEFAULT_CHAT_FRAME.editBox)
-      DEFAULT_CHAT_FRAME.editBox:SetText("/tdps visiblebars " .. tdpsVisibleBars)
+      DEFAULT_CHAT_FRAME.editBox:SetText("/tdps visiblebars "..tdpsVisibleBars)
     end)
   elseif level == 3 and UIDROPDOWNMENU_MENU_VALUE == "colors" then
     local st
@@ -1901,7 +1904,7 @@ tdpsDropDown.initialize = function(self, level)
       tdpsColorAlpha = 1
       changeBarColor()
     end)
-    newBu(level, tdpsL.swapBarTextColor .. "     ", nil, 1, nil, nil, 1, function()
+    newBu(level, tdpsL.swapBarTextColor.."     ", nil, 1, nil, nil, 1, function()
       tdps.swapColor = not tdps.swapColor
       if tdps.swapColor then
         DropDownList3Button1:SetText(tdpsL.text)
@@ -2211,8 +2214,8 @@ local function newBar(g)
     end
 
     -- own amount
-    GameTooltip:AddDoubleLine(tdpsL.personal, tdpsPlayer[self.guid].fight[tdpsF][tdpsV] .. " (" ..
-    round(tdpsPlayer[self.guid].fight[tdpsF][tdpsV] / (self.n) * 100, 0) .. "%)", 1, 1, 1, 1, 1, 1)
+    GameTooltip:AddDoubleLine(tdpsL.personal, tdpsPlayer[self.guid].fight[tdpsF][tdpsV].." (" ..
+    round(tdpsPlayer[self.guid].fight[tdpsF][tdpsV] / (self.n) * 100, 0).."%)", 1, 1, 1, 1, 1, 1)
 
     -- pet amount
     local pet, petAmount = tdpsPlayer[g].pet, 0
@@ -2220,20 +2223,20 @@ local function newBar(g)
       petAmount = petAmount + tdpsPet[pet[i]].fight[tdpsF][tdpsV]
     end
     if petAmount > 0 then
-      GameTooltip:AddDoubleLine(tdpsL.byPets, petAmount .. " (" .. round(petAmount / (self.n) * 100, 0) .. "%)", 1, 1,
-      1, 1, 1, 1)
+      GameTooltip:AddDoubleLine(tdpsL.byPets, petAmount.." ("..round(petAmount / (self.n) * 100, 0).."%)", 1, 1, 1, 1,
+      1, 1)
     end
 
     -- spell details
     if tdps.trackSpells then
       -- merge the data of this player
-      for k, v in pairs(tdpsPlayer[g].fight[tdpsF][tdpsV .. "s"]) do
+      for k, v in pairs(tdpsPlayer[g].fight[tdpsF][tdpsV.."s"]) do
         for kk, vv in pairs(v) do
           ttSpellMerge[k] = (ttSpellMerge[k] or 0) + vv ttMobMerge[kk] = (ttMobMerge[kk] or 0) + vv
         end
       end
       for i = 1, #pet do
-        for k, v in pairs(tdpsPet[pet[i]].fight[tdpsF][tdpsV .. "s"]) do
+        for k, v in pairs(tdpsPet[pet[i]].fight[tdpsF][tdpsV.."s"]) do
           for kk, vv in pairs(v) do
             ttSpellMerge[k] = (ttSpellMerge[k] or 0) + vv ttMobMerge[kk] = (ttMobMerge[kk] or 0) + vv
           end
@@ -2250,8 +2253,8 @@ local function newBar(g)
       sort(ttSort, tdpsSpellSort)
       for i = 1, tdps.tooltipSpells do
         if ttSort[i] then
-          GameTooltip:AddDoubleLine(i .. ". " .. ttSort[i], ttSpellMerge[ttSort[i]] .. " (" ..
-          round(ttSpellMerge[ttSort[i]] / (self.n) * 100, 0) .. "%)", 1, 1, 1, 1, 1, 1)
+          GameTooltip:AddDoubleLine(i..". "..ttSort[i], ttSpellMerge[ttSort[i]].." (" ..
+          round(ttSpellMerge[ttSort[i]] / (self.n) * 100, 0).."%)", 1, 1, 1, 1, 1, 1)
         end
       end
       wipe(ttSort)
@@ -2266,8 +2269,8 @@ local function newBar(g)
       sort(ttSort, tdpsMobSort)
       for i = 1, tdps.tooltipTargets do
         if ttSort[i] then
-          GameTooltip:AddDoubleLine(i .. ". " .. ttSort[i], ttMobMerge[ttSort[i]] .. " (" .. round(ttMobMerge[ttSort[i]]
-          / (self.n) * 100, 0) .. "%)", 1, 1, 1, 1, 1, 1)
+          GameTooltip:AddDoubleLine(i..". "..ttSort[i], ttMobMerge[ttSort[i]].." ("..round(ttMobMerge[ttSort[i]] /
+          (self.n) * 100, 0).."%)", 1, 1, 1, 1, 1, 1)
         end
       end
       wipe(ttSort)
@@ -2399,14 +2402,16 @@ end
 
 local function trackSpell(amount, target, spell, dh)
   if tdps.trackSpells then
-    dh = dh .. "s"
+    dh = dh.."s"
     if not com.fight[1][dh][spell] then
-      com.fight[1][dh][spell] = {} -- make the spell
+      -- make the spell
+      com.fight[1][dh][spell] = {}
     end
     if not com.fight[2][dh][spell] then
       com.fight[2][dh][spell] = {}
     end
-    com.fight[1][dh][spell][target] = (com.fight[1][dh][spell][target] or 0) + amount -- record the amount
+    -- record the amount
+    com.fight[1][dh][spell][target] = (com.fight[1][dh][spell][target] or 0) + amount
     com.fight[2][dh][spell][target] = (com.fight[2][dh][spell][target] or 0) + amount
   end
 end
@@ -2416,126 +2421,133 @@ end
 ------------------------------------------------------------------------------------------------------------------------
 
 local function tdpsCombatEvent(self, event, ...)
-  -- WoW 4.2: timestamp, event, hideCaster, srcGUID, srcName, srcFlags, srcFlags2, dstGUID, dstName, dstFlags, dstFlags2
-  local arg1, arg2, arg4, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16 = ...
+  local timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName,
+  destFlags, destRaidFlags, arg12, arg13, arg14, arg15, arg16 = ...
 
   -- return when source is an outsider
-  if arg6 % 8 == 0 then
+  if sourceFlags % 8 == 0 then
     return
   end
   -- give units a name if they don't have one to prevent errors
-  if not arg9 then
-    arg9 = NONE
+  if not destName then
+    destName = NONE
   end
 
   -- track absorbs
-  if arg2 == "SPELL_AURA_APPLIED" and arg10 % 8 > 0 and isAbsorb[arg12] then
-    tdpsShield[arg4 .. arg12 .. arg8] = arg16
+  if event == "SPELL_AURA_APPLIED" and destFlags % 8 > 0 and isAbsorb[arg12] then
+  tdpsShield[sourceGUID..arg12..destGUID] = arg16
     return
-  elseif arg2 == "SPELL_AURA_REFRESH" and arg10 % 8 > 0 and isAbsorb[arg12] and tdpsShield[arg4 .. arg12 .. arg8] then
+  elseif event == "SPELL_AURA_REFRESH" and destFlags % 8 > 0 and isAbsorb[arg12] and
+  tdpsShield[sourceGUID..arg12..destGUID] then
     -- launch a fake healing event
-    if tdpsShield[arg4 .. arg12 .. arg8] - arg16 > 0 then
-      tdpsCombatEvent(self, event, arg1, "SPELL_HEAL", arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-      arg13, arg14, tdpsShield[arg4 .. arg12 .. arg8] - arg16, 0)
+    if tdpsShield[sourceGUID..arg12..destGUID] - arg16 > 0 then
+      tdpsCombatEvent(self, event, timestamp, "SPELL_HEAL", hideCaster, sourceGUID, sourceName, sourceFlags,
+      sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, arg12, arg13, arg14,
+      tdpsShield[sourceGUID..arg12..destGUID] - arg16, 0)
     end
     -- add the new value to the shield
-    tdpsShield[arg4 .. arg12 .. arg8] = arg16
+    tdpsShield[sourceGUID..arg12..destGUID] = arg16
     return
-  elseif arg2 == "SPELL_AURA_REMOVED" and arg10 % 8 > 0 and isAbsorb[arg12] and tdpsShield[arg4 .. arg12 .. arg8] then
+  elseif event == "SPELL_AURA_REMOVED" and destFlags % 8 > 0 and isAbsorb[arg12] and
+  tdpsShield[sourceGUID..arg12..destGUID] then
     -- launch a fake healing event
-    if tdpsShield[arg4 .. arg12 .. arg8] - arg16 > 0 then
-      tdpsCombatEvent(self, event, arg1, "SPELL_HEAL", arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12,
-      arg13, arg14, tdpsShield[arg4 .. arg12 .. arg8] - arg16, 0)
+    if tdpsShield[sourceGUID..arg12..destGUID] - arg16 > 0 then
+      tdpsCombatEvent(self, event, timestamp, "SPELL_HEAL", hideCaster, sourceGUID, sourceName, sourceFlags,
+      sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, arg12, arg13, arg14,
+      tdpsShield[sourceGUID..arg12..destGUID] - arg16, 0)
     end
     -- delete the shield
-    tdpsShield[arg4 .. arg12 .. arg8] = nil
+    tdpsShield[sourceGUID..arg12..destGUID] = nil
     return
   end
 
   -- return on invalid event, vehicle, friendly fire, hostile healing, evaded
-  if not isValidEvent[arg2] or strsub(arg4, 5, 5) == "5" or (band(arg10, 16) > 0 and isDamage[arg2]) or (band(arg10, 16)
-  == 0 and isHeal[arg2]) or arg15 == "EVADE" then
+  if not isValidEvent[event] or strsplit("-", sourceGUID) == "Vehicle" or (band(destFlags, 16) > 0 and isDamage[event])
+  or (band(destFlags, 16) == 0 and isHeal[event]) or arg15 == "EVADE" then
     return
   end
 
   -- create summoned pets
-  if arg2 == "SPELL_SUMMON" then
-    if UnitIsPlayer(arg5) and not isExcludedPet[tonumber(arg8:sub(6, 10), 16)] then -- add pet when player summons
+  if event == "SPELL_SUMMON" then
+    -- add pet when player summons
+    local _, _, _, _, _, id = strsplit("-", destGUID)
+    if UnitIsPlayer(sourceName) and not isExcludedPet[tonumber(id)] then
       -- make owner if necessary
-      if not tdpsPlayer[arg4] then
-        makeCombatant(arg4, arg5, {arg5 .. ": " .. arg9}, getClass(arg5))
+      if not tdpsPlayer[sourceGUID] then
+        makeCombatant(sourceGUID, sourceName, {sourceName..": "..destName}, getClass(sourceName))
       end
       -- make pointer
-      tdpsLink[arg8] = arg5 .. ": " .. arg9
+      tdpsLink[destGUID] = sourceName..": "..destName
       -- make pet if it does not exist yet
-      if not tdpsPet[arg5 .. ": " .. arg9] then
-        makeCombatant(arg5 .. ": " .. arg9, arg9, arg8, "PET")
+      if not tdpsPet[sourceName..": "..destName] then
+        makeCombatant(sourceName..": "..destName, destName, destGUID, "PET")
       end
       -- add pet to owner if it's not there yet
-      local found = nil
-      for i = 1, #tdpsPlayer[arg4].pet do
-        if tdpsPlayer[arg4].pet[i] == arg5 .. ": " .. arg9 then
+      local found = false
+      for i = 1, #tdpsPlayer[sourceGUID].pet do
+        if tdpsPlayer[sourceGUID].pet[i] == sourceName..": "..destName then
           found = true
           break
         end
       end
       if not found then
-        tinsert(tdpsPlayer[arg4].pet, arg5 .. ": " .. arg9)
+        tinsert(tdpsPlayer[sourceGUID].pet, sourceName..": "..destName)
       end
-    elseif tdpsLink[arg4] then -- the summoner is also a pet. Example: totem summons greater fire elemental.
-      -- ownername of owner
-      local oo = strsplit(":", tdpsLink[arg4])
+    -- the summoner is also a pet (example: totems can summon elementals)
+    elseif tdpsLink[sourceGUID] then
+      -- owner's owner name
+      local ownersOwnerName = strsplit(":", tdpsLink[sourceGUID])
       -- make pointer
-      tdpsLink[arg8] = oo .. ": " .. arg9
+      tdpsLink[destGUID] = ownersOwnerName..": "..destName
       -- make pet
-      makeCombatant(oo .. ": " .. arg9, arg9, arg8, "PET")
+      makeCombatant(ownersOwnerName..": "..destName, destName, destGUID, "PET")
       -- add pet to owner if it's not there yet
-      local found = nil
-      for i = 1, #tdpsPlayer[UnitGUID(oo)].pet do
-        if tdpsPlayer[UnitGUID(oo)].pet[i] == oo .. ": " .. arg9 then
+      local found = false
+      for i = 1, #tdpsPlayer[UnitGUID(ownersOwnerName)].pet do
+        if tdpsPlayer[UnitGUID(ownersOwnerName)].pet[i] == ownersOwnerName..": "..destName then
           found = true
           break
         end
       end
       if not found then
-        tinsert(tdpsPlayer[UnitGUID(oo)].pet, oo .. ": " .. arg9)
+        tinsert(tdpsPlayer[UnitGUID(ownersOwnerName)].pet, ownersOwnerName..": "..destName)
       end
     end
     return
   end
 
   -- select or create combatant
-  if tdpsPlayer[arg4] then
-    com = tdpsPlayer[arg4]
-  elseif tdpsPet[tdpsLink[arg4]] then
-    com = tdpsPet[tdpsLink[arg4]]
-  elseif UnitIsPlayer(arg5) then
-    makeCombatant(arg4, arg5, {}, getClass(arg5))
+  if tdpsPlayer[sourceGUID] then
+    com = tdpsPlayer[sourceGUID]
+  elseif tdpsPet[tdpsLink[sourceGUID]] then
+    com = tdpsPet[tdpsLink[sourceGUID]]
+  elseif UnitIsPlayer(sourceName) then
+    makeCombatant(sourceGUID, sourceName, {}, getClass(sourceName))
     tdpsCombatEvent(self, event, ...)
     return
-  elseif isPartyPet(arg4) then
+  elseif isPartyPet(sourceGUID) then
     -- get owner
-    local oGuid, oName = getPetOwnerGUID(arg4), getPetOwnerName(arg4)
+    local ownerGUID, ownerName = getPetOwnerGUID(sourceGUID), getPetOwnerName(sourceGUID)
     -- make owner if it does not exist yet
-    if not tdpsPlayer[oGuid] then
-      makeCombatant(oGuid, oName, {oName .. ": " .. arg5}, getClass(oName))
+    if not tdpsPlayer[ownerGUID] then
+      makeCombatant(ownerGUID, ownerName, {ownerName..": "..sourceName}, getClass(ownerName))
     end
     -- make pointer
-    tdpsLink[arg4] = oName .. ": " .. arg5
+    tdpsLink[sourceGUID] = ownerName..": "..sourceName
     -- make pet if it does not exist yet
-    if not tdpsPet[oName .. ": " .. arg5] then
-      makeCombatant(oName .. ": " .. arg5, arg5, arg4, "PET")
+    if not tdpsPet[ownerName..": "..sourceName] then
+      makeCombatant(ownerName..": "..sourceName, sourceName, sourceGUID, "PET")
     end
     -- add pet to owner if it's not there yet
-    local found = nil
-    for i = 1, #tdpsPlayer[oGuid].pet do
-      if tdpsPlayer[oGuid].pet[i] == oName .. ": " .. arg5 then
+    local found = false
+    for i = 1, #tdpsPlayer[ownerGUID].pet do
+      if tdpsPlayer[ownerGUID].pet[i] == ownerName..": "..sourceName then
         found = true
         break
       end
     end
     if not found then
-      tinsert(tdpsPlayer[oGuid].pet, oName .. ": " .. arg5)
+      tinsert(tdpsPlayer[ownerGUID].pet, ownerName..": "..sourceName)
     end
     -- event
     tdpsCombatEvent(self, event, ...)
@@ -2545,35 +2557,38 @@ local function tdpsCombatEvent(self, event, ...)
   end
 
   -- track numbers
-  if isMiss[arg2] then
+  local arg
+  if isMiss[event] then
     if tdpsStartNewFight then
-      startNewFight(arg9, arg8)
+      startNewFight(destName, destGUID)
     end
-  elseif isDamage[arg2] then
+  elseif isDamage[event] then
     if tdpsStartNewFight then
-      startNewFight(arg9, arg8)
+      startNewFight(destName, destGUID)
     end
-    if arg2 == "SWING_DAMAGE" then
+    if event == "SWING_DAMAGE" then
       arg = arg12
-      trackSpell(arg, arg9, tdpsL.melee, "d")
+      trackSpell(arg, destName, tdpsL.melee, "d")
     else
       arg = arg15
-      trackSpell(arg, arg9, arg13, "d")
+      trackSpell(arg, destName, arg13, "d")
     end
     tdpsFight[1].d, tdpsFight[2].d = tdpsFight[1].d + arg, tdpsFight[2].d + arg
     com.fight[1].d, com.fight[2].d = com.fight[1].d + arg, com.fight[2].d + arg
-  elseif isHeal[arg2] then
-    arg = arg15 - arg16 -- effective healing
+  elseif isHeal[event] then
+    -- effective healing
+    arg = arg15 - arg16
     if arg < 1 or not tdpsInCombat then
-      return -- stop on complete overheal or out of combat. Note that heals will never start a new fight.
+      -- stop on complete overheal or out of combat; heals will never start a new fight
+      return
     end
-    trackSpell(arg, arg9, arg13, "h")
+    trackSpell(arg, destName, arg13, "h")
     tdpsFight[1].h, tdpsFight[2].h = tdpsFight[1].h + arg, tdpsFight[2].h + arg
     com.fight[1].h, com.fight[2].h = com.fight[1].h + arg, com.fight[2].h + arg
   end
 
   -- add combat time
-  arg = arg1 - com.stamp
+  arg = timestamp - com.stamp
   if arg < 3.5 then
     com.fight[1].t = com.fight[1].t + arg
   else
@@ -2585,8 +2600,8 @@ local function tdpsCombatEvent(self, event, ...)
     com.fight[2].t = com.fight[2].t + 3.5
   end
 
-  -- save time stamp
-  com.stamp = arg1
+  -- save timestamp
+  com.stamp = timestamp
 
   -- set onupdate
   tdpsAnchor:SetScript("OnUpdate", tdpsOnUpdate)
@@ -2603,13 +2618,13 @@ tdpsFrame:SetScript("OnEvent", function(self, event)
   -- global version mismatch
   if curVer ~= tdps.version and tonumber(tdps.version) < 0.935 then
     initialiseSavedVariables()
-    echo("Global variables have been reset to version " .. curVer)
+    echo("Global variables have been reset to version "..curVer)
   end
 
   -- character version mismatch
   if curVer ~= tdpsVersion and tonumber(tdpsVersion) < 0.935 then
     initialiseSavedVariablesPerCharacter()
-    echo("Character variables have been reset to version " .. curVer)
+    echo("Character variables have been reset to version "..curVer)
     tdpsFrame:SetHeight(tdps.barHeight + 4)
   end
 
