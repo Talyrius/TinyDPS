@@ -567,6 +567,117 @@ elseif GetLocale() == "itIT" then
   tdpsL.currentFight = "scontro corrente"
   tdpsL.lastFight = "ultimo scontro"
   tdpsL.melee = "mischia"
+elseif GetLocale() == "zhCN" then
+  tdpsL.fight = "战斗"
+  tdpsL.allFight = "总体     所有战斗"
+  tdpsL.current = "当前"
+  tdpsL.resetAllData = "重置所有数据"
+  tdpsL.showDamage = "显示伤害"
+  tdpsL.showHealing = "显示治疗"
+
+  tdpsL.report = "报告"
+  tdpsL.top3 = "前 3"
+  tdpsL.top5 = "前 5"
+  tdpsL.top10 = "前 10"
+  tdpsL.say = "说话"
+  tdpsL.instance = "副本"
+  tdpsL.raid = "团队"
+  tdpsL.party = "队伍"
+  tdpsL.guild = "公会"
+  tdpsL.officer = "官员"
+  tdpsL.whisper = "密语目标"
+  tdpsL.whisper2 = "密语 <名字>"
+  tdpsL.channel = "频道"
+
+  tdpsL.options = "选项"
+  tdpsL.text = "文字"
+  tdpsL.size = "大小"
+  tdpsL.increase = "增加"
+  tdpsL.decrease = "减少"
+  tdpsL.font = "字体"
+  tdpsL.layout = "布局"
+  tdpsL.outline = "描边"
+  tdpsL.nudge = "微调"
+
+  tdpsL.dps = "DPS"
+  tdpsL.rank = "排名"
+  tdpsL.percent = "百分比"
+  tdpsL.amount = "总量"
+  tdpsL.short = "缩略模式"
+  tdpsL.none = "无"
+  tdpsL.thin = "细"
+  tdpsL.thick = "粗"
+  tdpsL.shadow = "阴影"
+  tdpsL.mono = "单色"
+
+  tdpsL.bars = "计量条"
+  tdpsL.height = "高"
+  tdpsL.spacing = "间距"
+  tdpsL.maximum = "最多显示"
+  tdpsL.oneYourself = "1 (自己)"
+  tdpsL.five = "5"
+  tdpsL.ten = "10"
+  tdpsL.fifteen = "15"
+  tdpsL.twenty = "20"
+  tdpsL.unlimited = "? (所有)"
+
+  tdpsL.colors = "颜色"
+  tdpsL.barBackdrop = "计量条背景"
+  tdpsL.frameBorder = "框架边框"
+  tdpsL.frameBackdrop = "框架背景"
+  tdpsL.dimClassColors = "暗淡职业颜色"
+  tdpsL.resetClassColors = "重置职业颜色"
+  tdpsL.swapBarTextColor = "互换计量条/文字颜色"
+
+  tdpsL.history = "      %i  历史战斗记录"
+  tdpsL.keepOnlyBossFights = "只保留boss战斗记录"
+
+  tdpsL.various = "个性化"
+  tdpsL.hideAlways = "始终隐藏"
+  tdpsL.hideInPvP = "PVP时隐藏"
+  tdpsL.hideWhenSolo = "Solo时隐藏"
+  tdpsL.hideInCombat = "战斗中隐藏"
+  tdpsL.hideOutOfCombat = "脱离战斗后隐藏"
+  tdpsL.growUpwards = "计量条向上增长"
+  tdpsL.minimapButton = "小地图按钮"
+  tdpsL.trackSpellDetails = "显示法术详情"
+  tdpsL.resetOnNewGroup = "新队伍时重置"
+  tdpsL.refreshEverySecond = "每秒刷新"
+
+  tdpsL.spells = "      前 %i 技能"
+  tdpsL.targets = "      前 %i 目标"
+
+  tdpsL.close = "关闭"
+  tdpsL.empty = "<空>"
+
+  tdpsL.helpVersion = "版本"
+  tdpsL.helpMove = "移动: 按住 shift 鼠标左键拖动"
+  tdpsL.helpResize = "宽: 右下角调整宽度"
+  tdpsL.helpToggle = "输入: type /tdps 隐藏或显示"
+  tdpsL.helpParameters1 = "/tdps help | reset | damage | healing | whisper <name>"
+  tdpsL.helpParameters2 = "/tdps visiblebars <number> | reportlength <number>"
+
+  tdpsL.allClear = "所有数据已被重置"
+  tdpsL.personal = "玩家"
+  tdpsL.byPets = "宠物(s)"
+  tdpsL.topAbilities = "技能"
+  tdpsL.topTargets = "目标"
+
+  tdpsL.noTarget = "无效或没有目标选择"
+  tdpsL.noData = "没有数据报告"
+
+  tdpsL.tipPrefix = {
+    d = "伤害为",
+    h = "治疗为",
+  }
+  tdpsL.repPrefix = {
+    d = "伤害输出为",
+    h = "治疗量为",
+  }
+  tdpsL.overallData = "所有战斗"
+  tdpsL.currentFight = "当前战斗"
+  tdpsL.lastFight = "上次战斗"
+  tdpsL.melee = "肉搏"
 else
   tdpsL.fight = "Fight"
   tdpsL.allFight = "Overall     All Fights"
@@ -1001,7 +1112,7 @@ local tonumber, band = tonumber, bit.band
 local floor, abs = floor, abs
 local sort, tremove, tinsert, wipe = sort, tremove, tinsert, wipe
 local pairs, ipairs, type = pairs, ipairs, type
-local strsub, strsplit, format = strsub, strsplit, format
+local strsplit, format = strsplit, format
 local UnitName, UnitGUID, UnitClass = UnitName, UnitGUID, UnitClass
 local UnitIsPlayer, UnitAffectingCombat = UnitIsPlayer, UnitAffectingCombat
 local IsInInstance, IsInRaid, IsInGroup = IsInInstance, IsInRaid, IsInGroup
