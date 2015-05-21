@@ -1,9 +1,10 @@
 ﻿--[[--------------------------------------------------------------------------------------------------------------------
   TinyDPS - A lightweight damage and healing meter.
-  Copyright © 2010-2014 Sideshow, Talyrius <talyrius@gmail.com>. All rights reserved.
-  See the accompanying README and LICENSE files for more information.
+  Copyright © 2010-2015 Sideshow, Talyrius <contact@talyrius.net>. All rights reserved.
+  See the accompanying LICENSE file for more information.
 
   Authorized distributions:
+    https://github.com/Talyrius/TinyDPS
     http://www.curse.com/addons/wow/tinydps
     http://wow.curseforge.com/addons/tinydps/
     http://www.wowinterface.com/downloads/info16780-TinyDPS.html
