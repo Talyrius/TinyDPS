@@ -973,7 +973,6 @@ local function initialiseSavedVariablesPerCharacter()
       h = 0
     },
   }
-  tdpsPartySize = 0
   tdpsF = 1
   tdpsV = "d"
   tdpsNumberOfFights = 2
@@ -2808,13 +2807,14 @@ tdpsAnchor:RegisterEvent("PLAYER_ENTERING_WORLD")
 tdpsAnchor:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 tdpsAnchor:RegisterEvent("UPDATE_WORLD_STATES")
 
+local wasInGroup
 tdpsAnchor:SetScript("OnEvent", function(self, event, ...)
   visibilityEvent()
   if event == "GROUP_ROSTER_UPDATE" then
-    if tdps.autoReset and tdpsPartySize == 0 and IsInGroup() then
+    if tdps.autoReset and IsInGroup() and wasInGroup == false then
       reset()
     end
-    tdpsPartySize = GetNumGroupMembers()
+    wasInGroup = not not IsInGroup()
   end
 end)
 
