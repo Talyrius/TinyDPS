@@ -2,6 +2,3 @@
   type: markdown
   input-file: README.md
   output-page: "Main"
-
-ignore:
-  - README.md

@@ -10,3 +10,6 @@ enable-nolib-creation: yes
 
 move-folders:
   TinyDPS/Libs/LibBossIDs-1.0/LibStub: TinyDPS/Libs/LibStub
+
+ignore:
+  - README.md
