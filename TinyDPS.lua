@@ -867,6 +867,7 @@ local isAbsorb = {
   [ 47753] = true, -- Divine Aegis
   [ 47788] = true, -- Guardian Spirit
   [114908] = true, -- Spirit Shell
+  [152118] = true, -- Clarity of Will
 
   -- Shaman
   [114893] = true, -- Stone Bulwark Totem
