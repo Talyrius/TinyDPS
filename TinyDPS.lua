@@ -807,6 +807,7 @@ local cColor
 
 local isBoss = LibStub("LibBossIDs-1.0").BossIDs
 local isHeal = {
+  SPELL_ABSORBED = true,
   SPELL_HEAL = true,
   SPELL_PERIODIC_HEAL = true,
 }
@@ -815,6 +816,7 @@ local isMiss = {
   RANGE_MISSED = true,
   SPELL_MISSED = true,
   SPELL_PERIODIC_MISSED = true,
+  DAMAGE_SHIELD_MISSED = true,
 }
 local isDamage = {
   SWING_DAMAGE = true,
@@ -829,6 +831,7 @@ local isValidEvent = {
   SWING_MISSED = true,
   RANGE_DAMAGE = true,
   RANGE_MISSED = true,
+  SPELL_ABSORBED = true,
   SPELL_DAMAGE = true,
   SPELL_HEAL = true,
   SPELL_MISSED = true,
@@ -838,6 +841,7 @@ local isValidEvent = {
   SPELL_PERIODIC_MISSED = true,
   SPELL_EXTRA_ATTACKS = true,
   DAMAGE_SHIELD = true,
+  DAMAGE_SHIELD_MISSED = true,
   DAMAGE_SPLIT = true,
 }
 
@@ -847,19 +851,19 @@ local isAbsorb = {
   [ 50461] = true, -- Anti-Magic Zone
   [ 77535] = true, -- Blood Shield
 
-  -- Druid
-  [110570] = true, -- Symbiosis: Anti-Magic Shell
-
   -- Mage
-  [  1463] = true, -- Incanter's Ward
   [ 11426] = true, -- Ice Barrier
 
   -- Monk
   [116849] = true, -- Life Cocoon
-  [123402] = true, -- Guard
+  [115295] = true, -- Guard
+  [123402] = true, -- Guard (Unused?)
 
   -- Paladin
-  [ 65148] = true, -- Sacred Shield
+  [ 31850] = true, -- Ardent Defender
+  [ 65148] = true, -- Sacred Shield (Unused?)
+  [ 20925] = true, -- Sacred Shield (Protection, Retribution)
+  [148039] = true, -- Sacred Shield (Holy)
   [ 86273] = true, -- Illuminated Healing
 
   -- Priest
@@ -873,22 +877,30 @@ local isAbsorb = {
   [114893] = true, -- Stone Bulwark Totem
 
   -- Warlock
-  [  6229] = true, -- Twilight Ward
   [  7812] = true, -- Sacrifice
-  [ 91711] = true, -- Nether Ward
   [110913] = true, -- Dark Bargain
 
   -- Warrior
-  [112048] = true, -- Shield Barrier
+  [112048] = true, -- Shield Barrier (Unused?)
+  [174926] = true, -- Shield Barrier
 
   -- Items
   [ 64411] = true, -- Blessing of the Ancient (Val'anyr Hammer of Ancient Kings)
   [ 64413] = true, -- Protection of Ancient Kings (Val'anyr Hammer of Ancient Kings)
   [105801] = true, -- Delayed Judgment (Paladin T13 Protection 2P Bonus)
   [105909] = true, -- Shield of Fury (Warrior T13 Protection 2P Bonus)
+  [145379] = true, -- Nature's Barrier (Shaman T16 Restoration 2P Bonus)
+  [185676] = true, -- Avenger's Reprieve (Paladin T18 Protection 2P Bonus)
 
   -- Enchants
   [116631] = true, -- Colossus
+}
+
+local isExcludedAbsorb = {
+  [ 20711] = true, -- Spirit of Redemption
+  [114556] = true, -- Purgatory
+  [115069] = true, -- Stance of the Sturdy Ox
+  [157533] = true, -- Soul Dance
 }
 
 local isExcludedPet = {
@@ -2534,12 +2546,40 @@ end
 
 local function tdpsCombatEvent(self, event, ...)
   local timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName,
-  destFlags, destRaidFlags, arg12, arg13, arg14, arg15, arg16 = ...
+  destFlags, destRaidFlags, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22 = ...
+
+  -- reorganize these return args for consistency
+  local amount, spellName
+  if event == "SPELL_ABSORBED" then
+    -- triggered by a spell
+    if type(arg12) == "number" then
+      if isExcludedAbsorb[arg19] then
+        return
+      end
+      sourceGUID = arg15
+      sourceName = arg16
+      sourceFlags = arg17
+      sourceRaidFlags = arg18
+      spellName = arg20
+      amount = arg22
+    else
+      if isExcludedAbsorb[arg16] then
+        return
+      end
+      sourceGUID = arg12
+      sourceName = arg13
+      sourceFlags = arg14
+      sourceRaidFlags = arg15
+      spellName = arg17
+      amount = arg19
+    end
+  end
 
   -- return when source is an outsider
   if sourceFlags % 8 == 0 then
     return
   end
+
   -- give units a name if they don't have one to prevent errors
   if not destName then
     destName = NONE
@@ -2669,7 +2709,6 @@ local function tdpsCombatEvent(self, event, ...)
   end
 
   -- track numbers
-  local arg
   if isMiss[event] then
     if tdpsStartNewFight then
       startNewFight(destName, destGUID)
@@ -2679,35 +2718,37 @@ local function tdpsCombatEvent(self, event, ...)
       startNewFight(destName, destGUID)
     end
     if event == "SWING_DAMAGE" then
-      arg = arg12
-      trackSpell(arg, destName, tdpsL.melee, "d")
+      amount = arg12
+      trackSpell(amount, destName, tdpsL.melee, "d")
     else
-      arg = arg15
-      trackSpell(arg, destName, arg13, "d")
+      amount = arg15
+      trackSpell(amount, destName, arg13, "d")
     end
-    tdpsFight[1].d, tdpsFight[2].d = tdpsFight[1].d + arg, tdpsFight[2].d + arg
-    com.fight[1].d, com.fight[2].d = com.fight[1].d + arg, com.fight[2].d + arg
+    tdpsFight[1].d, tdpsFight[2].d = tdpsFight[1].d + amount, tdpsFight[2].d + amount
+    com.fight[1].d, com.fight[2].d = com.fight[1].d + amount, com.fight[2].d + amount
   elseif isHeal[event] then
-    -- effective healing
-    arg = arg15 - arg16
-    if arg < 1 or not tdpsInCombat then
+    if event ~= "SPELL_ABSORBED" then
+      -- effective healing
+      amount = arg15 - arg16
+    end
+    if amount < 1 or not tdpsInCombat then
       -- stop on complete overheal or out of combat; heals will never start a new fight
       return
     end
-    trackSpell(arg, destName, arg13, "h")
-    tdpsFight[1].h, tdpsFight[2].h = tdpsFight[1].h + arg, tdpsFight[2].h + arg
-    com.fight[1].h, com.fight[2].h = com.fight[1].h + arg, com.fight[2].h + arg
+    trackSpell(amount, destName, spellName or arg13, "h")
+    tdpsFight[1].h, tdpsFight[2].h = tdpsFight[1].h + amount, tdpsFight[2].h + amount
+    com.fight[1].h, com.fight[2].h = com.fight[1].h + amount, com.fight[2].h + amount
   end
 
   -- add combat time
-  arg = timestamp - com.stamp
-  if arg < 3.5 then
-    com.fight[1].t = com.fight[1].t + arg
+  amount = timestamp - com.stamp
+  if amount < 3.5 then
+    com.fight[1].t = com.fight[1].t + amount
   else
     com.fight[1].t = com.fight[1].t + 3.5
   end
-  if arg < 3.5 then
-    com.fight[2].t = com.fight[2].t + arg
+  if amount < 3.5 then
+    com.fight[2].t = com.fight[2].t + amount
   else
     com.fight[2].t = com.fight[2].t + 3.5
   end
