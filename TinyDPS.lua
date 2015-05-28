@@ -796,10 +796,8 @@ end
 -- Variables --
 ------------------------------------------------------------------------------------------------------------------------
 
-local bu = {}
-local bar = {}
-local tdpsShield = {}
-local px, com, key, arg
+local bu, bar = {}, {}
+local px, com
 local maxValue, barsWithValue
 local scrollPos, isMovingOrSizing = 1, false
 local ttSpellMerge, ttMobMerge, ttSort = {}, {}, {}
@@ -844,65 +842,12 @@ local isValidEvent = {
   DAMAGE_SHIELD_MISSED = true,
   DAMAGE_SPLIT = true,
 }
-
-local isAbsorb = {
-  -- Death Knight
-  [ 48707] = true, -- Anti-Magic Shell
-  [ 50461] = true, -- Anti-Magic Zone
-  [ 77535] = true, -- Blood Shield
-
-  -- Mage
-  [ 11426] = true, -- Ice Barrier
-
-  -- Monk
-  [116849] = true, -- Life Cocoon
-  [115295] = true, -- Guard
-  [123402] = true, -- Guard (Unused?)
-
-  -- Paladin
-  [ 31850] = true, -- Ardent Defender
-  [ 65148] = true, -- Sacred Shield (Unused?)
-  [ 20925] = true, -- Sacred Shield (Protection, Retribution)
-  [148039] = true, -- Sacred Shield (Holy)
-  [ 86273] = true, -- Illuminated Healing
-
-  -- Priest
-  [    17] = true, -- Power Word: Shield
-  [ 47753] = true, -- Divine Aegis
-  [ 47788] = true, -- Guardian Spirit
-  [114908] = true, -- Spirit Shell
-  [152118] = true, -- Clarity of Will
-
-  -- Shaman
-  [114893] = true, -- Stone Bulwark Totem
-
-  -- Warlock
-  [  7812] = true, -- Sacrifice
-  [110913] = true, -- Dark Bargain
-
-  -- Warrior
-  [112048] = true, -- Shield Barrier (Unused?)
-  [174926] = true, -- Shield Barrier
-
-  -- Items
-  [ 64411] = true, -- Blessing of the Ancient (Val'anyr Hammer of Ancient Kings)
-  [ 64413] = true, -- Protection of Ancient Kings (Val'anyr Hammer of Ancient Kings)
-  [105801] = true, -- Delayed Judgment (Paladin T13 Protection 2P Bonus)
-  [105909] = true, -- Shield of Fury (Warrior T13 Protection 2P Bonus)
-  [145379] = true, -- Nature's Barrier (Shaman T16 Restoration 2P Bonus)
-  [185676] = true, -- Avenger's Reprieve (Paladin T18 Protection 2P Bonus)
-
-  -- Enchants
-  [116631] = true, -- Colossus
-}
-
 local isExcludedAbsorb = {
   [ 20711] = true, -- Spirit of Redemption
   [114556] = true, -- Purgatory
   [115069] = true, -- Stance of the Sturdy Ox
   [157533] = true, -- Soul Dance
 }
-
 local isExcludedPet = {
   -- Totems
   [ 2630] = true, -- Earthbind Totem
@@ -913,7 +858,6 @@ local isExcludedPet = {
   [60561] = true, -- Earthgrab Totem
   [61245] = true, -- Capacitor Totem
   [62002] = true, -- Stormlash Totem
-
   -- Miscellaneous
   [29742] = true, -- Snake Wrap
   [36619] = true, -- Bone Spike
@@ -2583,34 +2527,6 @@ local function tdpsCombatEvent(self, event, ...)
   -- give units a name if they don't have one to prevent errors
   if not destName then
     destName = NONE
-  end
-
-  -- track absorbs
-  if event == "SPELL_AURA_APPLIED" and destFlags % 8 > 0 and isAbsorb[arg12] then
-  tdpsShield[sourceGUID..arg12..destGUID] = arg16
-    return
-  elseif event == "SPELL_AURA_REFRESH" and destFlags % 8 > 0 and isAbsorb[arg12] and
-  tdpsShield[sourceGUID..arg12..destGUID] then
-    -- launch a fake healing event
-    if tdpsShield[sourceGUID..arg12..destGUID] - arg16 > 0 then
-      tdpsCombatEvent(self, event, timestamp, "SPELL_HEAL", hideCaster, sourceGUID, sourceName, sourceFlags,
-      sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, arg12, arg13, arg14,
-      tdpsShield[sourceGUID..arg12..destGUID] - arg16, 0)
-    end
-    -- add the new value to the shield
-    tdpsShield[sourceGUID..arg12..destGUID] = arg16
-    return
-  elseif event == "SPELL_AURA_REMOVED" and destFlags % 8 > 0 and isAbsorb[arg12] and
-  tdpsShield[sourceGUID..arg12..destGUID] then
-    -- launch a fake healing event
-    if tdpsShield[sourceGUID..arg12..destGUID] - arg16 > 0 then
-      tdpsCombatEvent(self, event, timestamp, "SPELL_HEAL", hideCaster, sourceGUID, sourceName, sourceFlags,
-      sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, arg12, arg13, arg14,
-      tdpsShield[sourceGUID..arg12..destGUID] - arg16, 0)
-    end
-    -- delete the shield
-    tdpsShield[sourceGUID..arg12..destGUID] = nil
-    return
   end
 
   -- return on invalid event, vehicle, friendly fire, hostile healing, evaded
