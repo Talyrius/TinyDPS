@@ -1107,8 +1107,9 @@ local function isPvPZone()
   local _, instanceType = IsInInstance()
   local _, _, isActiveWintergrasp = GetWorldPVPAreaInfo(1)
   local _, _, isActiveTolBarad = GetWorldPVPAreaInfo(2)
+  local _, _, isActiveAshran = GetWorldPVPAreaInfo(3)
   if instanceType == "pvp" or instanceType == "arena" or (mapAreaID == 501 and isActiveWintergrasp) or (mapAreaID == 708
-  and isActiveTolBarad) then
+  and isActiveTolBarad) or (mapAreaID == 978 and isActiveAshran) then
     return true
   end
 end
