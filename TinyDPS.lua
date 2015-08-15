@@ -1072,7 +1072,7 @@ local pairs, ipairs, type = pairs, ipairs, type
 local strsplit, format = strsplit, format
 local UnitName, UnitGUID, UnitClass = UnitName, UnitGUID, UnitClass
 local UnitIsPlayer, UnitAffectingCombat = UnitIsPlayer, UnitAffectingCombat
-local IsInInstance, IsInRaid, IsInGroup = IsInInstance, IsInRaid, IsInGroup
+local IsInInstance, IsInRaid, IsInGroup, InCombatLockdown = IsInInstance, IsInRaid, IsInGroup, InCombatLockdown
 local GetNumGroupMembers, GetWorldPVPAreaInfo = GetNumGroupMembers, GetWorldPVPAreaInfo
 local GetCurrentMapAreaID, SetMapByID, SetMapToCurrentZone = GetCurrentMapAreaID, SetMapByID, SetMapToCurrentZone
 
@@ -1216,7 +1216,10 @@ local function deleteSpellData()
       v.fight[i].ds, v.fight[i].hs = {}, {}
     end
   end
-  collectgarbage()
+  -- cleanup memory
+  if not InCombatLockdown() then
+    collectgarbage()
+  end
 end
 
 local function short(n)
@@ -1470,8 +1473,10 @@ local function changeNumberOfFights(button)
     tdpsF = tdpsF - 1
   end
 
-  -- clean up memory
-  collectgarbage()
+  -- cleanup memory
+  if not InCombatLockdown() then
+    collectgarbage()
+  end
 end
 
 local function changeBarSpacing(button)
@@ -1776,8 +1781,10 @@ local function reset()
   -- output message
   echo(tdpsL.allClear)
   CloseDropDownMenus()
-  -- clean up memory
-  collectgarbage()
+  -- cleanup memory
+  if not InCombatLockdown() then
+    collectgarbage()
+  end
 end
 
 local function toggle()
