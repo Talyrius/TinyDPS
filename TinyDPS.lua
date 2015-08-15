@@ -2635,10 +2635,10 @@ local function tdpsCombatEvent(self, event, ...)
       startNewFight(destName, destGUID)
     end
     if event == "SWING_DAMAGE" then
-      amount = arg12
+      amount = floor(arg12 + .5)
       trackSpell(amount, destName, tdpsL.melee, "d")
     else
-      amount = arg15
+      amount = floor(arg15 + .5)
       trackSpell(amount, destName, arg13, "d")
     end
     tdpsFight[1].d, tdpsFight[2].d = tdpsFight[1].d + amount, tdpsFight[2].d + amount
@@ -2648,6 +2648,7 @@ local function tdpsCombatEvent(self, event, ...)
       -- effective healing
       amount = arg15 - arg16
     end
+    amount = floor(amount + .5)
     if amount < 1 or not tdpsInCombat then
       -- stop on complete overheal or out of combat; heals will never start a new fight
       return
