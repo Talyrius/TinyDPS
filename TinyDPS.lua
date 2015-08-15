@@ -1064,17 +1064,22 @@ tdpsDropDown.displayMode = "MENU"
 -- Functions --
 ------------------------------------------------------------------------------------------------------------------------
 
--- make local copy of global functions (faster)
+-- make local references to globals (faster)
 local tonumber, band = tonumber, bit.band
 local floor, abs = floor, abs
 local sort, tremove, tinsert, wipe = sort, tremove, tinsert, wipe
 local pairs, ipairs, type = pairs, ipairs, type
 local strsplit, format = strsplit, format
-local UnitName, UnitGUID, UnitClass = UnitName, UnitGUID, UnitClass
-local UnitIsPlayer, UnitAffectingCombat = UnitIsPlayer, UnitAffectingCombat
+local UnitName, UnitGUID, UnitClass, UnitIsPlayer, UnitAffectingCombat = UnitName, UnitGUID, UnitClass, UnitIsPlayer,
+UnitAffectingCombat
 local IsInInstance, IsInRaid, IsInGroup, InCombatLockdown = IsInInstance, IsInRaid, IsInGroup, InCombatLockdown
-local GetNumGroupMembers, GetWorldPVPAreaInfo = GetNumGroupMembers, GetWorldPVPAreaInfo
-local GetCurrentMapAreaID, SetMapByID, SetMapToCurrentZone = GetCurrentMapAreaID, SetMapByID, SetMapToCurrentZone
+local GetNumGroupMembers, GetWorldPVPAreaInfo, GetCurrentMapAreaID, GetCurrentMapDungeonLevel, GetMapInfo, SetMapByID,
+SetMapToCurrentZone, SetDungeonMapLevel = GetNumGroupMembers, GetWorldPVPAreaInfo, GetCurrentMapAreaID,
+GetCurrentMapDungeonLevel, GetMapInfo, SetMapByID, SetMapToCurrentZone, SetDungeonMapLevel
+local WorldMapFrame_Update, WorldMapScrollFrame_ReanchorQuestPOIs, WorldMapBlobFrame_ResetHitTranslations,
+WorldMapBlobFrame_DelayedUpdateBlobs = WorldMapFrame_Update, WorldMapScrollFrame_ReanchorQuestPOIs,
+WorldMapBlobFrame_ResetHitTranslations, WorldMapBlobFrame_DelayedUpdateBlobs
+local WorldMapScrollFrame, WorldMapDetailFrame = WorldMapScrollFrame, WorldMapDetailFrame
 
 -- some random functions
 local function round(num, idp)
@@ -1090,13 +1095,30 @@ local function getClass(name)
   return class or "UNKNOWN"
 end
 
--- this is how GetCurrentMapAreaID() should work
+-- a workaround to get the map ID for the player's current location w/o interfering with their map viewing experience
 local function getCurrentMapAreaID()
   if WorldMapFrame:IsShown() then
-    local viewing = GetCurrentMapAreaID()
+    local viewing, level, isZoomedIn = GetCurrentMapAreaID(), GetCurrentMapDungeonLevel(), WorldMapScrollFrame.zoomedIn
+    local _, _, _, isMicroDungeon = GetMapInfo()
+    local x, y, z = WorldMapScrollFrame:GetHorizontalScroll(), WorldMapScrollFrame:GetVerticalScroll(),
+    WorldMapDetailFrame:GetScale()
     SetMapToCurrentZone()
     local current = GetCurrentMapAreaID()
-    SetMapByID(viewing)
+    if not isMicroDungeon then
+      SetMapByID(viewing)
+      SetDungeonMapLevel(level)
+    end
+    if isZoomedIn then
+      WorldMapScrollFrame:SetHorizontalScroll(x)
+      WorldMapScrollFrame:SetVerticalScroll(y)
+      WorldMapDetailFrame:SetScale(z)
+      WorldMapScrollFrame.zoomedIn = isZoomedIn
+      -- these need to be called after setting new scroll values; see FrameXML/WorldMapFrame.lua
+      WorldMapFrame_Update()
+      WorldMapScrollFrame_ReanchorQuestPOIs()
+      WorldMapBlobFrame_ResetHitTranslations()
+      WorldMapBlobFrame_DelayedUpdateBlobs()
+    end
     return current
   end
   return GetCurrentMapAreaID()
