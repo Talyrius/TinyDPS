@@ -11,15 +11,15 @@
     `help` or `?`, `reset` or `r`, `damage` or `d`, `healing` or `h`, `visiblebars <number>`, `whisper <name>`, `reportlength <number>`
 
 ## Known Issues and Limitations ##
-  * New spells and abilities may not be tracked correctly yet. Submit a bug report if you encounter such an omission.
-
 #### Intended behavior: ####
+  * Pet data is attributed to the owner.
   * Vehicle/mounted combat data is ignored.
+  * Overhealing is ignored.
   * Absorbs are added to healing.
   * Unlike damage, healing won't start a new fight.
 
 ## Bug Reports and Feature Requests ##
-  Please submit bug reports and feature requests using the [CurseForge ticket system](http://wow.curseforge.com/addons/tinydps/tickets/?status=+).
+  Please submit bug reports and feature requests using the [CurseForge ticket system](http://wow.curseforge.com/addons/tinydps/tickets/).
 
 ## Comments ##
   You may leave comments at [WoWInterface](http://www.wowinterface.com/downloads/info16780.html#comments).
