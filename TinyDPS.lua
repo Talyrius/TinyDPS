@@ -2523,6 +2523,12 @@ end
 local function tdpsCombatEvent(self, event, ...)
   local timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName,
   destFlags, destRaidFlags, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22 = ...
+  local _, _, _, _, _, destID = strsplit("-", destGUID)
+
+  -- damage dealt to this is to be ignored
+  if destID == "76933" then -- Prismatic Crystal
+    return
+  end
 
   -- reorganize these return args for consistency
   local amount, spellName
@@ -2570,8 +2576,7 @@ local function tdpsCombatEvent(self, event, ...)
   -- create summoned pets
   if event == "SPELL_SUMMON" then
     -- add pet when player summons
-    local _, _, _, _, _, id = strsplit("-", destGUID)
-    if UnitIsPlayer(sourceName) and not isExcludedPet[tonumber(id)] then
+    if UnitIsPlayer(sourceName) and not isExcludedPet[tonumber(destID)] then
       -- make owner if necessary
       if not tdpsPlayer[sourceGUID] then
         makeCombatant(sourceGUID, sourceName, {sourceName..": "..destName}, getClass(sourceName))
