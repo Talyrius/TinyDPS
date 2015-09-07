@@ -2666,15 +2666,26 @@ local function tdpsCombatEvent(self, event, ...)
     if tdpsStartNewFight then
       startNewFight(destName, destGUID)
     end
+    if event == "SWING_MISSED" and arg12 == "ABSORB" then
+      amount = floor(arg15 + .5)
+      trackSpell(amount, destName, tdpsL.melee, "d")
+    elseif arg15 == "ABSORB" then
+      amount = floor(arg18 + .5)
+      trackSpell(amount, destName, arg13, "d")
+    else
+      return
+    end
+    tdpsFight[1].d, tdpsFight[2].d = tdpsFight[1].d + amount, tdpsFight[2].d + amount
+    com.fight[1].d, com.fight[2].d = com.fight[1].d + amount, com.fight[2].d + amount
   elseif isDamage[event] then
     if tdpsStartNewFight then
       startNewFight(destName, destGUID)
     end
     if event == "SWING_DAMAGE" then
-      amount = floor(arg12 + .5)
+      amount = floor(arg12 + (arg17 or 0) + .5)
       trackSpell(amount, destName, tdpsL.melee, "d")
     else
-      amount = floor(arg15 + .5)
+      amount = floor(arg15 + (arg20 or 0) + .5)
       trackSpell(amount, destName, arg13, "d")
     end
     tdpsFight[1].d, tdpsFight[2].d = tdpsFight[1].d + amount, tdpsFight[2].d + amount

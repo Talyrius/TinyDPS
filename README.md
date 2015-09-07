@@ -16,6 +16,7 @@
   * Vehicle/mounted combat data is ignored.
   * Overhealing is ignored.
   * Absorbs are added to healing.
+  * Damage dealt to absorbs is tracked.
   * Unlike damage, healing won't start a new fight.
 
 ## Bug Reports and Feature Requests ##
