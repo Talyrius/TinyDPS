@@ -679,6 +679,117 @@ elseif GetLocale() == "zhCN" then
   tdpsL.currentFight = "当前战斗"
   tdpsL.lastFight = "上次战斗"
   tdpsL.melee = "肉搏"
+elseif GetLocale() == "esES" or GetLocale() == "esMX" then
+  tdpsL.fight = "Combate"
+  tdpsL.allFight = "Todo     Todos los Combates"
+  tdpsL.current = "Actual"
+  tdpsL.resetAllData = "Reiniciar Todos los Datos"
+  tdpsL.showDamage = "Mostrar DPS"
+  tdpsL.showHealing = "Mostrar Sanacion"
+
+  tdpsL.report = "Reportar"
+  tdpsL.top3 = "Top 3"
+  tdpsL.top5 = "Top 5"
+  tdpsL.top10 = "Top 10"
+  tdpsL.say = "Decir"
+  tdpsL.instance = "Estancia"
+  tdpsL.raid = "Banda"
+  tdpsL.party = "Grupo"
+  tdpsL.guild = "Hermandad"
+  tdpsL.officer = "Oficiales"
+  tdpsL.whisper = "Susurrar al objetivo"
+  tdpsL.whisper2 = "Susurrar a <Nombre>"
+  tdpsL.channel = "Canal"
+
+  tdpsL.options = "Opciones"
+  tdpsL.text = "Texto"
+  tdpsL.size = "Talla"
+  tdpsL.increase = "Aumentar"
+  tdpsL.decrease = "Disminuir"
+  tdpsL.font = "Fuente"
+  tdpsL.layout = "Formato"
+  tdpsL.outline = "Outline"
+  tdpsL.nudge = "Nudge"
+
+  tdpsL.dps = "DPS"
+  tdpsL.rank = "Rango"
+  tdpsL.percent = "Porcentaje"
+  tdpsL.amount = "Cantidad"
+  tdpsL.short = "Formato Corto"
+  tdpsL.none = "None"
+  tdpsL.thin = "Thin"
+  tdpsL.thick = "Thick"
+  tdpsL.shadow = "Shadow"
+  tdpsL.mono = "Monochrome"
+
+  tdpsL.bars = "Barras"
+  tdpsL.height = "Altura"
+  tdpsL.spacing = "Espaciado"
+  tdpsL.maximum = "Barras Visibles"
+  tdpsL.oneYourself = "1 (Tú)"
+  tdpsL.five = "5"
+  tdpsL.ten = "10"
+  tdpsL.fifteen = "15"
+  tdpsL.twenty = "20"
+  tdpsL.unlimited = "? (Ilimitado)"
+
+  tdpsL.colors = "Colores"
+  tdpsL.barBackdrop = "Fondo de la Barra"
+  tdpsL.frameBorder = "Borde de la Ventana"
+  tdpsL.frameBackdrop = "Fondo de la Ventana"
+  tdpsL.dimClassColors = "Colores de Clase Dim"
+  tdpsL.resetClassColors = "Reestablecer Colores de Clase"
+  tdpsL.swapBarTextColor = "Intercambiar Colores de la Barra/texto"
+
+  tdpsL.history = "      %i  Historico de Combates"
+  tdpsL.keepOnlyBossFights = "Registrar Solo los Combates con Jefes"
+
+  tdpsL.various = "Varios"
+  tdpsL.hideAlways = "Siempre Oculto"
+  tdpsL.hideInPvP = "Ocultar durante JcJ"
+  tdpsL.hideWhenSolo = "Ocultar cuando estes solo"
+  tdpsL.hideInCombat = "Ocultar en Combate"
+  tdpsL.hideOutOfCombat = "Ocultar fuera de combate"
+  tdpsL.growUpwards = "Crece hacia arriba"
+  tdpsL.minimapButton = "Boton de Minimapa"
+  tdpsL.trackSpellDetails = "Rastrear Detalles de Hechizos"
+  tdpsL.resetOnNewGroup = "Reiniciar Datos en Nuevos Grupos"
+  tdpsL.refreshEverySecond = "Actualizar cada segundo"
+
+  tdpsL.spells = "      %i  Hechizos en Tooltip"
+  tdpsL.targets = "      %i  Objetivos en Tooltip"
+
+  tdpsL.close = "Cancelar"
+  tdpsL.empty = "<Vacio>"
+
+  tdpsL.helpVersion = "Version"
+  tdpsL.helpMove = "mover: Presione shift y arrastre la ventana"
+  tdpsL.helpResize = "redimensionar: arrastre la esquina inferior derecha"
+  tdpsL.helpToggle = "Mostrar/Ocultar: escriba /tdps para mostrar/ocultar"
+  tdpsL.helpParameters1 = "/tdps help | reset | damage | healing | whisper <name>"
+  tdpsL.helpParameters2 = "/tdps visiblebars <number> | reportlength <number>"
+
+  tdpsL.allClear = "Todos los datos han sido reiniciados"
+  tdpsL.personal = "Personal"
+  tdpsL.byPets = "Por Mascota(s)"
+  tdpsL.topAbilities = "Habilidades Top"
+  tdpsL.topTargets = "Objetivos Top"
+
+  tdpsL.noTarget = "Inválido o no se ha seleccionado objetivo"
+  tdpsL.noData = "No hay datos."
+
+  tdpsL.tipPrefix = {
+    d = "DPS",
+    h = "Sanacion",
+  }
+  tdpsL.repPrefix = {
+    d = "DPS Hecho",
+    h = "Sanacion Hecha",
+  }
+  tdpsL.overallData = "Todos los datos"
+  tdpsL.currentFight = "Combate Actual"
+  tdpsL.lastFight = "Último Combate"
+  tdpsL.melee = "Cuerpo a Cuerpo"
 else
   tdpsL.fight = "Fight"
   tdpsL.allFight = "Overall     All Fights"
