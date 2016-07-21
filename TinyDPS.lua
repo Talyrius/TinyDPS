@@ -992,7 +992,8 @@ tdpsFrame:SetBackdrop({
 -- main window animation
 local tdpsAnimationGroup = tdpsFrame:CreateAnimationGroup()
 local tdpsAnimation = tdpsAnimationGroup:CreateAnimation("Alpha")
-tdpsAnimation:SetChange(-1)
+tdpsAnimation:SetFromAlpha(1)
+tdpsAnimation:SetToAlpha(0)
 tdpsAnimation:SetDuration(.2)
 tdpsAnimation:SetScript("OnFinished", function(self, requested)
   tdpsRefresh()
