@@ -1,6 +1,6 @@
 ﻿--[[--------------------------------------------------------------------------------------------------------------------
   TinyDPS - A lightweight damage and healing meter.
-  Copyright © 2010-2015 Sideshow, Talyrius <contact@talyrius.net>. All rights reserved.
+  Copyright © 2010-2016 Sideshow, Talyrius <contact@talyrius.net>. All rights reserved.
   See the accompanying LICENSE file for more information.
 
   Authorized distributions:

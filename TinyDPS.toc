@@ -1,11 +1,11 @@
-﻿## Interface: 60200
+﻿## Interface: 70000
 
 ## Title: TinyDPS
 ## Notes: A lightweight damage and healing meter.
 ## Author: Talyrius, Sideshow (former)
 ## Version: 0.942
 ## X-Date: @project-date-iso@
-## X-Copyright: Copyright © 2010-2015 Sideshow, Talyrius.
+## X-Copyright: Copyright © 2010-2016 Sideshow, Talyrius.
 ## X-License: All rights reserved.
 ## X-Email: contact@talyrius.net
 ## X-Website: http://www.curse.com/addons/wow/tinydps
