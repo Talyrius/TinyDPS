@@ -2779,10 +2779,10 @@ local function tdpsCombatEvent(self, event, ...)
       startNewFight(destName, destGUID)
     end
     if event == "SWING_MISSED" and arg12 == "ABSORB" then
-      amount = floor(arg15 + .5)
+      amount = floor(arg14 + .5)
       trackSpell(amount, destName, tdpsL.melee, "d")
     elseif arg15 == "ABSORB" then
-      amount = floor(arg18 + .5)
+      amount = floor(arg17 + .5)
       trackSpell(amount, destName, arg13, "d")
     else
       return
