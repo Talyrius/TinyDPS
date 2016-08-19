@@ -956,8 +956,8 @@ local isValidEvent = {
 local isExcludedAbsorb = {
   [ 20711] = true, -- Spirit of Redemption
   [114556] = true, -- Purgatory
-  [115069] = true, -- Stance of the Sturdy Ox
-  [157533] = true, -- Soul Dance
+  [115069] = true, -- Stagger
+  [184553] = true, -- Spirit Shift
 }
 local isExcludedPet = {
   -- Totems
@@ -2645,8 +2645,8 @@ local function tdpsCombatEvent(self, event, ...)
   -- reorganize these return args for consistency
   local amount, spellName
   if event == "SPELL_ABSORBED" then
-    -- triggered by a spell
     if type(arg12) == "number" then
+      -- triggered by a spell
       if isExcludedAbsorb[arg19] then
         return
       end
@@ -2657,6 +2657,7 @@ local function tdpsCombatEvent(self, event, ...)
       spellName = arg20
       amount = arg22
     else
+      -- triggered by a swing
       if isExcludedAbsorb[arg16] then
         return
       end
