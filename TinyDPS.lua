@@ -959,22 +959,26 @@ local isExcludedAbsorb = {
   [115069] = true, -- Stagger
   [184553] = true, -- Spirit Shift
 }
+local isExcludedNPC = {
+  [ "76933"] = true, -- Prismatic Crystal
+  ["103679"] = true, -- Soul Effigy
+}
 local isExcludedPet = {
   -- Totems
-  [ 2630] = true, -- Earthbind Totem
-  [ 5913] = true, -- Tremor Totem
-  [10467] = true, -- Mana Tide Totem
-  [53006] = true, -- Spirit Link Totem
-  [59717] = true, -- Windwalk Totem
-  [60561] = true, -- Earthgrab Totem
-  [61245] = true, -- Capacitor Totem
-  [62002] = true, -- Stormlash Totem
+  [ "2630"] = true, -- Earthbind Totem
+  [ "5913"] = true, -- Tremor Totem
+  ["10467"] = true, -- Mana Tide Totem
+  ["53006"] = true, -- Spirit Link Totem
+  ["59717"] = true, -- Windwalk Totem
+  ["60561"] = true, -- Earthgrab Totem
+  ["61245"] = true, -- Capacitor Totem
+  ["62002"] = true, -- Stormlash Totem
   -- Miscellaneous
-  [29742] = true, -- Snake Wrap
-  [36619] = true, -- Bone Spike
-  [38163] = true, -- Swarming Shadows
-  [38711] = true, -- Bone Spike
-  [38712] = true, -- Bone Spike
+  ["29742"] = true, -- Snake Wrap
+  ["36619"] = true, -- Bone Spike
+  ["38163"] = true, -- Swarming Shadows
+  ["38711"] = true, -- Bone Spike
+  ["38712"] = true, -- Bone Spike
 }
 
 local function initialiseSavedVariables()
@@ -2637,8 +2641,8 @@ local function tdpsCombatEvent(self, event, ...)
   destFlags, destRaidFlags, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22 = ...
   local _, _, _, _, _, destID = strsplit("-", destGUID)
 
-  -- damage dealt to this is to be ignored
-  if destID == "76933" then -- Prismatic Crystal
+  -- ignore events directed towards these
+  if isExcludedNPC[destID] then
     return
   end
 
@@ -2689,7 +2693,7 @@ local function tdpsCombatEvent(self, event, ...)
   -- create summoned pets
   if event == "SPELL_SUMMON" then
     -- add pet when player summons
-    if UnitIsPlayer(sourceName) and not isExcludedPet[tonumber(destID)] then
+    if UnitIsPlayer(sourceName) and not isExcludedPet[destID] then
       -- make owner if necessary
       if not tdpsPlayer[sourceGUID] then
         makeCombatant(sourceGUID, sourceName, {sourceName..": "..destName}, getClass(sourceName))
