@@ -2881,19 +2881,15 @@ tdpsFrame:SetScript("OnEvent", function(self, event)
   tdpsFrame:SetWidth(tdps.width)
 
   -- check for custom class colors
-  local unknownClass = {
-    r = .5,
-    g = .5,
-    b = .5,
-    colorStr = "ff7f7f7f0"
+  cColor = {
+    UNKNOWN = {
+      r = .5,
+      g = .5,
+      b = .5,
+      colorStr = "ff7f7f7f0",
+    },
   }
-  if CUSTOM_CLASS_COLORS then
-    cColor = CUSTOM_CLASS_COLORS
-    CUSTOM_CLASS_COLORS["UNKNOWN"] = unknownClass
-  else
-    cColor = RAID_CLASS_COLORS
-    RAID_CLASS_COLORS["UNKNOWN"] = unknownClass
-  end
+  cColor = setmetatable(cColor, {__index = CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS})
 
   -- make bars if any
   for k in pairs(tdpsPlayer) do
