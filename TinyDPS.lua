@@ -3080,7 +3080,13 @@ tdpsButtonFrame:SetScript("OnEnter", function(self)
       end
     end
     if ownAmount > 0 then
-      GameTooltip:AddDoubleLine(UnitName("player"), format("%i (%i)", ownAmount, ownAmount / ownTime), 1, 1, 1, 1, 1, 1)
+      if (band(tdps.layout, 1) == 1) then -- short format bit active
+        GameTooltip:AddDoubleLine(UnitName("player"), format("%s (%s)", short(ownAmount), short(ownAmount / ownTime)),
+        1, 1, 1, 1, 1, 1)
+      else
+        GameTooltip:AddDoubleLine(UnitName("player"), format("%i (%i)", ownAmount, ownAmount / ownTime), 1, 1, 1, 1, 1,
+        1)
+      end
     end
   end
 
@@ -3100,7 +3106,12 @@ tdpsButtonFrame:SetScript("OnEnter", function(self)
   end
 
   if partyAmount > ownAmount then
-    GameTooltip:AddDoubleLine(tdpsL.raid, format("%i (%i)", partyAmount, partyAmount / partyTime), 1, 1, 1, 1, 1, 1)
+    if (band(tdps.layout, 1) == 1) then -- short format bit active
+      GameTooltip:AddDoubleLine(tdpsL.raid, format("%s (%s)", short(partyAmount), short(partyAmount / partyTime)), 1, 1,
+      1, 1, 1, 1)
+    else
+      GameTooltip:AddDoubleLine(tdpsL.raid, format("%i (%i)", partyAmount, partyAmount / partyTime), 1, 1, 1, 1, 1, 1)
+    end
   end
 
   GameTooltip:Show()
