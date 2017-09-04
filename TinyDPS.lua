@@ -83,6 +83,7 @@ if GetLocale() == "koKR" then
 
   tdpsL.various = "전환"
   tdpsL.hideInPvP = "전장/투기장에서 숨김"
+  tdpsL.hideInBattle = "Hide In Pet Battle"
   tdpsL.hideWhenSolo = "솔로잉시 숨김"
   tdpsL.hideInCombat = "Hide In Combat (needs translatation)"
   tdpsL.hideOutOfCombat = "비전투시 숨김"
@@ -193,6 +194,7 @@ elseif GetLocale() == "ruRU" then
 
   tdpsL.various = "Дополнительно"
   tdpsL.hideInPvP = "Скрывать в PvP"
+  tdpsL.hideInBattle = "Hide In Pet Battle"
   tdpsL.hideWhenSolo = "Скрывать вне группы"
   tdpsL.hideInCombat = "Скрыть в бою"
   tdpsL.hideOutOfCombat = "Показывать только в бою"
@@ -303,6 +305,7 @@ elseif GetLocale() == "deDE" then
 
   tdpsL.various = "Verschiedenes"
   tdpsL.hideInPvP = "In PvP verstecken"
+  tdpsL.hideInBattle = "Hide In Pet Battle"
   tdpsL.hideWhenSolo = "Wenn solo, verstecken"
   tdpsL.hideInCombat = "Hide In Combat (needs translatation)"
   tdpsL.hideOutOfCombat = "Außerhalb des Kampfes verstecken"
@@ -414,6 +417,7 @@ elseif GetLocale() == "frFR" then
   tdpsL.various = "Divers"
   tdpsL.hideAlways = "Toujours cacher"
   tdpsL.hideInPvP = "Cacher en PvP"
+  tdpsL.hideInBattle = "Hide In Pet Battle"
   tdpsL.hideWhenSolo = "Cacher en mode solo"
   tdpsL.hideInCombat = "Cacher en Combat"
   tdpsL.hideOutOfCombat = "Cacher hors combat"
@@ -525,6 +529,7 @@ elseif GetLocale() == "itIT" then
   tdpsL.various = "Varie"
   tdpsL.hideAlways = "Nascondi sempre"
   tdpsL.hideInPvP = "Nascondi in PvP"
+  tdpsL.hideInBattle = "Hide In Pet Battle"
   tdpsL.hideWhenSolo = "Nascondi in solitaria"
   tdpsL.hideInCombat = "Nascondi in combattimento"
   tdpsL.hideOutOfCombat = "Nascondi fuori dal combattimento"
@@ -636,6 +641,7 @@ elseif GetLocale() == "zhCN" then
   tdpsL.various = "个性化"
   tdpsL.hideAlways = "始终隐藏"
   tdpsL.hideInPvP = "PVP时隐藏"
+  tdpsL.hideInBattle = "Hide In Pet Battle"
   tdpsL.hideWhenSolo = "Solo时隐藏"
   tdpsL.hideInCombat = "战斗中隐藏"
   tdpsL.hideOutOfCombat = "脱离战斗后隐藏"
@@ -747,6 +753,7 @@ elseif GetLocale() == "esES" or GetLocale() == "esMX" then
   tdpsL.various = "Varios"
   tdpsL.hideAlways = "Siempre Oculto"
   tdpsL.hideInPvP = "Ocultar durante JcJ"
+  tdpsL.hideInBattle = "Hide In Pet Battle"
   tdpsL.hideWhenSolo = "Ocultar cuando estes solo"
   tdpsL.hideInCombat = "Ocultar en Combate"
   tdpsL.hideOutOfCombat = "Ocultar fuera de combate"
@@ -858,6 +865,7 @@ else
   tdpsL.various = "Various"
   tdpsL.hideAlways = "Hide Always"
   tdpsL.hideInPvP = "Hide In PvP"
+  tdpsL.hideInBattle = "Hide In Pet Battle"
   tdpsL.hideWhenSolo = "Hide When Solo"
   tdpsL.hideInCombat = "Hide In Combat"
   tdpsL.hideOutOfCombat = "Hide Out Of Combat"
@@ -1188,7 +1196,8 @@ local pairs, ipairs, type = pairs, ipairs, type
 local strsplit, format = strsplit, format
 local UnitName, UnitGUID, UnitClass, UnitIsPlayer, UnitAffectingCombat = UnitName, UnitGUID, UnitClass, UnitIsPlayer,
 UnitAffectingCombat
-local IsInInstance, IsInRaid, IsInGroup, InCombatLockdown = IsInInstance, IsInRaid, IsInGroup, InCombatLockdown
+local IsInInstance, IsInRaid, IsInGroup, InCombatLockdown, IsInBattle = IsInInstance, IsInRaid, IsInGroup,
+InCombatLockdown, C_PetBattles.IsInBattle
 local GetNumGroupMembers, GetWorldPVPAreaInfo, GetCurrentMapAreaID, GetCurrentMapDungeonLevel, GetMapInfo, SetMapByID,
 SetMapToCurrentZone, SetDungeonMapLevel = GetNumGroupMembers, GetWorldPVPAreaInfo, GetCurrentMapAreaID,
 GetCurrentMapDungeonLevel, GetMapInfo, SetMapByID, SetMapToCurrentZone, SetDungeonMapLevel
@@ -1333,6 +1342,7 @@ end
 
 local function visibilityEvent()
   if (tdps.hidePvP and isPvPZone())
+  or (tdps.hideBattle and IsInBattle())
   or (tdps.hideSolo and not IsInGroup())
   or (tdps.hideOOC and not UnitAffectingCombat("player"))
   or (tdps.hideIC and UnitAffectingCombat("player")) then
@@ -1928,11 +1938,11 @@ end
 local function toggle()
   if tdpsFrame:IsVisible() then
     CloseDropDownMenus()
-    tdps.hidePvP, tdps.hideSolo, tdps.hideIC, tdps.hideOOC = true, true, true, true
+    tdps.hidePvP, tdps.hideBattle, tdps.hideSolo, tdps.hideIC, tdps.hideOOC = true, true, true, true, true
     tdpsFrame:Hide()
   else
     CloseDropDownMenus()
-    tdps.hidePvP, tdps.hideSolo, tdps.hideIC, tdps.hideOOC = nil, nil, nil, nil
+    tdps.hidePvP, tdps.hideBattle, tdps.hideSolo, tdps.hideIC, tdps.hideOOC = nil, nil, nil, nil, nil
     tdpsRefresh()
     tdpsFrame:Show()
   end
@@ -2132,6 +2142,10 @@ tdpsDropDown.initialize = function(self, level)
       tdps.hidePvP = not tdps.hidePvP
       visibilityEvent()
     end, nil, nil, tdps.hidePvP, nil, 1)
+    newBu(level, tdpsL.hideInBattle, nil, nil, nil, nil, 1, function()
+      tdps.hideBattle = not tdps.hideBattle
+      visibilityEvent()
+    end, nil, nil, tdps.hideBattle, nil, 1)
     newBu(level, tdpsL.hideWhenSolo, nil, nil, nil, nil, 1, function()
       tdps.hideSolo = not tdps.hideSolo
       visibilityEvent()
@@ -2925,6 +2939,8 @@ tdpsAnchor:RegisterEvent("GROUP_ROSTER_UPDATE")
 tdpsAnchor:RegisterEvent("PLAYER_ENTERING_WORLD")
 tdpsAnchor:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 tdpsAnchor:RegisterEvent("UPDATE_WORLD_STATES")
+tdpsAnchor:RegisterEvent("PET_BATTLE_OPENING_START")
+tdpsAnchor:RegisterEvent("PET_BATTLE_CLOSE")
 
 local wasInGroup
 tdpsAnchor:SetScript("OnEvent", function(self, event, ...)
