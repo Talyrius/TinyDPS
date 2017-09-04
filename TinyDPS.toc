@@ -1,16 +1,16 @@
-﻿## Interface: 70000
+﻿## Interface: 70300
 
 ## Title: TinyDPS
 ## Notes: A lightweight damage and healing meter.
 ## Author: Talyrius, Sideshow (former)
 ## Version: 0.942
 ## X-Date: @project-date-iso@
-## X-Copyright: Copyright © 2010-2016 Sideshow, Talyrius.
+## X-Copyright: Copyright © 2010-2017 Sideshow, Talyrius.
 ## X-License: All rights reserved.
 ## X-Email: contact@talyrius.net
-## X-Website: http://www.curse.com/addons/wow/tinydps
+## X-Website: https://mods.curse.com/addons/wow/tinydps
 ## X-WoWI-ID: 16780
-## X-Category: Combat, Damage Dealer, Healer, Tank
+## X-Category: Combat, Caster, Damage Dealer, Healer, Tank
 ## X-Icon: Interface\AddOns\TinyDPS\Textures\minimapbutton
 
 ## SavedVariables: tdps, tdpsPosition, tdpsFont, tdpsNumberOfFights, tdpsF, tdpsV, tdpsTextOffset, tdpsColorAlpha, tdpsVisibleBars, tdpsReportLength
