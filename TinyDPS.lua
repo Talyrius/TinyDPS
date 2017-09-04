@@ -1946,7 +1946,7 @@ local function toggle()
     tdpsRefresh()
     tdpsFrame:Show()
   end
-  PlaySound("gsTitleOptionExit")
+  PlaySound(SOUNDKIT.GS_TITLE_OPTION_EXIT)
 end
 
 SLASH_TINYDPS1, SLASH_TINYDPS2 = "/tinydps", "/tdps"
@@ -1994,7 +1994,7 @@ end
 
 tdpsDropDown.initialize = function(self, level)
   if level == 1 then
-    PlaySound("gsTitleOptionExit")
+    PlaySound(SOUNDKIT.GS_TITLE_OPTION_EXIT)
     newBu(level, "TinyDPS       ", 1, 1)
     newBu(level, tdpsL.fight, nil, 1, 1, "fight", 1)
     newBu(level, tdpsL.report, nil, 1, 1, "report", 1)
