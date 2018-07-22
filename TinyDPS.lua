@@ -1194,6 +1194,7 @@ local floor, abs = floor, abs
 local sort, tremove, tinsert, wipe = sort, tremove, tinsert, wipe
 local pairs, ipairs, type = pairs, ipairs, type
 local strsplit, format = strsplit, format
+local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 local UnitName, UnitGUID, UnitClass, UnitIsPlayer, UnitAffectingCombat = UnitName, UnitGUID, UnitClass, UnitIsPlayer,
 UnitAffectingCombat
 local IsInInstance, IsInRaid, IsInGroup, InCombatLockdown, IsInBattle = IsInInstance, IsInRaid, IsInGroup,
@@ -2929,7 +2930,9 @@ tdpsFrame:SetScript("OnEvent", function(self, event)
   -- reset events
   tdpsFrame:UnregisterEvent("ADDON_LOADED")
   tdpsFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-  tdpsFrame:SetScript("OnEvent", tdpsCombatEvent)
+  tdpsFrame:SetScript("OnEvent", function(self, event, ...)
+    tdpsCombatEvent(self, event, CombatLogGetCurrentEventInfo())
+  end)
 end)
 
 -- all events that can show or hide the main window
