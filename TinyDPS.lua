@@ -2832,24 +2832,26 @@ end
 
 tdpsFrame:RegisterEvent("ADDON_LOADED")
 tdpsFrame:SetScript("OnEvent", function(self, event)
-  local curVer = GetAddOnMetadata("TinyDPS", "Version")
+  local addonVer = GetAddOnMetadata("TinyDPS", "Version")
+  local v1, v2, v3, v4 = strmatch(addonVer, "(%d+)%.(%d+)%.(%d+)%.(%d+)")
 
-  -- global version mismatch
-  if curVer ~= tdps.version and tonumber(tdps.version) < 0.935 then
-    initialiseSavedVariables()
-    echo("Global variables have been reset to version "..curVer)
+  if addonVer ~= "DEV" and v4 then
+    local curVer = v1..v2..v3.."."..(strlen(v4) == 1 and "0"..v4 or v4)
+    -- global version mismatch
+    if curVer ~= tdps.version and tonumber(tdps.version) < 0.935 then
+      initialiseSavedVariables()
+      echo("Global variables have been reset to version "..addonVer)
+    end
+    -- character version mismatch
+    if curVer ~= tdpsVersion and tonumber(tdpsVersion) < 0.935 then
+      initialiseSavedVariablesPerCharacter()
+      echo("Character variables have been reset to version "..addonVer)
+      tdpsFrame:SetHeight(tdps.barHeight + 4)
+    end
+    -- save current version
+    tdps.version = curVer
+    tdpsVersion = curVer
   end
-
-  -- character version mismatch
-  if curVer ~= tdpsVersion and tonumber(tdpsVersion) < 0.935 then
-    initialiseSavedVariablesPerCharacter()
-    echo("Character variables have been reset to version "..curVer)
-    tdpsFrame:SetHeight(tdps.barHeight + 4)
-  end
-
-  -- save current version
-  tdps.version = curVer
-  tdpsVersion = curVer
 
   -- set position of anchor
   tdpsAnchor:ClearAllPoints()
