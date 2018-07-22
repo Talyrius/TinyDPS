@@ -1,25 +1,29 @@
-﻿## Interface: 70300
+## Interface: 80000
 
 ## Title: TinyDPS
 ## Notes: A lightweight damage and healing meter.
+
 ## Author: Talyrius, Sideshow (former)
 ## Version: @project-version@
+## X-Revision: @project-abbreviated-hash@
 ## X-Date: @project-date-iso@
-## X-Copyright: Copyright © 2010-2017 Sideshow, Talyrius.
+## X-Copyright: Copyright © 2010-2018 Sideshow, Talyrius.
 ## X-License: All rights reserved.
 ## X-Email: contact@talyrius.net
-## X-Website: https://mods.curse.com/addons/wow/tinydps
-## X-WoWI-ID: 16780
+## X-Website: https://github.com/Talyrius/TinyDPS
+## X-Feedback: https://www.wowinterface.com/downloads/info16780-TinyDPS.html#comments
+## X-Localizations: enUS, deDE, esES, esMX, frFR, itIT, ruRU, koKR, zhCN
 ## X-Category: Combat, Caster, Damage Dealer, Healer, Tank
 ## X-Icon: Interface\AddOns\TinyDPS\Textures\minimapbutton
+## X-Curse-Project-ID: 23664
+## X-WoWI-ID: 16780
 
 ## SavedVariables: tdps, tdpsPosition, tdpsFont, tdpsNumberOfFights, tdpsF, tdpsV, tdpsTextOffset, tdpsColorAlpha, tdpsVisibleBars, tdpsReportLength
 ## SavedVariablesPerCharacter: tdpsVersion, tdpsPlayer, tdpsLink, tdpsPet, tdpsFight, tdpsPartySize, tdpsCombat, tdpsNewFight
-
-## OptionalDeps: LibStub, LibBossIDs-1.0
-
+## OptionalDependencies: LibStub, LibBossIDs-1.0
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: delayed
+## X-LoadOn-Combat: true
 
 #@no-lib-strip@
 Libs\LibStub\LibStub.lua

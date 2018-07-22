@@ -1,16 +1,17 @@
 # Default
-* text=auto
-*.md text
+*       text=auto whitespace=trailing-space,space-before-tab,tab-in-indent,tabwidth=2
+*.md    text      whitespace=-blank-at-eol
+*.txt   text
 
 # World of Warcraft UI
-*.lua text
-*.xml text
-*.toc text
-*.blp binary
-*.tga binary
-*.ttf binary
-*.ogg binary
-*.mp3 binary
+*.lua   text
+*.xml   text
+*.toc   text
+*.blp   binary
+*.tga   binary
+*.ttf   binary
+*.ogg   binary
+*.mp3   binary
 
 # CurseForge/WowAce Packager
-.*meta text whitespace=blank-at-eol,tab-in-indent
+*.*meta text
