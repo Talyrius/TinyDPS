@@ -1199,13 +1199,8 @@ local UnitName, UnitGUID, UnitClass, UnitIsPlayer, UnitAffectingCombat = UnitNam
 UnitAffectingCombat
 local IsInInstance, IsInRaid, IsInGroup, InCombatLockdown, IsInBattle = IsInInstance, IsInRaid, IsInGroup,
 InCombatLockdown, C_PetBattles.IsInBattle
-local GetNumGroupMembers, GetWorldPVPAreaInfo, GetCurrentMapAreaID, GetCurrentMapDungeonLevel, GetMapInfo, SetMapByID,
-SetMapToCurrentZone, SetDungeonMapLevel = GetNumGroupMembers, GetWorldPVPAreaInfo, GetCurrentMapAreaID,
-GetCurrentMapDungeonLevel, GetMapInfo, SetMapByID, SetMapToCurrentZone, SetDungeonMapLevel
-local WorldMapFrame_Update, WorldMapScrollFrame_ReanchorQuestPOIs, WorldMapBlobFrame_ResetHitTranslations,
-WorldMapBlobFrame_DelayedUpdateBlobs = WorldMapFrame_Update, WorldMapScrollFrame_ReanchorQuestPOIs,
-WorldMapBlobFrame_ResetHitTranslations, WorldMapBlobFrame_DelayedUpdateBlobs
-local WorldMapScrollFrame, WorldMapDetailFrame = WorldMapScrollFrame, WorldMapDetailFrame
+local GetNumGroupMembers, GetWorldPVPAreaInfo, GetBestMapForUnit = GetNumGroupMembers, GetWorldPVPAreaInfo,
+C_Map.GetBestMapForUnit
 
 -- some random functions
 local function round(num, idp)
@@ -1221,43 +1216,17 @@ local function getClass(name)
   return class or "UNKNOWN"
 end
 
--- a workaround to get the map ID for the player's current location w/o interfering with their map viewing experience
-local function getCurrentMapAreaID()
-  if WorldMapFrame:IsShown() then
-    local viewing, level, isZoomedIn = GetCurrentMapAreaID(), GetCurrentMapDungeonLevel(), WorldMapScrollFrame.zoomedIn
-    local _, _, _, isMicroDungeon = GetMapInfo()
-    local x, y, z = WorldMapScrollFrame:GetHorizontalScroll(), WorldMapScrollFrame:GetVerticalScroll(),
-    WorldMapDetailFrame:GetScale()
-    SetMapToCurrentZone()
-    local current = GetCurrentMapAreaID()
-    if not isMicroDungeon then
-      SetMapByID(viewing)
-      SetDungeonMapLevel(level)
-    end
-    if isZoomedIn then
-      WorldMapScrollFrame:SetHorizontalScroll(x)
-      WorldMapScrollFrame:SetVerticalScroll(y)
-      WorldMapDetailFrame:SetScale(z)
-      WorldMapScrollFrame.zoomedIn = isZoomedIn
-      -- these need to be called after setting new scroll values; see FrameXML/WorldMapFrame.lua
-      WorldMapFrame_Update()
-      WorldMapScrollFrame_ReanchorQuestPOIs()
-      WorldMapBlobFrame_ResetHitTranslations()
-      WorldMapBlobFrame_DelayedUpdateBlobs()
-    end
-    return current
-  end
-  return GetCurrentMapAreaID()
-end
-
 local function isPvPZone()
-  local mapAreaID = getCurrentMapAreaID()
+  local uiMapID = GetBestMapForUnit("player")
   local _, instanceType = IsInInstance()
   local _, _, isActiveWintergrasp = GetWorldPVPAreaInfo(1)
   local _, _, isActiveTolBarad = GetWorldPVPAreaInfo(2)
   local _, _, isActiveAshran = GetWorldPVPAreaInfo(3)
-  if instanceType == "pvp" or instanceType == "arena" or (mapAreaID == 501 and isActiveWintergrasp) or (mapAreaID == 708
-  and isActiveTolBarad) or (mapAreaID == 978 and isActiveAshran) then
+  if instanceType == "pvp"
+  or instanceType == "arena"
+  or (uiMapID == 123 and isActiveWintergrasp)
+  or (uiMapID == 244 and isActiveTolBarad)
+  or (uiMapID == 588 and isActiveAshran) then
     return true
   end
 end
@@ -2941,7 +2910,7 @@ tdpsAnchor:RegisterEvent("PLAYER_REGEN_DISABLED")
 tdpsAnchor:RegisterEvent("GROUP_ROSTER_UPDATE")
 tdpsAnchor:RegisterEvent("PLAYER_ENTERING_WORLD")
 tdpsAnchor:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-tdpsAnchor:RegisterEvent("UPDATE_WORLD_STATES")
+tdpsAnchor:RegisterEvent("UPDATE_UI_WIDGET")
 tdpsAnchor:RegisterEvent("PET_BATTLE_OPENING_START")
 tdpsAnchor:RegisterEvent("PET_BATTLE_CLOSE")
 
