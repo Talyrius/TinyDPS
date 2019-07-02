@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 
 ## Title: TinyDPS
 ## Notes: A lightweight damage and healing meter.
@@ -7,7 +7,7 @@
 ## Version: @project-version@
 ## X-Revision: @project-abbreviated-hash@
 ## X-Date: @project-date-iso@
-## X-Copyright: Copyright © 2010-2018 Sideshow, Talyrius.
+## X-Copyright: Copyright © 2010-2019 Sideshow, Talyrius.
 ## X-License: All rights reserved.
 ## X-Email: contact@talyrius.net
 ## X-Website: https://github.com/Talyrius/TinyDPS
