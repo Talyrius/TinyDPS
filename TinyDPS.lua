@@ -1194,12 +1194,9 @@ local sort, tremove, tinsert, wipe = sort, tremove, tinsert, wipe
 local pairs, ipairs, type = pairs, ipairs, type
 local strsplit, format = strsplit, format
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
-local UnitName, UnitGUID, UnitClass, UnitIsPlayer, UnitAffectingCombat = UnitName, UnitGUID, UnitClass, UnitIsPlayer,
-UnitAffectingCombat
-local IsInInstance, IsInRaid, IsInGroup, InCombatLockdown, IsInBattle = IsInInstance, IsInRaid, IsInGroup,
-InCombatLockdown, C_PetBattles.IsInBattle
-local GetNumGroupMembers, GetWorldPVPAreaInfo, GetBestMapForUnit = GetNumGroupMembers, GetWorldPVPAreaInfo,
-C_Map.GetBestMapForUnit
+local UnitName, UnitGUID, UnitClass, UnitIsPlayer, UnitAffectingCombat = UnitName, UnitGUID, UnitClass, UnitIsPlayer, UnitAffectingCombat
+local IsInInstance, IsInRaid, IsInGroup, InCombatLockdown = IsInInstance, IsInRaid, IsInGroup, InCombatLockdown
+local GetNumGroupMembers, GetBestMapForUnit = GetNumGroupMembers, C_Map.GetBestMapForUnit
 
 -- some random functions
 local function round(num, idp)
@@ -2114,10 +2111,6 @@ tdpsDropDown.initialize = function(self, level)
     newBu(level, tdpsL.hideInBattle, nil, nil, nil, nil, 1, function()
       tdps.hideBattle = not tdps.hideBattle
       visibilityEvent()
-    end, nil, nil, tdps.hideBattle, nil, 1)
-    newBu(level, tdpsL.hideWhenSolo, nil, nil, nil, nil, 1, function()
-      tdps.hideSolo = not tdps.hideSolo
-      visibilityEvent()
     end, nil, nil, tdps.hideSolo, nil, 1)
     newBu(level, tdpsL.hideInCombat, nil, nil, nil, nil, 1, function(self)
       tdps.hideIC = not tdps.hideIC
@@ -2912,8 +2905,6 @@ tdpsAnchor:RegisterEvent("GROUP_ROSTER_UPDATE")
 tdpsAnchor:RegisterEvent("PLAYER_ENTERING_WORLD")
 tdpsAnchor:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 tdpsAnchor:RegisterEvent("UPDATE_UI_WIDGET")
-tdpsAnchor:RegisterEvent("PET_BATTLE_OPENING_START")
-tdpsAnchor:RegisterEvent("PET_BATTLE_CLOSE")
 
 local wasInGroup
 tdpsAnchor:SetScript("OnEvent", function(self, event, ...)
