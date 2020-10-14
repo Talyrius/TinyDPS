@@ -1,4 +1,4 @@
-﻿--[[--------------------------------------------------------------------------------------------------------------------
+--[[--------------------------------------------------------------------------------------------------------------------
   TinyDPS - A lightweight damage and healing meter.
   Copyright © 2010-2019 Sideshow, Talyrius <contact@talyrius.net>. All rights reserved.
   See the accompanying LICENSE file for more information.
@@ -1064,7 +1064,7 @@ initialiseSavedVariablesPerCharacter()
 ------------------------------------------------------------------------------------------------------------------------
 
 -- anchor frame
-CreateFrame("Frame", "tdpsAnchor", UIParent)
+CreateFrame("Frame", "tdpsAnchor", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 tdpsAnchor:SetWidth(3)
 tdpsAnchor:SetHeight(3)
 tdpsAnchor:SetMovable(true)
@@ -1087,7 +1087,7 @@ tdpsAnchor:SetBackdropColor(0, 0, 0, 0)
 tdpsAnchor:SetBackdropBorderColor(0, 0, 0, 0)
 
 -- main window
-CreateFrame("Frame", "tdpsFrame", UIParent)
+CreateFrame("Frame", "tdpsFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 tdpsFrame:SetWidth(190)
 tdpsFrame:SetHeight(tdps.barHeight + 4)
 tdpsFrame:SetClampedToScreen(true)
@@ -2370,7 +2370,7 @@ local function tdpsMobSort(x, y)
 end
 
 local function newBar(g)
-  local dummybar = CreateFrame("Statusbar", "tdpsStatusBar", tdpsFrame)
+  local dummybar = CreateFrame("Statusbar", "tdpsStatusBar", tdpsFrame, BackdropTemplateMixin and "BackdropTemplate")
   dummybar:SetFrameStrata("MEDIUM")
   dummybar:SetFrameLevel(2)
   dummybar:SetOrientation("HORIZONTAL")
@@ -2379,7 +2379,7 @@ local function newBar(g)
   dummybar:SetWidth(tdpsFrame:GetWidth() - 4)
   dummybar:SetHeight(tdps.barHeight)
   dummybar:Hide()
-  --dummybar:SetPoint("RIGHT", tdpsFrame, "RIGHT", -2, 0)
+  dummybar:SetPoint("RIGHT", tdpsFrame, "RIGHT", -2, 0)
   dummybar:SetBackdrop({
     bgFile = [[Interface\AddOns\TinyDPS\Textures\wglass.tga]],
     edgeFile = [[Interface\AddOns\TinyDPS\Textures\blank.tga]],
