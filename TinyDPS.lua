@@ -1064,7 +1064,7 @@ initialiseSavedVariablesPerCharacter()
 ------------------------------------------------------------------------------------------------------------------------
 
 -- anchor frame
-CreateFrame("Frame", "tdpsAnchor", UIParent)
+CreateFrame("Frame", "tdpsAnchor", UIParent, "BackdropTemplate")
 tdpsAnchor:SetWidth(3)
 tdpsAnchor:SetHeight(3)
 tdpsAnchor:SetMovable(true)
@@ -1087,7 +1087,7 @@ tdpsAnchor:SetBackdropColor(0, 0, 0, 0)
 tdpsAnchor:SetBackdropBorderColor(0, 0, 0, 0)
 
 -- main window
-CreateFrame("Frame", "tdpsFrame", UIParent)
+CreateFrame("Frame", "tdpsFrame", UIParent, "BackdropTemplate")
 tdpsFrame:SetWidth(190)
 tdpsFrame:SetHeight(tdps.barHeight + 4)
 tdpsFrame:SetClampedToScreen(true)
@@ -2370,7 +2370,7 @@ local function tdpsMobSort(x, y)
 end
 
 local function newBar(g)
-  local dummybar = CreateFrame("Statusbar", "tdpsStatusBar", tdpsFrame)
+  local dummybar = CreateFrame("Statusbar", "tdpsStatusBar", tdpsFrame, "BackdropTemplate")
   dummybar:SetFrameStrata("MEDIUM")
   dummybar:SetFrameLevel(2)
   dummybar:SetOrientation("HORIZONTAL")
