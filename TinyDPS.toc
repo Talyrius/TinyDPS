@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90205
 
 ## Title: TinyDPS
 ## Notes: A lightweight damage and healing meter.
@@ -19,7 +19,7 @@
 ## X-WoWI-ID: 16780
 
 ## SavedVariables: tdps, tdpsPosition, tdpsFont, tdpsNumberOfFights, tdpsF, tdpsV, tdpsTextOffset, tdpsColorAlpha, tdpsVisibleBars, tdpsReportLength
-## SavedVariablesPerCharacter: tdpsVersion, tdpsPlayer, tdpsLink, tdpsPet, tdpsFight, tdpsPartySize, tdpsCombat, tdpsNewFight
+## SavedVariablesPerCharacter: tdpsVersion, tdpsPlayer, tdpsLink, tdpsPet, tdpsFight, tdpsInCombat, tdpsStartNewFight
 ## OptionalDependencies: LibStub, LibBossIDs-1.0
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: delayed
