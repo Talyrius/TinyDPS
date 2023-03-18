@@ -3110,8 +3110,7 @@ end)
 
 tdpsResizeFrame:SetScript("OnMouseDown", function()
   isMovingOrSizing = true
-  tdpsFrame:SetMinResize(60, tdpsFrame:GetHeight())
-  tdpsFrame:SetMaxResize(400, tdpsFrame:GetHeight())
+  tdpsFrame:SetResizeBounds(60, tdpsFrame:GetHeight(), 400, tdpsFrame:GetHeight())
   tdpsFrame:StartSizing()
 end)
 
